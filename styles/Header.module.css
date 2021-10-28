@@ -1,0 +1,25 @@
+.header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: auto;
+  z-index: 98;
+  height: 48px;
+  margin-right: 48px;
+  margin-left: 48px;
+  border-bottom: 2px solid #000;
+  background-color: #fff;
+}
+
+.logo {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: auto;
+  bottom: auto;
+  z-index: 99;
+  display: block;
+  width: 48px;
+  height: 48px;
+}

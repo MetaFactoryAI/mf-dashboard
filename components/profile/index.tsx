@@ -1,7 +1,7 @@
-import { Center, Heading } from '@chakra-ui/layout';
-import type { NextPage } from 'next';
-import Head from 'next/head';
-import React from 'react';
+import { Center, Heading } from "@chakra-ui/layout";
+import type { NextPage } from "next";
+import Head from "next/head";
+import React from "react";
 
 const Home: NextPage = () => (
   <Center h="calc(100vh - 96px)">

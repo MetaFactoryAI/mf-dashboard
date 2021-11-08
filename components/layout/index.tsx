@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import Header from '@/components/header';
+import React, { ReactNode } from "react";
+import Header from "@/components/header";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => (
   <>

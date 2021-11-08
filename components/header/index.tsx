@@ -9,7 +9,7 @@ export const Header = () => (
   <Box className={styles.header}>
     <Link href="/">
       <a className={styles.logo}>
-        <Image src="/header-logo-mf.svg" width="48px" height="48px" />
+        <Image src="/header-logo-mf.svg" alt="" width="48px" height="48px" />
       </a>
     </Link>
   </Box>

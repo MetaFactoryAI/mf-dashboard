@@ -1,13 +1,11 @@
-import { PropsWithChildren } from "react";
-import { Header } from "@/components/header";
+import React, { ReactNode } from "react";
+import Header from "@/components/header";
 
-function Layout({ children }: PropsWithChildren<{}>) {
-  return (
-    <>
-      <Header />
-      {children}
-    </>
-  );
-}
+const Layout: React.FC<{ children: ReactNode }> = ({ children }) => (
+  <>
+    <Header />
+    {children}
+  </>
+);
 
 export default Layout;

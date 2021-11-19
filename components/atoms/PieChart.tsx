@@ -1,5 +1,5 @@
 import Pie from "@visx/shape/lib/shapes/Pie";
-import { useTooltip, defaultStyles } from "@visx/tooltip";
+import { useTooltip, defaultStyles, Tooltip, TooltipWithBounds } from "@visx/tooltip";
 import { Group } from "@visx/group";
 import { FC, useState } from "react";
 
@@ -10,12 +10,12 @@ type ChartData = {
 }
 
 // this is only POC (proof of concept) for now
-export const PieChart: FC = () => {
+const PieChart: FC = () => {
   const [active, setActive] = useState<ChartData | null>(null);
   const chartData = [
-    { key: "TEST", value: 10, color: "#0033" },
-    { key: "TEST2", value: 20, color: "#0A33" },
-    { key: "TEST3", value: 30, color: "#c33" },
+    { key: "TEST", value: 10, color: "#4FF970" },
+    { key: "TEST2", value: 20, color: "#FF2ECE" },
+    { key: "TEST3", value: 30, color: "#89F6FF" },
   ];
 
   const {
@@ -39,12 +39,12 @@ export const PieChart: FC = () => {
           <Pie
             data={chartData}
             outerRadius={({ data }) => {
-              const size = active && active.key === data.key ? 220 : 200;
+              const size = active && active.key === data.key ? 260 : 250;
 
               return size;
             }}
             innerRadius={({ data }) => {
-              const size = active && active.key === data.key ? 150 : 180;
+              const size = active && active.key === data.key ? 130 : 140;
 
               return size;
             }}

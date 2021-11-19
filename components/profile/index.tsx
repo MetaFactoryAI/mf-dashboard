@@ -2,7 +2,7 @@ import { Center, Heading } from "@chakra-ui/layout";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
-import { PieChart } from "@/components/atoms";
+import { GraphChart, PieChart } from "@/components/atoms";
 
 const Home: NextPage = () => (
   <Center h="calc(100vh - 96px)">
@@ -11,7 +11,7 @@ const Home: NextPage = () => (
       <meta name="description" content="MetaFactory Dashboard" />
     </Head>
     <Heading as="h1" textAlign="center">
-      <PieChart />
+      <GraphChart />
     </Heading>
   </Center>
 );

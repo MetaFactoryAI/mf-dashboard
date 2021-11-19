@@ -7,17 +7,10 @@ type ChartData = {
   key: string;
   value: number;
   color: string;
-}
+};
 
-// this is only POC (proof of concept) for now
-export const PieChart: FC = () => {
+const PieChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartData, width }) => {
   const [active, setActive] = useState<ChartData | null>(null);
-  const chartData = [
-    { key: "TEST", value: 10, color: "#0033" },
-    { key: "TEST2", value: 20, color: "#0A33" },
-    { key: "TEST3", value: 30, color: "#c33" },
-  ];
-
   const {
     showTooltip,
     hideTooltip,
@@ -29,8 +22,7 @@ export const PieChart: FC = () => {
     // initial tooltip state
     tooltipOpen: false,
   });
-
-  const width = 600;
+  const radius = width / 2 - 30;
 
   return (
     <div style={{ position: "relative" }}>
@@ -39,12 +31,12 @@ export const PieChart: FC = () => {
           <Pie
             data={chartData}
             outerRadius={({ data }) => {
-              const size = active && active.key === data.key ? 220 : 200;
+              const size = active && active.key === data.key ? radius + 10 : radius - 10;
 
               return size;
             }}
             innerRadius={({ data }) => {
-              const size = active && active.key === data.key ? 150 : 180;
+              const size = active && active.key === data.key ? radius - 130 : radius - 120;
 
               return size;
             }}

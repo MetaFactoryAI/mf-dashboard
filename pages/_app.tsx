@@ -2,11 +2,12 @@ import "@/styles/globals.css";
 import Head from "next/head";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
+import customTheme from "@/styles/theme";
 import Layout from "@/components/layout";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={customTheme}>
       <Head>
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <link

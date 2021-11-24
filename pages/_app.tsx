@@ -21,7 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           rel="apple-touch-icon"
         />
         <link rel="preload" href="/fonts/188 Sans-Pixel 70.otf" as="font" crossOrigin="" />
-        <link rel="preload" href="/fonts/188_Sans-Black_Extended.otf" as="font" crossOrigin="" />
+        <link rel="preload" href="/fonts/188 Sans-Black Extended.otf" as="font" crossOrigin="" />
         <link rel="preload" href="/fonts/188 Sans-Bold.otf" as="font" crossOrigin="" />
         <link rel="preload" href="/fonts/188 Sans-Pixel 100.otf" as="font" crossOrigin="" />
         <link rel="preload" href="/fonts/188 Sans-Regular.otf" as="font" crossOrigin="" />

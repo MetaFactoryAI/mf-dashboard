@@ -11,7 +11,14 @@ const Navigation: React.FC = () => {
   const currentPath = router.asPath;
 
   return (
-    <Flex as="nav" align="center" justify="space-between" wrap="wrap" height={`${LOGO_HEIGHT}px`}>
+    <Flex
+      as="nav"
+      align="center"
+      justify="space-between"
+      wrap="wrap"
+      height={`${LOGO_HEIGHT}px`}
+      fontSize="14px"
+    >
       <Box>
         <a href="https://www.metafactory.ai/">
           <Image

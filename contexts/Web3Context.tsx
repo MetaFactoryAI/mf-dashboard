@@ -21,19 +21,19 @@ const providerOptions: IProviderOptions = {
   },
 };
 
-const web3Modal = typeof window !== 'undefined' && new Web3Modal({
-  cacheProvider: true,
-  providerOptions,
-});
+const web3Modal =
+  typeof window !== "undefined" &&
+  new Web3Modal({
+    cacheProvider: true,
+    providerOptions,
+  });
 
-const Web3Context = createContext<
-  Web3ContextType & { loading: boolean, connectWeb3:() => void }
-    >({
-      account: null,
-      provider: null,
-      loading: false,
-      connectWeb3: () => null,
-    });
+const Web3Context = createContext<Web3ContextType & { loading: boolean; connectWeb3: () => void }>({
+  account: null,
+  provider: null,
+  loading: false,
+  connectWeb3: () => null,
+});
 
 const Web3ContextProvider: React.FC = ({ children }) => {
   const [loading, setLoading] = useState(false);
@@ -43,15 +43,15 @@ const Web3ContextProvider: React.FC = ({ children }) => {
   });
 
   const connectWeb3 = useCallback(async () => {
-    const modalProvider = await web3Modal.connect();
+    const modalProvider = web3Modal && (await web3Modal.connect());
     const currentprovider = new ethers.providers.Web3Provider(
       new Web3(modalProvider).currentProvider as ethers.providers.ExternalProvider,
     );
     const currentAccount = await currentprovider.getSigner().getAddress();
-    const isApproved = await isAccountApproved(currentAccount, currentprovider);
-    if (!isApproved) await approve(currentprovider);
 
-    modalProvider.on('accountsChanged', async (newAcc: string[]) => setWeb3State((prev) => ({ ...prev, account: newAcc[0] })));
+    modalProvider.on("accountsChanged", async (newAcc: string[]) =>
+      setWeb3State((prev) => ({ ...prev, account: newAcc[0] })),
+    );
 
     setWeb3State({ provider: currentprovider, account: currentAccount });
     setLoading(false);
@@ -62,13 +62,16 @@ const Web3ContextProvider: React.FC = ({ children }) => {
     if (window.ethereum) window.ethereum.autoRefreshOnNetworkChange = false;
 
     // eslint-disable-next-line no-unused-expressions
-    web3Modal.cachedProvider ? connectWeb3() : setLoading(false);
+    web3Modal && web3Modal.cachedProvider ? connectWeb3() : setLoading(false);
   }, [connectWeb3]);
 
   return (
     <Web3Context.Provider
       value={{
-        account, provider, loading, connectWeb3,
+        account,
+        provider,
+        loading,
+        connectWeb3,
       }}
     >
       {children}

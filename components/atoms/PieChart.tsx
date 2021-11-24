@@ -24,8 +24,6 @@ const PieChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartDat
   });
   const radius = width / 2 - 30;
 
-  const { value, key } = tooltipData as ChartData;
-
   return (
     <div style={{ position: "relative" }}>
       <svg width={width} height={width}>
@@ -66,7 +64,7 @@ const PieChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartDat
                       hideTooltip();
                     }}
                   >
-                    <path d={pie.path(arc)} stroke="#000" fill={color} strokeWidth="1px" />
+                    <path d={pie.path(arc) ?? ""} stroke="#000" fill={color} strokeWidth="1px" />
                   </g>
                 );
               })
@@ -89,10 +87,10 @@ const PieChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartDat
           }}
         >
           <div>
-            <strong>{key}</strong>
+            <strong>{(tooltipData as ChartData).key}</strong>
           </div>
           <div>
-            <small>{value}</small>
+            <small>{(tooltipData as ChartData).value}</small>
           </div>
         </div>
       )}

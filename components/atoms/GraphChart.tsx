@@ -68,8 +68,6 @@ const GraphChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartD
     [chartData, showTooltip, xScale, yScale],
   );
 
-  const { value } = tooltipData as ChartData;
-
   return (
     <div
       style={{
@@ -137,7 +135,7 @@ const GraphChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartD
             left={tooltipLeft}
             style={{ ...defaultStyles }}
           >
-            {value}
+            {(tooltipData as ChartData).value}
           </TooltipWithBounds>
         </div>
       )}

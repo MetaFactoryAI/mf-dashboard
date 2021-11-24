@@ -11,7 +11,7 @@
   "dependencies": {
     "@chakra-ui/layout": "^1.4.11",
     "@chakra-ui/react": "^1.6.10",
-    "@emotion/react": "^11",
+    "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11",
     "@visx/event": "^2.1.2",
     "@visx/gradient": "^2.1.0",

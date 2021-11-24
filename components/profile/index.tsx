@@ -1,4 +1,4 @@
-import { Center, Heading } from "@chakra-ui/layout";
+import { Heading } from "@chakra-ui/layout";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
@@ -34,16 +34,16 @@ const Home: NextPage = () => {
   ];
 
   return (
-    <Center h="calc(100vh - 96px)">
+    <div>
       <Head>
         <title>MetaFactory - Dashboard</title>
         <meta name="description" content="MetaFactory Dashboard" />
       </Head>
       <Heading as="h1" textAlign="center">
-        <GraphChart chartData={graphChartData} width={860} />
+        <GraphChart chartData={graphChartData} width={660} />
         <PieChart chartData={pieChartData} width={400} />
       </Heading>
-    </Center>
+    </div>
   );
 };
 

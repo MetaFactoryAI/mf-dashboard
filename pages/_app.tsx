@@ -5,7 +5,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 
 import customTheme from "@/styles/theme";
 import Layout from "@/components/layout";
-import Web3ContextProvider from '@/contexts/Web3Context';
+import Web3ContextProvider from "@/contexts/Web3Context";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

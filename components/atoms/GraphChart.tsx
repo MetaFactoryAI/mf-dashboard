@@ -68,6 +68,8 @@ const GraphChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartD
     [chartData, showTooltip, xScale, yScale],
   );
 
+  const { value } = tooltipData as ChartData;
+
   return (
     <div
       style={{
@@ -85,10 +87,10 @@ const GraphChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartD
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="#FF2ECE" />
-          <stop offset="0.234375" stopColor="#8B2CFF"/>
-          <stop offset="0.494792" stopColor="#2EEFFF"/>
-          <stop offset="0.75" stopColor="#4FF970"/>
-          <stop offset="1" stopColor="#FFEE36"/>
+          <stop offset="0.234375" stopColor="#8B2CFF" />
+          <stop offset="0.494792" stopColor="#2EEFFF" />
+          <stop offset="0.75" stopColor="#4FF970" />
+          <stop offset="1" stopColor="#FFEE36" />
         </linearGradient>
         <LinePath
           stroke="url(#gradient)"
@@ -135,7 +137,7 @@ const GraphChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartD
             left={tooltipLeft}
             style={{ ...defaultStyles }}
           >
-            {tooltipData.value}
+            {value}
           </TooltipWithBounds>
         </div>
       )}

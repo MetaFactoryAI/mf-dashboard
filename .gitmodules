@@ -1,0 +1,3 @@
+[submodule "web3"]
+	path = web3
+	url = https://github.com/raid-guild/quiver.git

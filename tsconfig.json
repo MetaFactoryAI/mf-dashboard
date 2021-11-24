@@ -16,6 +16,7 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
+      "@/web3/*": ["web3/web3/*"],
       "@/components/*": ["components/*"],
       "@/styles/*": ["styles/*"],
       "@/contexts/*": ["contexts/*"],

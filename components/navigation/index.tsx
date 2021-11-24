@@ -4,7 +4,7 @@ import React from "react";
 import { Flex, Spacer, Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
-export const LOGO_HEIGHT = 48;
+export const LOGO_HEIGHT = 64;
 
 const Navigation: React.FC = () => {
   const router = useRouter();
@@ -17,7 +17,7 @@ const Navigation: React.FC = () => {
       justify="space-between"
       wrap="wrap"
       height={`${LOGO_HEIGHT}px`}
-      fontSize="14px"
+      fontSize="18px"
     >
       <Box>
         <a href="https://www.metafactory.ai/">

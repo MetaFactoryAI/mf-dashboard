@@ -1,0 +1,29 @@
+@font-face {
+  font-family: '188 Sans-Pixel 70';
+  src: url('/fonts/188 Sans-Pixel 70.otf');
+}
+
+@font-face {
+  font-family: '188 Sans-Black Extended';
+  src: url('/fonts/188_Sans-Black_Extended.otf');
+}
+
+@font-face {
+  font-family: '188 Sans-Bold';
+  src: url('/fonts/188 Sans-Bold.otf');
+}
+
+@font-face {
+  font-family: '188 Sans-Pixel 100';
+  src: url('/fonts/188 Sans-Pixel 100.otf');
+}
+
+@font-face {
+  font-family: '188 Sans-Regular';
+  src: url('/fonts/188 Sans-Regular.otf');
+}
+
+@font-face {
+  font-family: '188 Sans-Thin Condensed';
+  src: url('/fonts/188 Sans-Thin Condensed.otf');
+}

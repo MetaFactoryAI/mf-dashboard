@@ -1,6 +1,8 @@
+import "@/styles/globals.css";
 import Head from "next/head";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
+
 import customTheme from "@/styles/theme";
 import Layout from "@/components/layout";
 
@@ -18,6 +20,12 @@ function MyApp({ Component, pageProps }: AppProps) {
           href="https://uploads-ssl.webflow.com/6026543af66b1305fa436c0d/60369258d2d2b4eb12e73592_webclip.svg"
           rel="apple-touch-icon"
         />
+        <link rel="preload" href="/fonts/188 Sans-Pixel 70.otf" as="font" crossOrigin="" />
+        <link rel="preload" href="/fonts/188_Sans-Black_Extended.otf" as="font" crossOrigin="" />
+        <link rel="preload" href="/fonts/188 Sans-Bold.otf" as="font" crossOrigin="" />
+        <link rel="preload" href="/fonts/188 Sans-Pixel 100.otf" as="font" crossOrigin="" />
+        <link rel="preload" href="/fonts/188 Sans-Regular.otf" as="font" crossOrigin="" />
+        <link rel="preload" href="/fonts/188 Sans-Thin Condensed.otf" as="font" crossOrigin="" />
       </Head>
       <Layout>
         <Component {...pageProps} />

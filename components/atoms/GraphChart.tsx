@@ -32,7 +32,7 @@ const GraphChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartD
         range: [0, width],
         domain: extent(chartData, (d) => d.date.valueOf()) as number[],
       }),
-    [chartData],
+    [chartData, width],
   );
 
   const yScale = useMemo(

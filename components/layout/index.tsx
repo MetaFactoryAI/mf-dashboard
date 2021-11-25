@@ -1,13 +1,16 @@
 import React, { ReactNode } from "react";
-import { Box } from "@chakra-ui/react";
+import { Center, Box } from "@chakra-ui/react";
+import styles from "./index.module.css";
 import Navigation from "@/components/navigation";
-import AppBody from "@/components/app_body";
 import Footer from "@/components/footer";
+import { LOGO_HEIGHT } from "@/utils/constants";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => (
   <Box>
     <Navigation />
-    <AppBody>{children}</AppBody>
+    <Center mx={`${LOGO_HEIGHT}px`} className={styles.body}>
+      {children}
+    </Center>
     <Footer />
   </Box>
 );

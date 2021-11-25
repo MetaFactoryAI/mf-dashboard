@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useCallback, useEffect, useState } from "react";
+import React, { createContext, useContext, useCallback, useState } from "react";
 import Web3 from "web3";
 import Web3Modal, { IProviderOptions } from "web3modal";
 import { ethers } from "ethers";
@@ -7,7 +7,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 type Web3ContextType = {
   account: null | string;
   provider: null | ethers.providers.Web3Provider;
-  errors: any
+  errors: unknown;
 };
 
 const providerOptions: IProviderOptions = {
@@ -37,7 +37,7 @@ const Web3Context = createContext<Web3ContextType & { loading: boolean; connectW
   connectWeb3: () => null,
 });
 
-const Web3ContextProvider: React.FC = ({ children }) => {
+export const Web3ContextProvider: React.FC = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [{ account, provider, errors }, setWeb3State] = useState<Web3ContextType>({
     account: null,
@@ -47,13 +47,13 @@ const Web3ContextProvider: React.FC = ({ children }) => {
 
   const connectWeb3 = useCallback(async () => {
     try {
-      const modalProvider = web3Modal && (await web3Modal.connect());
-      const currentprovider = new ethers.providers.Web3Provider(
-        new Web3(modalProvider).currentProvider as ethers.providers.ExternalProvider,
-      );
+      const web3ModalInstance = web3Modal && (await web3Modal.connect());
+      const web3Provider = new Web3(web3ModalInstance)
+        .currentProvider as ethers.providers.ExternalProvider;
+      const currentprovider = new ethers.providers.Web3Provider(web3Provider);
       const currentAccount = await currentprovider.getSigner().getAddress();
 
-      modalProvider.on("accountsChanged", async (newAcc: string[]) =>
+      web3ModalInstance.on("accountsChanged", async (newAcc: string[]) =>
         setWeb3State((prev) => ({ ...prev, account: newAcc[0] })),
       );
 
@@ -81,5 +81,3 @@ const Web3ContextProvider: React.FC = ({ children }) => {
 };
 
 export const useWeb3Context = () => useContext(Web3Context);
-
-export default Web3ContextProvider;

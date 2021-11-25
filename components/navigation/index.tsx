@@ -5,8 +5,7 @@ import { Flex, Spacer, Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { formatAddress } from "@/utils/presentationHelper";
-
-export const LOGO_HEIGHT = 64;
+import { LOGO_HEIGHT } from "@/utils/constants";
 
 const Navigation: React.FC = () => {
   const router = useRouter();

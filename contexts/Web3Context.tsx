@@ -7,6 +7,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 type Web3ContextType = {
   account: null | string;
   provider: null | ethers.providers.Web3Provider;
+  errors: any
 };
 
 const providerOptions: IProviderOptions = {
@@ -15,7 +16,7 @@ const providerOptions: IProviderOptions = {
     package: WalletConnectProvider,
     options: {
       rpc: {
-        1: 'https://rinkeby.infura.io/v3/a2eae6b8a91442c8a6e3fe5e8c4ef4bd',
+        1: "https://rinkeby.infura.io/v3/a2eae6b8a91442c8a6e3fe5e8c4ef4bd",
       },
     },
   },
@@ -29,6 +30,7 @@ const web3Modal =
   });
 
 const Web3Context = createContext<Web3ContextType & { loading: boolean; connectWeb3: () => void }>({
+  errors: null,
   account: null,
   provider: null,
   loading: false,
@@ -37,37 +39,36 @@ const Web3Context = createContext<Web3ContextType & { loading: boolean; connectW
 
 const Web3ContextProvider: React.FC = ({ children }) => {
   const [loading, setLoading] = useState(false);
-  const [{ account, provider }, setWeb3State] = useState<Web3ContextType>({
+  const [{ account, provider, errors }, setWeb3State] = useState<Web3ContextType>({
     account: null,
     provider: null,
+    errors: null,
   });
 
   const connectWeb3 = useCallback(async () => {
-    const modalProvider = web3Modal && (await web3Modal.connect());
-    const currentprovider = new ethers.providers.Web3Provider(
-      new Web3(modalProvider).currentProvider as ethers.providers.ExternalProvider,
-    );
-    const currentAccount = await currentprovider.getSigner().getAddress();
+    try {
+      const modalProvider = web3Modal && (await web3Modal.connect());
+      const currentprovider = new ethers.providers.Web3Provider(
+        new Web3(modalProvider).currentProvider as ethers.providers.ExternalProvider,
+      );
+      const currentAccount = await currentprovider.getSigner().getAddress();
 
-    modalProvider.on("accountsChanged", async (newAcc: string[]) =>
-      setWeb3State((prev) => ({ ...prev, account: newAcc[0] })),
-    );
+      modalProvider.on("accountsChanged", async (newAcc: string[]) =>
+        setWeb3State((prev) => ({ ...prev, account: newAcc[0] })),
+      );
 
-    setWeb3State({ provider: currentprovider, account: currentAccount });
-    setLoading(false);
+      setWeb3State({ provider: currentprovider, account: currentAccount, errors: null });
+    } catch (e) {
+      setWeb3State({ provider: null, account: null, errors: e });
+    } finally {
+      setLoading(false);
+    }
   }, []);
-
-  useEffect(() => {
-    setLoading(true);
-    if (window.ethereum) window.ethereum.autoRefreshOnNetworkChange = false;
-
-    // eslint-disable-next-line no-unused-expressions
-    web3Modal && web3Modal.cachedProvider ? connectWeb3() : setLoading(false);
-  }, [connectWeb3]);
 
   return (
     <Web3Context.Provider
       value={{
+        errors,
         account,
         provider,
         loading,

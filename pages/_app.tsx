@@ -1,3 +1,5 @@
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import "@/styles/globals.css";
 import Head from "next/head";
 import type { AppProps } from "next/app";
@@ -8,6 +10,13 @@ import Layout from "@/components/layout";
 import Web3ContextProvider from "@/contexts/Web3Context";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const [routerIsReady, setRouterIsReady] = useState(false);
+
+  useEffect(() => {
+    setRouterIsReady(router.isReady);
+  }, [router.isReady]);
+
   return (
     <Web3ContextProvider>
       <ChakraProvider theme={customTheme}>
@@ -29,9 +38,11 @@ function MyApp({ Component, pageProps }: AppProps) {
           <link rel="preload" href="/fonts/188 Sans-Regular.otf" as="font" crossOrigin="" />
           <link rel="preload" href="/fonts/188 Sans-Thin Condensed.otf" as="font" crossOrigin="" />
         </Head>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        {routerIsReady && (
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        )}
       </ChakraProvider>
     </Web3ContextProvider>
   );

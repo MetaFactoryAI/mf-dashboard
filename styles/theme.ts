@@ -5,6 +5,7 @@ const customTheme = extendTheme({
   fonts: {
     heading: "'188 Sans-Pixel 70'",
     body: "'188 Sans-Pixel 70'",
+    body2: "'188 Sans-Black Extended'",
   },
   colors: {
     brand: {

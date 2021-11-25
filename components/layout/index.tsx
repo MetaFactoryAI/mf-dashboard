@@ -1,18 +1,20 @@
 import React, { ReactNode } from "react";
-import { Center, Box } from "@chakra-ui/react";
+import { Flex, Spacer } from "@chakra-ui/react";
 import styles from "./index.module.css";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import { LOGO_HEIGHT } from "@/utils/constants";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => (
-  <Box>
+  <Flex flexDirection="column" minH="100vh">
     <Navigation />
-    <Center mx={`${LOGO_HEIGHT}px`} className={styles.body}>
+    <Flex flex="1" flexDirection="column" mx={`${LOGO_HEIGHT}px`} className={styles.body}>
+      <Spacer />
       {children}
-    </Center>
+      <Spacer />
+    </Flex>
     <Footer />
-  </Box>
+  </Flex>
 );
 
 export default Layout;

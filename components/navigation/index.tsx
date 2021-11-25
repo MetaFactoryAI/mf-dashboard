@@ -3,12 +3,13 @@ import Link from "next/link";
 import React from "react";
 import { Flex, Spacer, Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-
-export const LOGO_HEIGHT = 64;
+import { useWeb3Context } from "@/contexts/Web3Context";
+import { formatAddress } from "@/utils/presentationHelper";
+import { LOGO_HEIGHT } from "@/utils/constants";
 
 const Navigation: React.FC = () => {
   const router = useRouter();
-  const currentPath = router.asPath;
+  const { account, loading, errors } = useWeb3Context();
 
   return (
     <Flex
@@ -30,32 +31,35 @@ const Navigation: React.FC = () => {
         </a>
       </Box>
       <Flex p="4">
-        <Box px="2" bg={currentPath === "/project" ? "yellow" : ""}>
+        <Box px="2" bg={router.asPath === "/project" ? "yellow" : ""}>
           <Link href="/project">Project</Link>
         </Box>
-        <Box px="2" bg={currentPath === "/robot" ? "yellow" : ""}>
+        <Box px="2" bg={router.asPath === "/robot" ? "yellow" : ""}>
           <Link href="/robot">$Robot</Link>
         </Box>
-        <Flex px="2" bg={currentPath === "/shop" ? "yellow" : ""}>
+        <Flex px="2" bg={router.asPath === "/shop" ? "yellow" : ""}>
           <Box pr="1">
             <Image src="/arrow.svg" alt="" width="10px" height="10px" />
           </Box>
           <Link href="/shop">Shop</Link>
         </Flex>
-        <Box px="2" bg={currentPath === "/curate" ? "yellow" : ""}>
+        <Box px="2" bg={router.asPath === "/curate" ? "yellow" : ""}>
           <Link href="/curate">Curate</Link>
         </Box>
       </Flex>
       <Spacer />
       <Flex>
-        <Box px="2" bg={currentPath === "/exchange" ? "yellow" : ""}>
+        <Box px="2" bg={router.asPath === "/exchange" ? "yellow" : ""}>
           <Link href="/exchange">Exchange</Link>
         </Box>
-        <Box px="2" bg={currentPath === "/claim" ? "yellow" : ""}>
+        <Box px="2" bg={router.asPath === "/claim" ? "yellow" : ""}>
           <Link href="/claim">Claim</Link>
         </Box>
-        <Box px="2" border="1px" bg={currentPath === "/connect" ? "yellow" : ""}>
-          <Link href="/connect">Connect</Link>
+        <Box px="2" border="1px" bg={router.asPath.indexOf("/connect") >= 0 ? "yellow" : ""}>
+          {!loading && !errors && !!account && (
+            <Link href="/connected">{formatAddress(account)}</Link>
+          )}
+          {!loading && !account && <Link href="/connect">Connect</Link>}
         </Box>
         <Box width={`${LOGO_HEIGHT}px`} />
       </Flex>

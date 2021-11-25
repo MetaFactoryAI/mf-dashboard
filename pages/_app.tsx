@@ -5,6 +5,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 
 import customTheme from "@/styles/theme";
 import Layout from "@/components/layout";
+import { Web3ContextProvider } from "@/contexts/Web3Context";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -27,9 +28,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="preload" href="/fonts/188 Sans-Regular.otf" as="font" crossOrigin="" />
         <link rel="preload" href="/fonts/188 Sans-Thin Condensed.otf" as="font" crossOrigin="" />
       </Head>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <Web3ContextProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </Web3ContextProvider>
     </ChakraProvider>
   );
 }

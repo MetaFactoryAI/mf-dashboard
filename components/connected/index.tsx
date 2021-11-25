@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Center } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useWeb3Context } from "@/contexts/Web3Context";
@@ -13,7 +14,7 @@ const Connect: NextPage = () => {
     }
   }, [account, router, loading, errors]);
 
-  return <div>CONNECTED</div>;
+  return <Center>CONNECTED</Center>;
 };
 
 export default Connect;

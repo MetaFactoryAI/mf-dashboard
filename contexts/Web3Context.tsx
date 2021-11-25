@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useCallback, useState } from "react";
+import React, { createContext, useContext, useCallback, useState, useEffect } from "react";
 import Web3 from "web3";
 import Web3Modal, { IProviderOptions } from "web3modal";
 import { ethers } from "ethers";
@@ -64,6 +64,17 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    if (window.ethereum) window.ethereum.autoRefreshOnNetworkChange = false;
+
+    if (web3Modal && web3Modal.cachedProvider) {
+      connectWeb3();
+    } else {
+      setLoading(false);
+    }
+  }, [connectWeb3]);
 
   return (
     <Web3Context.Provider

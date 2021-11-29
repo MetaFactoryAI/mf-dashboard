@@ -1,11 +1,16 @@
+import Image from "next/image";
 import React from "react";
-import { Center } from "@chakra-ui/layout";
-import { LOGO_HEIGHT } from "@/utils/constants";
+import { HStack, Box } from "@chakra-ui/react";
 
 const Footer: React.FC = () => (
-  <Center height={`${LOGO_HEIGHT}px`} bg="black">
-    FOOTER
-  </Center>
+  <HStack bg="black" justify="end" color="white">
+    <Box px="24px" fontSize="18px">
+      <a href="https://www.metafactory.ai/">Help</a>
+    </Box>
+    <Box p="15px">
+      <Image src="/footer-icon.svg" alt="" width="36" height="36" />
+    </Box>
+  </HStack>
 );
 
 export default Footer;

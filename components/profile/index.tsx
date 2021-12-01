@@ -4,7 +4,8 @@ import Head from "next/head";
 import React from "react";
 import { GraphChart, PieChart } from "@/components/atoms";
 
-const Home: NextPage = () => {
+const Home: NextPage = (props) => {
+  const { distributions } = props;
   const sampleDate = new Date();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const graphChartData = [
@@ -35,7 +36,7 @@ const Home: NextPage = () => {
 
   return (
     <div>
-      <Head>
+      <Head>{console.log(distributions)}
         <title>MetaFactory - Dashboard</title>
         <meta name="description" content="MetaFactory Dashboard" />
       </Head>

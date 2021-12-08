@@ -19,7 +19,6 @@ const Connect: NextPage = () => {
         "0x77c845E6A61F37cB7B237de90a74fbc3679FcF06": "2.0",
       };
 
-
       const redeem = MerkleRedeem__factory.connect(MERKLE_REDEEM_CONTRACT, provider.getSigner());
       const merkleTree = loadTree(testBalances);
       const merkleProof = merkleTree.getHexProof(

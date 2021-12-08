@@ -4,7 +4,7 @@ import Head from "next/head";
 import React from "react";
 import { GraphChart, PieChart } from "@/components/atoms";
 
-const Home: NextPage = (props) => {
+const Profile: NextPage = (props) => {
   const { distributions } = props;
   const sampleDate = new Date();
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -48,4 +48,4 @@ const Home: NextPage = (props) => {
   );
 };
 
-export default Home;
+export default Profile;

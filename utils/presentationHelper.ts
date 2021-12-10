@@ -1,5 +1,31 @@
+/* eslint-disable no-underscore-dangle */
 import { BigNumber } from "@ethersproject/bignumber";
 import { formatUnits } from "@ethersproject/units";
+import { ClaimedEvent } from "types/ethers-contracts/MerkleRedeem";
+import { ethers } from "ethers";
+
+export const formatClaimsEventData = async (claims: ClaimedEvent[]) =>
+  Promise.all(
+    claims.map((claim) =>
+      claim.getBlock().then((block) => {
+        const dateFormatOptions = {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+        };
+        const blockDateTime = new Date(block.timestamp * 1000);
+        // @ts-ignore
+        const blockDateTimeFormat = new Intl.DateTimeFormat("en-GB", dateFormatOptions);
+
+        return {
+          avatarSrc: "/avatar-default.svg",
+          address: formatAddress(claim.args._claimant),
+          date: blockDateTimeFormat.format(blockDateTime),
+          amount: Number(ethers.utils.formatEther(claim.args._balance)).toFixed(3),
+        };
+      }),
+    ),
+  );
 
 export const formatAddress = (
   address: string | null | undefined,
@@ -12,7 +38,8 @@ export const formatAddress = (
   return "";
 };
 
-export const formatNumber = (number: number): string => number.toLocaleString(undefined, {
+export const formatNumber = (number: number): string =>
+  number.toLocaleString(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   });

@@ -875,6 +875,13 @@
   dependencies:
     "@chakra-ui/utils" "1.8.3"
 
+"@chakra-ui/table@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/table/-/table-1.3.1.tgz#a66cc8d1c579d1ebd16aadef5043ab8025c82519"
+  integrity sha512-+ia/7zs7AGj01lon301EEx+mK4918yGc0K6e68Kxomex8tnxkwbskFWs6hX+6Kzbj56ZBm99eLlKpo2iGYX0HA==
+  dependencies:
+    "@chakra-ui/utils" "1.9.1"
+
 "@chakra-ui/tabs@1.5.6":
   version "1.5.6"
   resolved "https://registry.npmjs.org/@chakra-ui/tabs/-/tabs-1.5.6.tgz"
@@ -965,6 +972,16 @@
   version "1.8.4"
   resolved "https://registry.npmjs.org/@chakra-ui/utils/-/utils-1.8.4.tgz"
   integrity sha512-lMk+FD70zgI8Fn6Ee5h6T2FJdJLnYIYaRQI+Au5izjl8e3V2OZ/Tdi72LW9FnHlQyFZ5N24HGefZlNxOEDUjmw==
+  dependencies:
+    "@types/lodash.mergewith" "4.6.6"
+    css-box-model "1.2.1"
+    framesync "5.3.0"
+    lodash.mergewith "4.6.2"
+
+"@chakra-ui/utils@1.9.1":
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/utils/-/utils-1.9.1.tgz#e34bf74f9f6048da1ec2a5728db4cc80d0158e0e"
+  integrity sha512-Tue8JfpzOqeHd8vSqAnX1l/Y3Gg456+BXFP/TH6mCIeqMAMbrvv25vDskds0wlXRjMYdmpqHxCEzkalFrscGHA==
   dependencies:
     "@types/lodash.mergewith" "4.6.6"
     css-box-model "1.2.1"
@@ -4172,6 +4189,13 @@ eth-sig-util@^1.4.2:
     ethereumjs-abi "git+https://github.com/ethereumjs/ethereumjs-abi.git"
     ethereumjs-util "^5.1.1"
 
+ethereum-block-by-date@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/ethereum-block-by-date/-/ethereum-block-by-date-1.4.2.tgz#ff7ee7c97db89a983a15c2f651a137ba5a0a1af9"
+  integrity sha512-nSib8vMu5diAn+pI7KZ3qadw5vkyM19slBDGG97F6WWOuOOaXg9AyJfe7GhcqJRW6VIoEhu0gwUdsURS+r492w==
+  dependencies:
+    moment "^2.29.1"
+
 ethereum-bloom-filters@^1.0.6:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/ethereum-bloom-filters/-/ethereum-bloom-filters-1.0.10.tgz#3ca07f4aed698e75bd134584850260246a5fed8a"
@@ -5897,6 +5921,11 @@ mock-fs@^4.1.0:
   resolved "https://registry.yarnpkg.com/mock-fs/-/mock-fs-4.14.0.tgz#ce5124d2c601421255985e6e94da80a7357b1b18"
   integrity sha512-qYvlv/exQ4+svI3UOvPUpLDF0OMX5euvUH0Ny4N5QyRyhNdgAgUrVH3iUINSzEPLvx0kbo/Bp28GJKIqvE7URw==
 
+moment@^2.29.1:
+  version "2.29.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
+  integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
+
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/ms/-/ms-2.0.0.tgz"
@@ -6830,6 +6859,11 @@ react-style-singleton@^2.1.0:
     get-nonce "^1.0.0"
     invariant "^2.2.4"
     tslib "^1.0.0"
+
+react-table@^7.7.0:
+  version "7.7.0"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-7.7.0.tgz#e2ce14d7fe3a559f7444e9ecfe8231ea8373f912"
+  integrity sha512-jBlj70iBwOTvvImsU9t01LjFjy4sXEtclBovl3mTiqjz23Reu0DKnRza4zlLtOPACx6j2/7MrQIthIK1Wi+LIA==
 
 react-use-measure@^2.0.4:
   version "2.0.4"

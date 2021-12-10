@@ -4,9 +4,13 @@ import Web3Modal, { IProviderOptions } from "web3modal";
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const EthDater = require("ethereum-block-by-date");
+
 type Web3ContextType = {
   account: null | string;
   provider: null | ethers.providers.Web3Provider;
+  dater: null | unknown;
   errors: unknown;
 };
 
@@ -33,15 +37,17 @@ const Web3Context = createContext<Web3ContextType & { loading: boolean; connectW
   errors: null,
   account: null,
   provider: null,
+  dater: null,
   loading: false,
   connectWeb3: () => null,
 });
 
 export const Web3ContextProvider: React.FC = ({ children }) => {
   const [loading, setLoading] = useState(false);
-  const [{ account, provider, errors }, setWeb3State] = useState<Web3ContextType>({
+  const [{ account, provider, dater, errors }, setWeb3State] = useState<Web3ContextType>({
     account: null,
     provider: null,
+    dater: null,
     errors: null,
   });
 
@@ -52,14 +58,19 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
         .currentProvider as ethers.providers.ExternalProvider;
       const currentprovider = new ethers.providers.Web3Provider(web3Provider);
       const currentAccount = await currentprovider.getSigner().getAddress();
-
+      const currentDater = new EthDater(currentprovider);
       web3ModalInstance.on("accountsChanged", async (newAcc: string[]) =>
         setWeb3State((prev) => ({ ...prev, account: newAcc[0] })),
       );
 
-      setWeb3State({ provider: currentprovider, account: currentAccount, errors: null });
+      setWeb3State({
+        provider: currentprovider,
+        account: currentAccount,
+        dater: currentDater,
+        errors: null,
+      });
     } catch (e) {
-      setWeb3State({ provider: null, account: null, errors: e });
+      setWeb3State({ provider: null, account: null, dater: null, errors: e });
     } finally {
       setLoading(false);
     }
@@ -82,6 +93,7 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
         errors,
         account,
         provider,
+        dater,
         loading,
         connectWeb3,
       }}

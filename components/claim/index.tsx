@@ -5,12 +5,13 @@ import type { NextPage } from "next";
 import { MerkleRedeem__factory } from "types/ethers-contracts";
 import { MERKLE_REDEEM_CONTRACT } from "@/utils/constants";
 import { useWeb3Context } from "@/contexts/Web3Context";
-import { Table } from "@/components/atoms";
+import { Table, Loading } from "@/components/atoms";
 import { formatClaimsEventData } from "@/utils/presentationHelper";
 
 const Claim: NextPage = () => {
-  const { loading, provider, dater } = useWeb3Context();
+  const { provider, dater } = useWeb3Context();
   const [claims, setClaims] = useState<{ address: string; amount: string }[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchClaimHistory = async () => {
@@ -24,12 +25,14 @@ const Claim: NextPage = () => {
         const fetchedClaims = await redeem.queryFilter(claimedFilter, startBlock, endBlock);
         const normalizedClaims = await formatClaimsEventData(fetchedClaims);
 
+        setLoading(false);
         setClaims(normalizedClaims);
       }
     };
 
+    setLoading(true);
     fetchClaimHistory();
-  }, [loading, provider, dater]);
+  }, [provider, dater, setLoading]);
 
   const tableColumns = React.useMemo(
     () => [
@@ -69,15 +72,18 @@ const Claim: NextPage = () => {
 
   return (
     <Box mt="80px" mr="80px" mb="80px">
-      <Table
-        // @ts-ignore
-        columns={tableColumns}
-        title="Distributions History"
-        data={claims || []}
-        initialState={{
-          pageSize: 10,
-        }}
-      />
+      {loading && <Loading />}
+      {!loading && (
+        <Table
+          // @ts-ignore
+          columns={tableColumns}
+          title="Distributions History"
+          data={claims || []}
+          initialState={{
+            pageSize: 10,
+          }}
+        />
+      )}
     </Box>
   );
 };

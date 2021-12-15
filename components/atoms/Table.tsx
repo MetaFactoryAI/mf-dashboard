@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
-import { Text, HStack, Button, Box, Center, Flex, Spacer } from "@chakra-ui/react";
+import { Text, HStack, Button, Box, Center } from "@chakra-ui/react";
 import { Table as ChakraTable, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/table";
 import Image from "next/image";
 
@@ -11,7 +11,7 @@ const { useTable, usePagination } = require("react-table");
 const defaultPropGetter = () => ({});
 
 // @ts-ignore
-const Table: React.FC = ({ data, columns, initialState, title }) => {
+const Table: React.FC = ({ data, columns, initialState, ...props }) => {
   const {
     getTableProps = defaultPropGetter,
     getTableBodyProps = defaultPropGetter,
@@ -35,23 +35,7 @@ const Table: React.FC = ({ data, columns, initialState, title }) => {
   );
 
   return (
-    <Box>
-      <Flex flex="1" flexDirection="row">
-        <Text
-          borderBottom="none"
-          borderTop="2px"
-          borderRight="2px"
-          borderLeft="2px"
-          px="10px"
-          py="2px"
-          fontWeight="400"
-          fontSize="18px"
-        >
-          {title}
-        </Text>
-        <Spacer />
-      </Flex>
-
+    <Box {...props}>
       <ChakraTable {...getTableProps()} variant="unstyled" cellSpacing="0" cellPadding="0">
         <Thead>
           {/* @ts-ignore */}
@@ -64,7 +48,6 @@ const Table: React.FC = ({ data, columns, initialState, title }) => {
                   fontSize="12"
                   fontFamily="body_regular"
                   {...column.getHeaderProps()}
-                  borderTop="2px"
                 >
                   {column.render("Header")}
                 </Th>
@@ -78,7 +61,7 @@ const Table: React.FC = ({ data, columns, initialState, title }) => {
             prepareRow(row);
             return (
               // eslint-disable-next-line react/no-array-index-key
-              <Tr {...row.getRowProps()} key={`table_row_${_i}`} border="2px">
+              <Tr {...row.getRowProps()} key={`table_row_${_i}`} border="2px" height="76px">
                 {/* @ts-ignore */}
                 {row.cells.map((cell) => (
                   // eslint-disable-next-line react/no-array-index-key

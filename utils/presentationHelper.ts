@@ -1,5 +1,52 @@
+/* eslint-disable no-underscore-dangle */
 import { BigNumber } from "@ethersproject/bignumber";
 import { formatUnits } from "@ethersproject/units";
+import { ClaimedEvent } from "types/ethers-contracts/MerkleRedeem";
+import { ethers } from "ethers";
+import moment from "moment";
+import type { ChartData } from "@/components/atoms/YearlyBarChart";
+
+export const formatClaimsEventData = async (claims: ClaimedEvent[]) =>
+  Promise.all(
+    claims.map((claim) =>
+      claim.getBlock().then((block) => {
+        const dateFormatOptions = {
+          year: "numeric",
+          month: "numeric",
+        };
+        const blockDateTime = new Date(block.timestamp * 1000);
+        // @ts-ignore
+        const blockDateTimeFormat = new Intl.DateTimeFormat("en-GB", dateFormatOptions);
+
+        return {
+          avatarSrc: "/avatar-default.svg",
+          address: formatAddress(claim.args._claimant),
+          date: blockDateTimeFormat.format(blockDateTime),
+          amount: Number(ethers.utils.formatEther(claim.args._balance)).toFixed(2),
+        };
+      }),
+    ),
+  );
+
+// @ts-ignore
+export const formatMonthlyClaimsEventData = (claims): ChartData[] => {
+  // @ts-ignore
+  const reducedClaims = claims.reduce((sum, claim) => {
+    const previousSum = sum[claim.date] ? Number(sum[claim.date]) : 0;
+    const currentSum = previousSum + Number(claim.amount);
+
+    // eslint-disable-next-line no-param-reassign
+    sum[claim.date] = currentSum;
+
+    return sum;
+  }, {});
+
+  return Object.keys(reducedClaims).map((claimKey) => ({
+    key: `yearlyBarChartData${claimKey}`,
+    value: reducedClaims[claimKey].toFixed(1),
+    date: moment(claimKey, ["MM/YYYY"]).valueOf(),
+  }));
+};
 
 export const formatAddress = (
   address: string | null | undefined,
@@ -12,7 +59,8 @@ export const formatAddress = (
   return "";
 };
 
-export const formatNumber = (number: number): string => number.toLocaleString(undefined, {
+export const formatNumber = (number: number): string =>
+  number.toLocaleString(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   });

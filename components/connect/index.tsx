@@ -79,7 +79,8 @@ const Connect: NextPage = () => {
         textAlign="center"
         width={MEX_WIDTH}
         fontSize="32px"
-        fontFamily="body2"
+        fontFamily="body_bold"
+        fontWeight="800"
       >
         Please connect your wallet to continue
       </Text>

@@ -32,11 +32,14 @@
         "tsx": "never"
       }
     ],
+    "@typescript-eslint/ban-ts-comment": "off",
+    "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
         "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_"
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
       }
     ]
   }

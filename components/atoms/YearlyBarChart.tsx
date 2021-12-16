@@ -199,7 +199,7 @@ const YearlyBarChart: FC<{
         <div>
           <TooltipWithBounds
             key={Math.random()}
-            top={tooltipTop - BOTTOM_BASE}
+            top={tooltipTop - BOTTOM_BASE - 100}
             left={tooltipLeft}
             style={{ position: "absolute", pointerEvents: "none" }}
           >

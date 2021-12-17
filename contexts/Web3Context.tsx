@@ -20,7 +20,7 @@ const providerOptions: IProviderOptions = {
     package: WalletConnectProvider,
     options: {
       rpc: {
-        1: "https://rinkeby.infura.io/v3/a2eae6b8a91442c8a6e3fe5e8c4ef4bd",
+        1: "https://mainnet.infura.io/v3/a2eae6b8a91442c8a6e3fe5e8c4ef4bd",
       },
     },
   },

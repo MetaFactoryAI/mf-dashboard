@@ -1,8 +1,11 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
-import { Text, HStack, Button, Box, Center } from "@chakra-ui/react";
-import { Table as ChakraTable, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/table";
+import { Text, Button, Box, Center, useBreakpointValue, Flex } from "@chakra-ui/react";
+import { Table as ChakraTable, Tbody, Th, Thead, Tr } from "@chakra-ui/table";
 import Image from "next/image";
+import BigTableRow from "./BigTableRow";
+import SmallTableRow from "./SmallTableRow";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { useTable, usePagination } = require("react-table");
@@ -33,59 +36,59 @@ const Table: React.FC = ({ data, columns, initialState, ...props }) => {
     },
     usePagination,
   );
+  const BIG_SCREEN = "bigScreen";
+  const currentScreenSize = useBreakpointValue({
+    base: "smallScreen",
+    sm: "smallScreen",
+    md: BIG_SCREEN,
+    lg: BIG_SCREEN,
+  });
+  const isBigScreen = currentScreenSize === BIG_SCREEN;
 
   return (
     <Box {...props}>
       <ChakraTable {...getTableProps()} variant="unstyled" cellSpacing="0" cellPadding="0">
-        <Thead>
-          {/* @ts-ignore */}
-          {headerGroups.map((headerGroup) => (
-            <Tr {...headerGroup.getHeaderGroupProps()}>
-              {/* @ts-ignore */}
-              {headerGroup.headers.map((column) => (
-                <Th
-                  textTransform="capitalize"
-                  fontSize="12"
-                  fontFamily="body_regular"
-                  {...column.getHeaderProps()}
-                >
-                  {column.render("Header")}
-                </Th>
-              ))}
-            </Tr>
-          ))}
-        </Thead>
+        {isBigScreen && (
+          <Thead>
+            {/* @ts-ignore */}
+            {headerGroups.map((headerGroup) => (
+              <Tr {...headerGroup.getHeaderGroupProps()}>
+                {/* @ts-ignore */}
+                {headerGroup.headers.map((column) => (
+                  <Th
+                    textTransform="capitalize"
+                    fontSize="12"
+                    fontFamily="body_regular"
+                    {...column.getHeaderProps()}
+                  >
+                    {column.render("Header")}
+                  </Th>
+                ))}
+              </Tr>
+            ))}
+          </Thead>
+        )}
         <Tbody {...getTableBodyProps()} border="none">
           {/* @ts-ignore */}
-          {page.map((row, _i) => {
+          {page.map((row, i) => {
             prepareRow(row);
+
             return (
-              // eslint-disable-next-line react/no-array-index-key
-              <Tr {...row.getRowProps()} key={`table_row_${_i}`} border="2px" height="76px">
+              <Tr {...row.getRowProps()} key={`table_row_${i}`} border="2px" height="76px">
                 {/* @ts-ignore */}
-                {row.cells.map((cell) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <Td {...cell.column.style} key={`table_row_${_i}_${cell.value}`}>
-                    {cell.column.id === "address" && (
-                      <HStack>
-                        <Image
-                          src={cell.row.original.avatarSrc}
-                          alt=""
-                          width="40px"
-                          height="40px"
-                        />
-                        <Text>{cell.render("Cell")}</Text>
-                      </HStack>
-                    )}
-                    {cell.column.id !== "address" && cell.render("Cell")}
-                  </Td>
-                ))}
+                {isBigScreen && <BigTableRow row={row} index={i} />}
+                {/* @ts-ignore */}
+                {!isBigScreen && <SmallTableRow row={row} index={i} />}
+                {/* @ts-ignore */}
               </Tr>
             );
           })}
         </Tbody>
-        <Box mx="100%" mt="20px">
-          <HStack>
+        <Box mt="20px" mx={{ md: "100%", lg: "100%" }} width="100%">
+          <Flex
+            justifyContent={{ base: "center ", sm: "center", md: "start", lg: "start" }}
+            alignItems="center"
+          >
             <Button
               _focus={{ boxShadow: "none" }}
               onClick={() => previousPage()}
@@ -97,7 +100,7 @@ const Table: React.FC = ({ data, columns, initialState, ...props }) => {
             <Center border="1px" height="40px" minWidth="40px">
               <Text>{pageIndex + 1}</Text>
             </Center>
-            <Text>of&nbsp;{pageOptions.length}</Text>
+            <Text p="10px">of&nbsp;{pageOptions.length}</Text>
             <Button
               _focus={{ boxShadow: "none" }}
               onClick={() => nextPage()}
@@ -106,7 +109,7 @@ const Table: React.FC = ({ data, columns, initialState, ...props }) => {
             >
               <Image src="/table-paging-right.svg" alt="" width="40px" height="40px" />
             </Button>
-          </HStack>
+          </Flex>
         </Box>
       </ChakraTable>
     </Box>

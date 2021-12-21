@@ -1,11 +1,12 @@
 /* eslint-disable camelcase */
-import { Box, Grid, GridItem, Text, Center } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Text, Flex } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { MerkleRedeem__factory } from "types/ethers-contracts";
 import { MERKLE_REDEEM_CONTRACT } from "@/utils/constants";
 import { useWeb3Context } from "@/contexts/Web3Context";
-import { Table, Loading, YearlyBarChart } from "@/components/atoms";
+import { Loading, YearlyBarChart } from "@/components/atoms";
+import Table from "@/components/table";
 import { formatClaimsEventData, formatMonthlyClaimsEventData } from "@/utils/presentationHelper";
 import type { ChartData } from "@/components/atoms/YearlyBarChart";
 import { generateYearsUntilToday } from "@/utils/time";
@@ -50,7 +51,8 @@ const Claim: NextPage = () => {
         style: {
           fontSize: "18px",
           fontWeight: "400",
-          width: "40%",
+          width: { md: "40%", lg: "40%" },
+          minWidth: { md: "210px", lg: "210px" },
         },
       },
       {
@@ -89,8 +91,8 @@ const Claim: NextPage = () => {
             yearSelectedCallback={setYear}
           />
           <Grid templateColumns="repeat(10, 1fr)" width="100%">
-            <GridItem colSpan={7}>
-              <Center>
+            <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
+              <Flex justifyContent={{ base: "start ", sm: "start", md: "center", lg: "center" }}>
                 <Text
                   borderBottom="2px"
                   borderTop="2px"
@@ -103,7 +105,7 @@ const Claim: NextPage = () => {
                 >
                   Distributions History
                 </Text>
-              </Center>
+              </Flex>
               <Table
                 // @ts-ignore
                 columns={tableColumns}
@@ -113,7 +115,7 @@ const Claim: NextPage = () => {
                 }}
               />
             </GridItem>
-            <GridItem colSpan={3}>
+            <GridItem colSpan={{ base: 10, sm: 10, md: 3, lg: 3 }}>
               <Text>TEST</Text>
             </GridItem>
           </Grid>

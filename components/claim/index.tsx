@@ -83,14 +83,22 @@ const Claim: NextPage = () => {
       {loading && <Loading />}
       {!loading && (
         <Box>
-          <YearlyBarChart
-            chartData={monthlyClaims}
-            title="Distributions"
-            startYear={year}
-            years={generateYearsUntilToday(START_YEAR)}
-            yearSelectedCallback={setYear}
-          />
+          <Box border={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}>
+            <YearlyBarChart
+              chartData={monthlyClaims}
+              title="Distributions"
+              startYear={year}
+              years={generateYearsUntilToday(START_YEAR)}
+              yearSelectedCallback={setYear}
+            />
+          </Box>
           <Grid templateColumns="repeat(10, 1fr)" width="100%">
+            <GridItem
+              colSpan={{ base: 10, sm: 10 }}
+              display={{ base: "block", sm: "block", md: "none", lg: "none" }}
+            >
+              <Text>TEST</Text>
+            </GridItem>
             <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
               <Flex justifyContent={{ base: "start ", sm: "start", md: "center", lg: "center" }}>
                 <Text
@@ -115,7 +123,10 @@ const Claim: NextPage = () => {
                 }}
               />
             </GridItem>
-            <GridItem colSpan={{ base: 10, sm: 10, md: 3, lg: 3 }}>
+            <GridItem
+              colSpan={{ md: 3, lg: 3 }}
+              display={{ base: "none", sm: "none", md: "block", lg: "block" }}
+            >
               <Text>TEST</Text>
             </GridItem>
           </Grid>

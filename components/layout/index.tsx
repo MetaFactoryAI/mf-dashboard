@@ -10,8 +10,8 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => (
     <Flex
       flex="1"
       flexDirection="column"
-      mx={`${LOGO_HEIGHT}px`}
-      border="2px"
+      mx={{ base: "24px", sm: "24px", md: `${LOGO_HEIGHT}px`, lg: `${LOGO_HEIGHT}px` }}
+      border={{ base: "0px", sm: "00px", md: "2px", lg: "2px" }}
       marginBlockEnd="20px"
     >
       <Spacer />

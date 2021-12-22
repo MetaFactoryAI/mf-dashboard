@@ -1,11 +1,12 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
-import { Text, Button, Box, Center, useBreakpointValue, Flex } from "@chakra-ui/react";
+import { Text, Button, Box, Center, Flex } from "@chakra-ui/react";
 import { Table as ChakraTable, Tbody, Th, Thead, Tr } from "@chakra-ui/table";
 import Image from "next/image";
 import BigTableRow from "./BigTableRow";
 import SmallTableRow from "./SmallTableRow";
+import useChakraBreakpoints from "@/utils/useChakraBreakpoints";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { useTable, usePagination } = require("react-table");
@@ -36,19 +37,13 @@ const Table: React.FC = ({ data, columns, initialState, ...props }) => {
     },
     usePagination,
   );
-  const BIG_SCREEN = "bigScreen";
-  const currentScreenSize = useBreakpointValue({
-    base: "smallScreen",
-    sm: "smallScreen",
-    md: BIG_SCREEN,
-    lg: BIG_SCREEN,
-  });
-  const isBigScreen = currentScreenSize === BIG_SCREEN;
+
+  const { isDesktopScreen } = useChakraBreakpoints();
 
   return (
     <Box {...props}>
       <ChakraTable {...getTableProps()} variant="unstyled" cellSpacing="0" cellPadding="0">
-        {isBigScreen && (
+        {isDesktopScreen && (
           <Thead>
             {/* @ts-ignore */}
             {headerGroups.map((headerGroup) => (
@@ -76,9 +71,9 @@ const Table: React.FC = ({ data, columns, initialState, ...props }) => {
             return (
               <Tr {...row.getRowProps()} key={`table_row_${i}`} border="2px" height="76px">
                 {/* @ts-ignore */}
-                {isBigScreen && <BigTableRow row={row} index={i} />}
+                {isDesktopScreen && <BigTableRow row={row} index={i} />}
                 {/* @ts-ignore */}
-                {!isBigScreen && <SmallTableRow row={row} index={i} />}
+                {!isDesktopScreen && <SmallTableRow row={row} index={i} />}
                 {/* @ts-ignore */}
               </Tr>
             );

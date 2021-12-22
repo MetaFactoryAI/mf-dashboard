@@ -1,4 +1,4 @@
-import { Box, Text, Button } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { timeFormat } from "d3-time-format";
 import { Bar } from "@visx/shape";
 import { scaleLinear, scaleTime } from "@visx/scale";

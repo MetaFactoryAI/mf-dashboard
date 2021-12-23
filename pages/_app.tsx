@@ -2,12 +2,29 @@ import "@/styles/globals.css";
 import Head from "next/head";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
+import { useRouter } from "next/router";
 import customTheme from "@/styles/theme";
 import Layout from "@/components/layout";
 import { Web3ContextProvider } from "@/contexts/Web3Context";
+import { Loading } from "@/components/atoms";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const [routerIsLoading, setRouterIsLoading] = useState(false);
+
+  useEffect(() => {
+    const handleStart = (url) => {
+      url !== router.pathname ? setRouterIsLoading(true) : setRouterIsLoading(false);
+    };
+    const handleComplete = (_url) => setRouterIsLoading(false);
+
+    router.events.on("routeChangeStart", handleStart);
+    router.events.on("routeChangeComplete", handleComplete);
+    router.events.on("routeChangeError", handleComplete);
+  }, [router]);
+
   return (
     <ChakraProvider theme={customTheme}>
       <Head>
@@ -30,7 +47,8 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <Web3ContextProvider>
         <Layout>
-          <Component {...pageProps} />
+          {routerIsLoading && <Loading />}
+          {!routerIsLoading && <Component {...pageProps} />}
         </Layout>
       </Web3ContextProvider>
     </ChakraProvider>

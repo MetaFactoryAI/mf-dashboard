@@ -1,4 +1,4 @@
-import { Box, Text, Button } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { timeFormat } from "d3-time-format";
 import { Bar } from "@visx/shape";
 import { scaleLinear, scaleTime } from "@visx/scale";
@@ -8,6 +8,8 @@ import { useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
 import useResize from "hooks/useResize";
 import { AxisBottom } from "@visx/axis";
+import useChakraBreakpoints from "@/utils/useChakraBreakpoints";
+import SelectButtons from "./chart/SelectButtons";
 
 export type ChartData = {
   key: string;
@@ -17,6 +19,8 @@ export type ChartData = {
 
 const BOTTOM_BASE = 30;
 const TOP_BASE = 70;
+const DESKTOP_RATIO = 0.246;
+const MOBILE_RATIO = 1.147;
 
 const YearlyBarChart: FC<{
   chartData: Array<ChartData>;
@@ -25,11 +29,12 @@ const YearlyBarChart: FC<{
   title: string;
   yearSelectedCallback: (year: number) => void;
 }> = ({ chartData, startYear, years, title, yearSelectedCallback }) => {
+  const { isDesktopScreen } = useChakraBreakpoints();
   const [hoverDate, setHoverDate] = useState<number | null>(null);
   const [barWidth, setBarWidth] = useState<number>(0);
-  const [year, setYear] = useState<number>(startYear);
   const ref = useRef(null);
-  const { width, height } = useResize(ref, 0.246);
+  const currentRatio = isDesktopScreen ? DESKTOP_RATIO : MOBILE_RATIO;
+  const { width, height } = useResize(ref, currentRatio);
   const format = timeFormat("%B / %Y");
   // @ts-ignore
   const formatDate = (date: number) => format(new Date(date)) as Date;
@@ -56,11 +61,6 @@ const YearlyBarChart: FC<{
   const hideHover = () => {
     hideTooltip();
     setHoverDate(null);
-  };
-
-  const handleYearClick = (currentYear: number) => {
-    setYear(currentYear);
-    yearSelectedCallback(currentYear);
   };
 
   const xScale = useMemo(
@@ -116,32 +116,31 @@ const YearlyBarChart: FC<{
           p="18px"
           fontFamily="body_bold"
           fontWeight="800"
-          fontSize="28px"
-          zIndex="9999"
+          fontSize={{ base: "24px", sm: "24px", md: "28px", lg: "28px" }}
+          zIndex="8888"
         >
           {title}
         </Text>
+        <Box display={{ base: "block", sm: "block", md: "none", lg: "none" }} zIndex="8888">
+          <SelectButtons
+            // @ts-ignore
+            selectOptions={years}
+            handleOptionClickCallback={yearSelectedCallback}
+            defaultOption={startYear}
+          />
+        </Box>
       </Box>
-      <Box position="absolute" right="0">
-        {years.map((currentYear) => (
-          <Button
-            _focus={{ boxShadow: "none" }}
-            onClick={() => handleYearClick(currentYear)}
-            variant="unstyled"
-            zIndex="9999"
-            key={`yearly_bar_chart_years_buttons_${currentYear}`}
-          >
-            <Text
-              px="13px"
-              py="8px"
-              background={currentYear === year ? "yellow" : "black"}
-              color={currentYear === year ? "black" : "white"}
-              key={`yearly_bar_chart_years_buttons_text_${currentYear}`}
-            >
-              {currentYear}
-            </Text>
-          </Button>
-        ))}
+      <Box
+        position="absolute"
+        right="0"
+        display={{ base: "none", sm: "none", md: "block", lg: "block" }}
+      >
+        <SelectButtons
+          // @ts-ignore
+          selectOptions={years}
+          handleOptionClickCallback={yearSelectedCallback}
+          defaultOption={startYear}
+        />
       </Box>
       <svg width={width} height={height}>
         <defs>
@@ -166,20 +165,22 @@ const YearlyBarChart: FC<{
             />
           );
         })}
-        <AxisBottom
-          top={height - BOTTOM_BASE}
-          scale={xScale}
-          // @ts-ignore
-          tickFormat={formatDate}
-          stroke=""
-          tickStroke="yellow"
-          tickLabelProps={() => ({
-            fill: "black",
-            fontSize: 9,
-            fontWeight: 400,
-            textAnchor: "middle",
-          })}
-        />
+        {isDesktopScreen && (
+          <AxisBottom
+            top={height - BOTTOM_BASE}
+            scale={xScale}
+            // @ts-ignore
+            tickFormat={formatDate}
+            stroke=""
+            tickStroke="yellow"
+            tickLabelProps={() => ({
+              fill: "black",
+              fontSize: 9,
+              fontWeight: 400,
+              textAnchor: "middle",
+            })}
+          />
+        )}
 
         {chartData.length > 0 && (
           <rect
@@ -202,7 +203,7 @@ const YearlyBarChart: FC<{
             left={tooltipLeft}
             style={{ position: "absolute", pointerEvents: "none" }}
           >
-            <Box background="white" border="2px" borderColor="#8B2CFF" p="10px">
+            <Box background="white" border="2px" borderColor="#8B2CFF" p="10px" zIndex="9999">
               <Text fontFamily="body_bold" fontWeight="800" fontSize="24px" color="black">
                 $ROBOT
               </Text>

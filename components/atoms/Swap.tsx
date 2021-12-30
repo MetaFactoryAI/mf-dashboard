@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Box, Button, Flex, HStack, Image, Input, Select, Spacer, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, createIcon, Flex, HStack, IconButton, Image, Input, Select, Spacer, Text, VStack } from "@chakra-ui/react";
+import { HiOutlineSwitchVertical } from 'react-icons/hi';
 
 const Swap: React.FC<{}> = () => {
     const [currency1, setCurrency1] = useState("");
@@ -15,8 +16,9 @@ const Swap: React.FC<{}> = () => {
 
 
     const switchCurrencies = () => {
+        var cur1 = currency1
         setCurrency1(currency2)
-        setCurrency2(currency1)
+        setCurrency2(cur1)
     }
 
     return (
@@ -37,9 +39,7 @@ const Swap: React.FC<{}> = () => {
               <Input h="50px" placeholder={currency1} size='lg' borderRadius={0} />
             </Flex>
             <Spacer />
-            <Button w="40px" h="40px" onClick={() => switchCurrencies}>
-                <Image src="/swap-direction-icon.svg"/>
-            </Button>
+            <IconButton aria-label="Switch Currencies" icon={<HiOutlineSwitchVertical />} onClick={() => switchCurrencies}/>
             <Spacer />
             <Text align="start">Receive</Text>
             <Flex>

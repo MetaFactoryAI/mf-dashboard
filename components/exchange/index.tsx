@@ -30,8 +30,8 @@ const Exchange: NextPage = () => {
   return (
     <Box>
       <HStack>
-      <GraphChart chartData={graphChartData} width={660} />
-      <Swap />
+        <GraphChart chartData={graphChartData} width={660} />
+        <Swap />
       </HStack>
       <Grid>
         // to place mkt cap elements here and place in correct location

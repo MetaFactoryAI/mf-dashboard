@@ -9,6 +9,7 @@ type ChartData = {
   color: string;
 };
 
+// produces warnings connected to this issue https://github.com/airbnb/visx/issues/737
 const PieChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartData, width }) => {
   const [active, setActive] = useState<ChartData | null>(null);
   const {

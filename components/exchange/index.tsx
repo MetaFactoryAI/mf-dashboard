@@ -3,6 +3,7 @@ import { Grid, HStack } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import React from "react";
 import { GraphChart } from "../atoms";
+import MFAbout from "../atoms/MFAbout";
 import Swap from "../atoms/Swap";
 
 const Exchange: NextPage = () => {
@@ -33,6 +34,7 @@ const Exchange: NextPage = () => {
         <GraphChart chartData={graphChartData} width={660} />
         <Swap />
       </HStack>
+      <MFAbout />
       <Grid>
         // to place mkt cap elements here and place in correct location
       </Grid>

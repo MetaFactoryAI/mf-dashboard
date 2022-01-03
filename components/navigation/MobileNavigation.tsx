@@ -10,11 +10,13 @@ import {
   VStack,
   Button,
   Center,
+  Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { formatAddress } from "@/utils/presentationHelper";
+import MobileItem from "./MobileItem";
 
 const MobileNavigation: React.FC = () => {
   const router = useRouter();
@@ -78,26 +80,18 @@ const MobileNavigation: React.FC = () => {
 
       {isOpen && (
         <VStack alignItems="start" width="100%" mt="90px">
-          <Box px="2" bg={router.asPath === "/project" ? "yellow" : ""} width="100%">
-            <Button
-              _focus={{ boxShadow: "none" }}
-              onClick={() => handleRedirect("/project")}
-              variant="unstyled"
-              fontWeight="400"
-            >
-              Project
-            </Button>
-          </Box>
-          <Box px="2" bg={router.asPath === "/robot" ? "yellow" : ""} width="100%">
-            <Button
-              _focus={{ boxShadow: "none" }}
-              onClick={() => handleRedirect("/robot")}
-              variant="unstyled"
-              fontWeight="400"
-            >
-              $Robot
-            </Button>
-          </Box>
+          <MobileItem
+            currentPath={router.asPath}
+            redirectPath="/project"
+            handleRedirect={handleRedirect}
+            label="Project"
+          />
+          <MobileItem
+            currentPath={router.asPath}
+            redirectPath="/robot"
+            handleRedirect={handleRedirect}
+            label="$Robot"
+          />
           <Flex px="2" bg={router.asPath === "/shop" ? "yellow" : ""} width="100%">
             <Center pr="1">
               <Image src="/arrow.svg" alt="" width="10px" height="10px" />
@@ -111,36 +105,24 @@ const MobileNavigation: React.FC = () => {
               Shop
             </Button>
           </Flex>
-          <Box px="2" bg={router.asPath === "/curate" ? "yellow" : ""} width="100%">
-            <Button
-              _focus={{ boxShadow: "none" }}
-              onClick={() => handleRedirect("/curate")}
-              variant="unstyled"
-              fontWeight="400"
-            >
-              Curate
-            </Button>
-          </Box>
-          <Box px="2" bg={router.asPath === "/exchange" ? "yellow" : ""} width="100%">
-            <Button
-              _focus={{ boxShadow: "none" }}
-              onClick={() => handleRedirect("/exchange")}
-              variant="unstyled"
-              fontWeight="400"
-            >
-              Exchange
-            </Button>
-          </Box>
-          <Box px="2" bg={router.asPath === "/claim" ? "yellow" : ""} width="100%">
-            <Button
-              _focus={{ boxShadow: "none" }}
-              onClick={() => handleRedirect("/claim")}
-              variant="unstyled"
-              fontWeight="400"
-            >
-              Claim
-            </Button>
-          </Box>
+          <MobileItem
+            currentPath={router.asPath}
+            redirectPath="/curate"
+            handleRedirect={handleRedirect}
+            label="Curate"
+          />
+          <MobileItem
+            currentPath={router.asPath}
+            redirectPath="/exchange"
+            handleRedirect={handleRedirect}
+            label="Exchange"
+          />
+          <MobileItem
+            currentPath={router.asPath}
+            redirectPath="/claim"
+            handleRedirect={handleRedirect}
+            label="Claim"
+          />
           <Box px="2" bg={router.asPath.indexOf("/connect") >= 0 ? "yellow" : ""} width="100%">
             {!loading && !errors && !!account && (
               <Flex justifyItems="start" alignItems="start">
@@ -152,7 +134,7 @@ const MobileNavigation: React.FC = () => {
                   border="1px"
                   borderRadius="0px"
                 >
-                  {formatAddress(account)}
+                  <Text mx="10px">{formatAddress(account)}</Text>
                 </Button>
               </Flex>
             )}
@@ -162,8 +144,10 @@ const MobileNavigation: React.FC = () => {
                 onClick={() => handleRedirect("/connect")}
                 variant="unstyled"
                 fontWeight="400"
+                border="1px"
+                borderRadius="0px"
               >
-                Connect
+                <Text mx="10px">Connect</Text>
               </Button>
             )}
           </Box>

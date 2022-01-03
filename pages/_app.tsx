@@ -15,10 +15,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [routerIsLoading, setRouterIsLoading] = useState(false);
 
   useEffect(() => {
-    const handleStart = (url) => {
-      url !== router.pathname ? setRouterIsLoading(true) : setRouterIsLoading(false);
+    const handleStart = (url: string) => {
+      if (url !== router.pathname) setRouterIsLoading(true);
+      else setRouterIsLoading(false);
     };
-    const handleComplete = (_url) => setRouterIsLoading(false);
+    const handleComplete = (_url: string) => setRouterIsLoading(false);
 
     router.events.on("routeChangeStart", handleStart);
     router.events.on("routeChangeComplete", handleComplete);

@@ -12,7 +12,7 @@ import type { ChartData } from "@/components/atoms/YearlyBarChart";
 import { generateYearsUntilToday } from "@/utils/time";
 
 const Claim: NextPage = () => {
-  const START_YEAR = 2020;
+  const START_YEAR = 2021;
   const { provider, dater } = useWeb3Context();
   const [claims, setClaims] = useState<{ address: string; amount: string }[]>([]);
   const [monthlyClaims, setMonthlyClaims] = useState<ChartData[]>([]);

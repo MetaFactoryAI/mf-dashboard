@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import Image from "next/image";
 import { Text, Center, VStack } from "@chakra-ui/react";

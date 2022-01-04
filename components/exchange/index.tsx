@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/layout";
-import { Grid, HStack } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import React from "react";
 import { GraphChart } from "../atoms";
@@ -7,7 +7,7 @@ import MFAbout from "../atoms/MFAbout";
 import Swap from "../atoms/Swap";
 
 const Exchange: NextPage = () => {
-  const sampleDate = new Date()
+  const sampleDate = new Date();
   const graphChartData = [
     { key: "TEST", value: 0, date: new Date().setDate(sampleDate.getDate() + 1) },
     { key: "TEST", value: 10, date: new Date().setDate(sampleDate.getDate() + 2) },
@@ -27,7 +27,6 @@ const Exchange: NextPage = () => {
     { key: "TEST3", value: 130, date: new Date().setDate(sampleDate.getDate() + 16) },
   ];
 
-  
   return (
     <Box>
       <HStack>
@@ -35,9 +34,7 @@ const Exchange: NextPage = () => {
         <Swap />
       </HStack>
       <MFAbout />
-      <Grid>
-        // to place mkt cap elements here and place in correct location
-      </Grid>
+      {/* <Grid>to place mkt cap elements here and place in correct location</Grid> */}
     </Box>
   );
 };

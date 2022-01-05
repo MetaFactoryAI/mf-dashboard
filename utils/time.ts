@@ -5,7 +5,7 @@ export const generateYearsUntilToday = (startYear: number) => {
   do {
     years.push(currentDate.getFullYear());
     currentDate = new Date(currentDate.setFullYear(currentDate.getFullYear() + 1));
-  } while (currentDate <= new Date());
+  } while (currentDate.getFullYear() <= new Date().getFullYear());
 
   return years;
 };

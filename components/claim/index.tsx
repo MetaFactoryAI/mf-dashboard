@@ -10,6 +10,7 @@ import Table from "@/components/table";
 import { formatClaimsEventData, formatMonthlyClaimsEventData } from "@/utils/presentationHelper";
 import type { ChartData } from "@/components/atoms/YearlyBarChart";
 import { generateYearsUntilToday } from "@/utils/time";
+import UnclaimedTokens from "../atoms/UnclaimedTokens";
 
 const Claim: NextPage = () => {
   const START_YEAR = 2021;
@@ -97,7 +98,7 @@ const Claim: NextPage = () => {
               colSpan={{ base: 10, sm: 10 }}
               display={{ base: "block", sm: "block", md: "none", lg: "none" }}
             >
-              <Text>TEST</Text>
+              <UnclaimedTokens />
             </GridItem>
             <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
               <Flex justifyContent={{ base: "start ", sm: "start", md: "center", lg: "center" }}>
@@ -127,7 +128,7 @@ const Claim: NextPage = () => {
               colSpan={{ md: 3, lg: 3 }}
               display={{ base: "none", sm: "none", md: "block", lg: "block" }}
             >
-              <Text>TEST</Text>
+              <UnclaimedTokens />
             </GridItem>
           </Grid>
         </Box>

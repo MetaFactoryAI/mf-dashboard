@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
 import { GraphChart, PieChart } from "@/components/atoms";
+import UnclaimedTokens from "../atoms/UnclaimedTokens";
 
 const Home: NextPage = () => {
   const sampleDate = new Date();
@@ -42,6 +43,7 @@ const Home: NextPage = () => {
       <Heading as="h1" textAlign="center">
         <GraphChart chartData={graphChartData} width={660} />
         <PieChart chartData={pieChartData} width={400} />
+        <UnclaimedTokens />
       </Heading>
     </div>
   );

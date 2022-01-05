@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { MerkleRedeem__factory } from "types/ethers-contracts";
 import { ethers } from "ethers";
 import { useWeb3Context } from "@/contexts/Web3Context";
-import loadTree from "@/utils/merkle/loadTree";
+import { loadTree } from "@/utils/merkle/merkleTree";
 import { MERKLE_REDEEM_CONTRACT } from "@/utils/constants";
 
 const Connect: NextPage = () => {

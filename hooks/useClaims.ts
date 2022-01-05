@@ -1,51 +1,42 @@
 import { useState, useEffect } from "react";
-import { IPFS_CLAIMS_SNAPSHOT_URL, MERKLE_REDEEM_CONTRACT } from "@/utils/constants";
-import { get } from "@/utils/ipfsClient";
+// eslint-disable-next-line camelcase
 import { MerkleRedeem__factory } from "types/ethers-contracts";
+import { MERKLE_REDEEM_CONTRACT } from "@/utils/constants";
 import { useWeb3Context } from "@/contexts/Web3Context";
-import { ethers } from "ethers";
-
-interface Report {
-  [address: string]: number;
-}
+import {
+  getClaimWeeks,
+  getUnclaimedWeeksForAddress,
+  getUnclaimedWeeksValues,
+  getUnclaimedTotal,
+  getClaimsWeeksProofs,
+} from "@/utils/claims";
+import type { ClaimWeek } from "@/utils/claims";
 
 const useClaims = () => {
-  const [claimWeeks, setClaimWeeks] = useState<Record<number, Report>>({});
-  const [latestClaimWeek, setLatestClaimWeek] = useState<Report>({});
-  const { loading, account, errors, provider } = useWeb3Context();
-  const getIpfsSnapshot = () => {
-    const url = `https://${IPFS_CLAIMS_SNAPSHOT_URL}`;
-
-    return fetch(url).then((res) => res.json());
-  };
-
+  const [unclaimedTotal, setUnclaimedTotal] = useState(0);
+  const { loading, account, provider } = useWeb3Context();
   useEffect(() => {
     const fetchClaims = async () => {
-      const snapshot = await getIpfsSnapshot();
-      let currentLatestClaimWeek = {};
-      const currentClaimWeeks: Record<number, Report> = {};
-      const latestWeekInSnapshot = Math.max(
-        ...Object.keys(snapshot).map((numStr) => parseInt(numStr, 10)),
-      );
-      if (Object.keys(snapshot).length > 0) {
-        const latestWeekIpfsHash = snapshot[latestWeekInSnapshot.toString()];
-        currentLatestClaimWeek = await get(latestWeekIpfsHash);
-        currentClaimWeeks[latestWeekInSnapshot] = currentLatestClaimWeek;
-      }
-      if (provider && account) {
-        const redeem = MerkleRedeem__factory.connect(MERKLE_REDEEM_CONTRACT, provider.getSigner());
-        const claimStatus = await redeem.claimStatus(account, 1, latestWeekInSnapshot);
-        console.log(claimStatus)
-      }
+      const claimWeeks: Record<number, ClaimWeek> = await getClaimWeeks();
 
-      setClaimWeeks(currentClaimWeeks);
-      setLatestClaimWeek(currentLatestClaimWeek);
+      if (Object.keys(claimWeeks).length < 1) return;
+      if (loading || !provider || !account) return;
+
+      const address = "0xEC3281124d4c2FCA8A88e3076C1E7749CfEcb7F2";
+      const redeem = MerkleRedeem__factory.connect(MERKLE_REDEEM_CONTRACT, provider.getSigner());
+      const unclaimedWeeks = await getUnclaimedWeeksForAddress(redeem, claimWeeks, address);
+      const unclaimedWeeksValues = getUnclaimedWeeksValues(claimWeeks, unclaimedWeeks, address);
+      const claimWeeksProofs = getClaimsWeeksProofs(claimWeeks, unclaimedWeeksValues, address);
+      const result = await redeem.verifyClaim(address, claimWeeksProofs[0][0], claimWeeksProofs[0][1], claimWeeksProofs[0][2]);
+
+      setUnclaimedTotal(getUnclaimedTotal(unclaimedWeeksValues));
+      console.log(result);
     };
 
     fetchClaims();
-  }, []);
+  }, [account, loading, provider]);
 
-  return { claimWeeks, latestClaimWeek };
+  return { unclaimedTotal };
 };
 
 export default useClaims;

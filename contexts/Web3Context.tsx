@@ -15,7 +15,6 @@ type Web3ContextType = {
 };
 
 const providerOptions: IProviderOptions = {
-  // limited only to Rinkeby for now
   walletconnect: {
     package: WalletConnectProvider,
     options: {

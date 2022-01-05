@@ -8,7 +8,7 @@ import { useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
 import useResize from "hooks/useResize";
 import { AxisBottom } from "@visx/axis";
-import useChakraBreakpoints from "@/utils/useChakraBreakpoints";
+import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
 import SelectButtons from "./chart/SelectButtons";
 
 export type ChartData = {

@@ -10,7 +10,7 @@ import Table from "@/components/table";
 import { formatClaimsEventData, formatMonthlyClaimsEventData } from "@/utils/presentationHelper";
 import type { ChartData } from "@/components/atoms/YearlyBarChart";
 import { generateYearsUntilToday } from "@/utils/time";
-import UnclaimedTokens from "../atoms/UnclaimedTokens";
+import UnclaimedTokens from "@/components/atoms/UnclaimedTokens";
 
 const Claim: NextPage = () => {
   const START_YEAR = 2021;

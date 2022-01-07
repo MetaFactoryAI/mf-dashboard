@@ -10,7 +10,6 @@ import {
   VStack,
   Button,
   Center,
-  Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";

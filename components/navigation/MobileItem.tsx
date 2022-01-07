@@ -6,6 +6,7 @@ const MobileItem: React.FC<{
   redirectPath: string;
   handleRedirect: (path: string) => void;
   label: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
 }> = ({ currentPath, redirectPath, handleRedirect, label, ...props }) => (
   <Box px="2" bg={currentPath === redirectPath ? "yellow" : ""} width="100%">

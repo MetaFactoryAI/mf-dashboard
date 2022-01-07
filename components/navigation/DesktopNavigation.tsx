@@ -55,11 +55,10 @@ const DesktopNavigation: React.FC = () => {
         <Box px="2" bg={router.asPath === "/claim" ? "yellow" : ""}>
           <Link href="/claim">Claim</Link>
         </Box>
-        <Box px="2" border="1px" bg={router.asPath.indexOf("/connect") >= 0 ? "yellow" : ""}>
-          {!loading && !errors && !!account && (
-            <Link href="/connected">{formatAddress(account)}</Link>
-          )}
-          {!loading && !account && <Link href="/connect">Connect</Link>}
+        <Box px="2" border="1px" bg={router.asPath === "/profile" ? "yellow" : ""}>
+          <Link href="/profile">
+            {!loading && !errors && !!account ? formatAddress(account) : "Connect"}
+          </Link>
         </Box>
         <Box width={`${LOGO_HEIGHT}px`} />
       </Flex>

@@ -45,11 +45,10 @@ const MobileNavigation: React.FC = () => {
         <Flex>
           {!isOpen && (
             <>
-              <Box px="2" border="1px" bg={router.asPath.indexOf("/connect") >= 0 ? "yellow" : ""}>
-                {!loading && !errors && !!account && (
-                  <Link href="/connected">{formatAddress(account)}</Link>
-                )}
-                {!loading && !account && <Link href="/connect">Connect</Link>}
+              <Box px="2" border="1px" bg={router.asPath.indexOf("/profile") >= 0 ? "yellow" : ""}>
+                <Link href="/profile">
+                  {!loading && !errors && !!account ? formatAddress(account) : "Connect"}
+                </Link>
               </Box>
               <IconButton
                 icon={<HamburgerIcon />}
@@ -123,34 +122,14 @@ const MobileNavigation: React.FC = () => {
             handleRedirect={handleRedirect}
             label="Claim"
           />
-          <Box px="2" bg={router.asPath.indexOf("/connect") >= 0 ? "yellow" : ""} width="100%">
-            {!loading && !errors && !!account && (
-              <Flex justifyItems="start" alignItems="start">
-                <Button
-                  _focus={{ boxShadow: "none" }}
-                  onClick={() => handleRedirect("/connected")}
-                  variant="unstyled"
-                  fontWeight="400"
-                  border="1px"
-                  borderRadius="0px"
-                >
-                  <Text mx="10px">{formatAddress(account)}</Text>
-                </Button>
-              </Flex>
-            )}
-            {!loading && !account && (
-              <Button
-                _focus={{ boxShadow: "none" }}
-                onClick={() => handleRedirect("/connect")}
-                variant="unstyled"
-                fontWeight="400"
-                border="1px"
-                borderRadius="0px"
-              >
-                <Text mx="10px">Connect</Text>
-              </Button>
-            )}
-          </Box>
+          <MobileItem
+            currentPath={router.asPath}
+            redirectPath="/profile"
+            handleRedirect={handleRedirect}
+            label={!loading && !errors && !!account ? formatAddress(account) : "Connect"}
+            border="1px"
+            borderRadius="0px"
+          />
         </VStack>
       )}
     </Box>

@@ -44,7 +44,14 @@ export const getUnclaimedWeeksValues = (claimWeeks, unclaimedWeeks, address) =>
       .filter((report) => unclaimedWeeks.includes(report[0]) && report[1] > 0),
   );
 
-export const getUnclaimedTotal = (unclaimedWeeksValues) => {
+export const getClaimedWeeksValues = (claimWeeks, unclaimedWeeks, address) =>
+  Object.fromEntries(
+    Object.entries(claimWeeks)
+      .map((report) => [report[0], report[1][address] || 0])
+      .filter((report) => !unclaimedWeeks.includes(report[0]) && report[1] > 0),
+  );
+
+export const getWeekValuesTotal = (unclaimedWeeksValues) => {
   const weeks = Object.keys(unclaimedWeeksValues);
 
   return weeks.reduce((sum, week) => sum + unclaimedWeeksValues[week], 0);

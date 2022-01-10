@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 // eslint-disable-next-line camelcase
 import { MerkleRedeem__factory } from "types/ethers-contracts";
+import type { ClaimStruct } from "types/ethers-contracts/MerkleRedeem";
 import { MERKLE_REDEEM_CONTRACT } from "@/utils/constants";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import {
@@ -14,32 +15,57 @@ import {
 import type { ClaimWeek } from "@/utils/claims";
 
 const useClaims = () => {
+  const [claimWeeksProofs, setClaimWeeksProofs] = useState<ClaimStruct[]>([]);
   const [unclaimedTotal, setUnclaimedTotal] = useState(0);
   const [claimedTotal, setClaimedTotal] = useState(0);
   const { loading, account, provider } = useWeb3Context();
+
   useEffect(() => {
-    const fetchClaims = async () => {
+    const getClaimsMetadata = async () => {
       const claimWeeks: Record<number, ClaimWeek> = await getClaimWeeks();
 
       if (Object.keys(claimWeeks).length < 1) return;
       if (loading || !provider || !account) return;
 
-      const address = "0xEC3281124d4c2FCA8A88e3076C1E7749CfEcb7F2";
       const redeem = MerkleRedeem__factory.connect(MERKLE_REDEEM_CONTRACT, provider.getSigner());
-      const unclaimedWeeks = await getUnclaimedWeeksForAddress(redeem, claimWeeks, address);
-      const unclaimedWeeksValues = getUnclaimedWeeksValues(claimWeeks, unclaimedWeeks, address);
-      const claimedWeeksValues = getClaimedWeeksValues(claimWeeks, unclaimedWeeks, address);
-      const claimWeeksProofs = getClaimsWeeksProofs(claimWeeks, unclaimedWeeksValues, address);
-      const result = await redeem.verifyClaim(address, claimWeeksProofs[0][0], claimWeeksProofs[0][1], claimWeeksProofs[0][2]);
+      const unclaimedWeeks = await getUnclaimedWeeksForAddress(redeem, claimWeeks, account);
+      const unclaimedWeeksValues = getUnclaimedWeeksValues(claimWeeks, unclaimedWeeks, account);
+      const claimedWeeksValues = getClaimedWeeksValues(claimWeeks, unclaimedWeeks, account);
+      const calculatedClaimWeeksProofs: ClaimStruct[] = getClaimsWeeksProofs(
+        claimWeeks,
+        unclaimedWeeksValues,
+        account,
+      );
 
+      setClaimWeeksProofs(calculatedClaimWeeksProofs);
       setUnclaimedTotal(getWeekValuesTotal(unclaimedWeeksValues));
       setClaimedTotal(getWeekValuesTotal(claimedWeeksValues));
     };
 
-    fetchClaims();
+    getClaimsMetadata();
   }, [account, loading, provider]);
 
-  return { unclaimedTotal, claimedTotal };
+  const handleClaim = useCallback(() => {
+    const claim = async () => {
+      if (claimWeeksProofs.length < 1) return;
+      if (loading || !provider || !account) return;
+
+      const redeem = MerkleRedeem__factory.connect(MERKLE_REDEEM_CONTRACT, provider.getSigner());
+      // const result = await redeem.verifyClaim(
+      //   account,
+      //   claimWeeksProofs[0].week,
+      //   claimWeeksProofs[0].balance,
+      //   claimWeeksProofs[0].merkleProof,
+      // );
+      // console.log(result);
+
+      await redeem.claimWeeks(account, claimWeeksProofs);
+    };
+
+    claim();
+  }, [account, claimWeeksProofs, loading, provider]);
+
+  return { unclaimedTotal, claimedTotal, handleClaim };
 };
 
 export default useClaims;

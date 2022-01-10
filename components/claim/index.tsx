@@ -11,6 +11,7 @@ import { formatClaimsEventData, formatMonthlyClaimsEventData } from "@/utils/pre
 import type { ChartData } from "@/components/atoms/YearlyBarChart";
 import { generateYearsUntilToday } from "@/utils/time";
 import UnclaimedTokens from "@/components/atoms/UnclaimedTokens";
+import useClaims from "@/hooks/useClaims";
 
 const Claim: NextPage = () => {
   const START_YEAR = 2021;
@@ -18,6 +19,7 @@ const Claim: NextPage = () => {
   const [claims, setClaims] = useState<{ address: string; amount: string }[]>([]);
   const [monthlyClaims, setMonthlyClaims] = useState<ChartData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const { unclaimedTotal, handleClaim } = useClaims();
   // duplicit state with the bar chart - bad practice but cant isloate chart from rest of buttons
   const [year, setYear] = useState<number>(START_YEAR);
 
@@ -98,7 +100,7 @@ const Claim: NextPage = () => {
               colSpan={{ base: 10, sm: 10 }}
               display={{ base: "block", sm: "block", md: "none", lg: "none" }}
             >
-              <UnclaimedTokens />
+              <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
             </GridItem>
             <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
               <Flex justifyContent={{ base: "start ", sm: "start", md: "center", lg: "center" }}>
@@ -128,7 +130,7 @@ const Claim: NextPage = () => {
               colSpan={{ md: 3, lg: 3 }}
               display={{ base: "none", sm: "none", md: "block", lg: "block" }}
             >
-              <UnclaimedTokens />
+              <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
             </GridItem>
           </Grid>
         </Box>

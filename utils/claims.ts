@@ -52,7 +52,7 @@ export const getUnclaimedWeeksValues = (
   Object.fromEntries(
     Object.entries(claimWeeks)
       .map((report) => [report[0], report[1][address] || 0])
-      .filter((report) => unclaimedWeeks.includes(report[0]) && report[1] > 0),
+      .filter((report) => unclaimedWeeks.includes(report[0].toString()) && report[1] > 0),
   );
 
 export const getClaimedWeeksValues = (
@@ -63,32 +63,39 @@ export const getClaimedWeeksValues = (
   Object.fromEntries(
     Object.entries(claimWeeks)
       .map((report) => [report[0], report[1][address] || 0])
-      .filter((report) => !unclaimedWeeks.includes(report[0]) && report[1] > 0),
+      .filter((report) => !unclaimedWeeks.includes(report[0].toString()) && report[1] > 0),
   );
 
-export const getWeekValuesTotal = (unclaimedWeeksValues) => {
+export const getWeekValuesTotal = (unclaimedWeeksValues: { [key: number | string]: string }) => {
   const weeks = Object.keys(unclaimedWeeksValues);
 
-  return weeks.reduce((sum, week) => sum + unclaimedWeeksValues[week], 0);
+  return weeks.reduce(
+    (sum: number, week: number | string) => sum + parseFloat(unclaimedWeeksValues[week]),
+    0,
+  );
 };
 
 export const getClaimsWeeksProofs = (
   claimWeeks: Record<number, ClaimWeek>,
-  unclaimedWeeksValues,
-  address,
+  unclaimedWeeksValues: { [key: number]: string },
+  address: string,
 ) => {
   const weeks = Object.keys(unclaimedWeeksValues);
 
   return weeks.map((week) => {
-    const claimBalance = claimWeeks[week][address];
-    const merkleTree = loadTree(claimWeeks[week]);
+    const weeknumber = parseInt(week, 10);
+    const claimBalance = claimWeeks[weeknumber][address];
+    const merkleTree = loadTree(claimWeeks[weeknumber]);
     const merkleProof = merkleTree.getHexProof(
       ethers.utils.solidityKeccak256(
         ["address", "uint256"],
-        [address, ethers.utils.parseEther(claimBalance)],
+        [address, ethers.utils.parseEther(claimBalance.toString())],
       ),
     );
-
-    return [parseInt(week, 10), ethers.utils.parseEther(claimBalance), merkleProof];
+    return {
+      week: parseInt(week, 10),
+      balance: ethers.utils.parseEther(claimBalance.toString()),
+      merkleProof,
+    };
   });
-}
+};

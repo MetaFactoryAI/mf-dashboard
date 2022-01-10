@@ -2,8 +2,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Shamelessly adapted from OpenZeppelin-contracts test utils
+// @ts-ignore
 import { keccak256, keccakFromString, bufferToHex } from "ethereumjs-util";
 import { hexToBytes, toWei, soliditySha3 } from "web3-utils";
+import type { ClaimWeek } from "../claims";
 
 // Merkle tree called with 32 byte hex values
 export class MerkleTree {
@@ -143,9 +145,10 @@ export class MerkleTree {
   }
 }
 
-export function loadTree(balances) {
+export function loadTree(balances: ClaimWeek) {
   const elements = Object.keys(balances).map((address) => {
-    const balance = toWei(balances[address]);
+    const balance = toWei(balances[address].toString());
+
     return soliditySha3(address, balance) as string;
   });
   return new MerkleTree(elements);

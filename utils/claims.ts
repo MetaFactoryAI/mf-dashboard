@@ -25,7 +25,7 @@ export const getClaimWeeks = async () => {
 
 export const getUnclaimedWeeksForAddress = async (
   redeemContract: MerkleRedeem,
-  claimWeeks: string[],
+  claimWeeks: Record<number, ClaimWeek>,
   address: string,
 ) => {
   const latestWeek = Math.max(...Object.keys(claimWeeks).map((numStr) => parseInt(numStr, 10)));
@@ -45,7 +45,7 @@ export const getIpfsSnapshot = () => {
 };
 
 export const getUnclaimedWeeksValues = (
-  claimWeeks: string[],
+  claimWeeks: Record<number, ClaimWeek>,
   unclaimedWeeks: string[],
   address: string,
 ) =>
@@ -56,7 +56,7 @@ export const getUnclaimedWeeksValues = (
   );
 
 export const getClaimedWeeksValues = (
-  claimWeeks: string[],
+  claimWeeks: Record<number, ClaimWeek>,
   unclaimedWeeks: string[],
   address: string,
 ) =>
@@ -72,7 +72,11 @@ export const getWeekValuesTotal = (unclaimedWeeksValues) => {
   return weeks.reduce((sum, week) => sum + unclaimedWeeksValues[week], 0);
 };
 
-export const getClaimsWeeksProofs = (claimWeeks, unclaimedWeeksValues, address) => {
+export const getClaimsWeeksProofs = (
+  claimWeeks: Record<number, ClaimWeek>,
+  unclaimedWeeksValues,
+  address,
+) => {
   const weeks = Object.keys(unclaimedWeeksValues);
 
   return weeks.map((week) => {

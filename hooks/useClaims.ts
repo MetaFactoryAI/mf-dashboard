@@ -13,11 +13,12 @@ import {
   getClaimsWeeksProofs,
 } from "@/utils/claims";
 import type { ClaimWeek } from "@/utils/claims";
+import { formatNumber } from "@/utils/presentationHelper";
 
 const useClaims = () => {
   const [claimWeeksProofs, setClaimWeeksProofs] = useState<ClaimStruct[]>([]);
-  const [unclaimedTotal, setUnclaimedTotal] = useState(0);
-  const [claimedTotal, setClaimedTotal] = useState(0);
+  const [unclaimedTotal, setUnclaimedTotal] = useState("0");
+  const [claimedTotal, setClaimedTotal] = useState("0");
   const { loading, account, provider } = useWeb3Context();
 
   useEffect(() => {
@@ -36,10 +37,12 @@ const useClaims = () => {
         unclaimedWeeksValues,
         account,
       );
+      const formattedClaimedTotal = formatNumber(getWeekValuesTotal(claimedWeeksValues));
+      const formattedUnclaimedTotal = formatNumber(getWeekValuesTotal(unclaimedWeeksValues));
 
       setClaimWeeksProofs(calculatedClaimWeeksProofs);
-      setUnclaimedTotal(getWeekValuesTotal(unclaimedWeeksValues));
-      setClaimedTotal(getWeekValuesTotal(claimedWeeksValues));
+      setUnclaimedTotal(formattedUnclaimedTotal);
+      setClaimedTotal(formattedClaimedTotal);
     };
 
     getClaimsMetadata();

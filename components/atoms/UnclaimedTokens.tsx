@@ -1,24 +1,37 @@
 import React from "react";
-import { Text, Center, VStack, Button } from "@chakra-ui/react";
+import { Text, VStack, Button, Flex } from "@chakra-ui/react";
 
-const UnclaimedTokens: React.FC<{ unclaimedTotal: number; handleClaim: () => void }> = ({
+const UnclaimedTokens: React.FC<{ unclaimedTotal: string; handleClaim: () => void }> = ({
   unclaimedTotal,
   handleClaim,
 }) => (
-  <Center>
-    <VStack border="2px" px="88px" py="58px">
-      <Text>Unclaimed {unclaimedTotal} ROBOT</Text>
+  <VStack border="2px" spacing="0px">
+    <Text alignSelf="start" fontFamily="body_bold" fontWeight="800" fontSize="24px" m="16px">
+      Total pending ROBOT
+    </Text>
+
+    <Flex width="100%" backgroundColor="black">
+      <Text alignSelf="start" fontWeight="400" fontSize="64px" color="white" m="16px">
+        {unclaimedTotal}
+      </Text>
+    </Flex>
+    <Flex width="100%" backgroundColor="#D9BAFF">
       <Button
         onClick={handleClaim}
-        backgroundColor="transparent"
-        border="1px"
-        rounded="false"
-        _hover={{ bg: "transparent" }}
+        _focus={{ boxShadow: "none" }}
+        variant="unstyled"
+        alignSelf="center"
+        width="100%"
+        borderRadius="0px"
+        mt="16px"
+        mb="20px"
       >
-        Claim balance
+        <Text color="##8B2CFF" fontFamily="body_bold" fontWeight="800" fontSize="24px">
+          Claim
+        </Text>
       </Button>
-    </VStack>
-  </Center>
+    </Flex>
+  </VStack>
 );
 
 export default UnclaimedTokens;

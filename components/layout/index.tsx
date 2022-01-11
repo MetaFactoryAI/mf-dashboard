@@ -1,9 +1,9 @@
 import React, { ReactNode, useEffect } from "react";
 import { Flex, Spacer } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
 import { LOGO_HEIGHT } from "@/utils/constants";
-import { useRouter } from "next/router";
 import { useWeb3Context } from "@/contexts/Web3Context";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {

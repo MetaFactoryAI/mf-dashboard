@@ -49,7 +49,7 @@ const Web3Context = createContext<Web3ContextType & { loading: boolean; connectW
 });
 
 export const Web3ContextProvider: React.FC = ({ children }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [{ account, provider, dater, errors, accountAuthBearer }, setWeb3State] =
     useState<Web3ContextType>({
       account: null,

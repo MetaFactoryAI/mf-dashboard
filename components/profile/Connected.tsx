@@ -1,41 +1,34 @@
 // eslint-disable-next-line camelcase
-import { Heading } from "@chakra-ui/layout";
+import { Box } from "@chakra-ui/layout";
 import type { NextPage } from "next";
 import Head from "next/head";
-import React from "react";
-import { GraphChart, PieChart } from "@/components/atoms";
+import React, { useEffect } from "react";
+import { PieChart } from "@/components/atoms";
 import useClaims from "@/hooks/useClaims";
+import useFetchGraph from "@/utils/graph/useFetchGraph";
+import { useWeb3Context } from "@/contexts/Web3Context";
+import { Loading } from "@/components/atoms";
 import UnclaimedTokens from "../atoms/UnclaimedTokens";
 
 const Connected: NextPage = () => {
+  const { designerRewards, buyerRewards, loading, fetchDesignerRewards, fetchBuyerRewards } =
+    useFetchGraph();
+  const { loading: loadingWeb3, accountAuthBearer, account } = useWeb3Context();
   const { unclaimedTotal, handleClaim } = useClaims();
-  const sampleDate = new Date();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const graphChartData = [
-    { key: "TEST", value: 0, date: new Date().setDate(sampleDate.getDate() + 1) },
-    { key: "TEST", value: 10, date: new Date().setDate(sampleDate.getDate() + 2) },
-    { key: "TEST2", value: 20, date: new Date().setDate(sampleDate.getDate() + 3) },
-    { key: "TEST3", value: 30, date: new Date().setDate(sampleDate.getDate() + 4) },
-    { key: "TEST", value: 40, date: new Date().setDate(sampleDate.getDate() + 5) },
-    { key: "TEST2", value: 20, date: new Date().setDate(sampleDate.getDate() + 6) },
-    { key: "TEST3", value: 60, date: new Date().setDate(sampleDate.getDate() + 7) },
-    { key: "TEST", value: 10, date: new Date().setDate(sampleDate.getDate() + 8) },
-    { key: "TEST2", value: 80, date: new Date().setDate(sampleDate.getDate() + 9) },
-    { key: "TEST3", value: 70, date: new Date().setDate(sampleDate.getDate() + 10) },
-    { key: "TEST", value: 60, date: new Date().setDate(sampleDate.getDate() + 11) },
-    { key: "TEST2", value: 50, date: new Date().setDate(sampleDate.getDate() + 12) },
-    { key: "TEST3", value: 30, date: new Date().setDate(sampleDate.getDate() + 13) },
-    { key: "TEST", value: 100, date: new Date().setDate(sampleDate.getDate() + 14) },
-    { key: "TEST2", value: 120, date: new Date().setDate(sampleDate.getDate() + 15) },
-    { key: "TEST3", value: 130, date: new Date().setDate(sampleDate.getDate() + 16) },
+
+  const pieChartData = [
+    // @ts-ignore
+    { key: "Designer Rewards", value: designerRewards.total, color: "#4FF970" },
+    // @ts-ignore
+    { key: "Buyer Rewards", value: buyerRewards.total, color: "#FF2ECE" },
   ];
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const pieChartData = [
-    { key: "TEST", value: 10, color: "#4FF970" },
-    { key: "TEST2", value: 20, color: "#FF2ECE" },
-    { key: "TEST3", value: 30, color: "#89F6FF" },
-  ];
+  useEffect(() => {
+    if (accountAuthBearer && account) {
+      fetchDesignerRewards("0x9eec0b5bd8a48047f0dcc61e98b4b92951480f98", accountAuthBearer);
+      fetchBuyerRewards("0x9eec0b5bd8a48047f0dcc61e98b4b92951480f98", accountAuthBearer);
+    }
+  }, [fetchDesignerRewards, accountAuthBearer, account, fetchBuyerRewards]);
 
   return (
     <div>
@@ -43,11 +36,13 @@ const Connected: NextPage = () => {
         <title>MetaFactory - Dashboard</title>
         <meta name="description" content="MetaFactory Dashboard" />
       </Head>
-      <Heading as="h1" textAlign="center">
-        <GraphChart chartData={graphChartData} width={660} />
-        <PieChart chartData={pieChartData} width={400} />
-        <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
-      </Heading>
+      {(loading || loadingWeb3) && <Loading />}
+      {!loading && !loadingWeb3 && (
+        <Box>
+          <PieChart chartData={pieChartData} width={400} />
+          <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
+        </Box>
+      )}
     </div>
   );
 };

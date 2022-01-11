@@ -2,6 +2,7 @@ import Pie from "@visx/shape/lib/shapes/Pie";
 import { useTooltip, defaultStyles } from "@visx/tooltip";
 import { Group } from "@visx/group";
 import { FC, useState } from "react";
+import { formatNumber } from "@/utils/presentationHelper";
 
 type ChartData = {
   key: string;
@@ -91,7 +92,7 @@ const PieChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartDat
             <strong>{(tooltipData as ChartData).key}</strong>
           </div>
           <div>
-            <small>{(tooltipData as ChartData).value}</small>
+            <small>{formatNumber((tooltipData as ChartData).value)}</small>
           </div>
         </div>
       )}

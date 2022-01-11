@@ -4,9 +4,9 @@ import React from "react";
 import { Text, Button, Box, Center, Flex } from "@chakra-ui/react";
 import { Table as ChakraTable, Tbody, Th, Thead, Tr } from "@chakra-ui/table";
 import Image from "next/image";
+import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
 import BigTableRow from "./BigTableRow";
 import SmallTableRow from "./SmallTableRow";
-import useChakraBreakpoints from "@/utils/useChakraBreakpoints";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { useTable, usePagination } = require("react-table");

@@ -10,6 +10,8 @@ import Table from "@/components/table";
 import { formatClaimsEventData, formatMonthlyClaimsEventData } from "@/utils/presentationHelper";
 import type { ChartData } from "@/components/atoms/YearlyBarChart";
 import { generateYearsUntilToday } from "@/utils/time";
+import UnclaimedTokens from "@/components/atoms/UnclaimedTokens";
+import useClaims from "@/hooks/useClaims";
 
 const Claim: NextPage = () => {
   const START_YEAR = 2021;
@@ -17,6 +19,7 @@ const Claim: NextPage = () => {
   const [claims, setClaims] = useState<{ address: string; amount: string }[]>([]);
   const [monthlyClaims, setMonthlyClaims] = useState<ChartData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const { unclaimedTotal, handleClaim } = useClaims();
   // duplicit state with the bar chart - bad practice but cant isloate chart from rest of buttons
   const [year, setYear] = useState<number>(START_YEAR);
 
@@ -83,7 +86,11 @@ const Claim: NextPage = () => {
       {loading && <Loading />}
       {!loading && (
         <Box>
-          <Box border={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}>
+          <Box
+            borderX={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}
+            borderTop={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}
+            borderBottom="2px"
+          >
             <YearlyBarChart
               chartData={monthlyClaims}
               title="Distributions"
@@ -92,17 +99,20 @@ const Claim: NextPage = () => {
               yearSelectedCallback={setYear}
             />
           </Box>
-          <Grid templateColumns="repeat(10, 1fr)" width="100%">
+          <Grid templateColumns="repeat(10, 1fr)" width="100%" mt="25px">
             <GridItem
               colSpan={{ base: 10, sm: 10 }}
               display={{ base: "block", sm: "block", md: "none", lg: "none" }}
+              mb="30px"
             >
-              <Text>TEST</Text>
+              <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
             </GridItem>
             <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
-              <Flex justifyContent={{ base: "start ", sm: "start", md: "center", lg: "center" }}>
+              <Flex
+                justifyContent={{ base: "start ", sm: "start", md: "start", lg: "start" }}
+                borderBottom="2px"
+              >
                 <Text
-                  borderBottom="2px"
                   borderTop="2px"
                   borderRight="2px"
                   borderLeft="2px"
@@ -126,8 +136,9 @@ const Claim: NextPage = () => {
             <GridItem
               colSpan={{ md: 3, lg: 3 }}
               display={{ base: "none", sm: "none", md: "block", lg: "block" }}
+              ml="30px"
             >
-              <Text>TEST</Text>
+              <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
             </GridItem>
           </Grid>
         </Box>

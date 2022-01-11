@@ -1,25 +1,15 @@
 /* eslint-disable prettier/prettier */
-import { useEffect } from "react";
 import { Button, VStack, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
 import { useWeb3Context } from "@/contexts/Web3Context";
 
 const Connect: NextPage = () => {
-  const { loading, account, connectWeb3, errors } = useWeb3Context();
-  const router = useRouter();
+  const { account, connectWeb3 } = useWeb3Context();
   const handleConnect = () => {
     if (!account) {
       connectWeb3();
-      router.push("/connected");
     }
   };
-
-  useEffect(() => {
-    if (!loading && !errors && account) {
-      router.push("/connected");
-    }
-  }, [account, errors, loading, router]);
 
   const MEX_WIDTH = 480;
   return (

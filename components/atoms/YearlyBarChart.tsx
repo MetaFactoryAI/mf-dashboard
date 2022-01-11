@@ -8,7 +8,7 @@ import { useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
 import useResize from "hooks/useResize";
 import { AxisBottom } from "@visx/axis";
-import useChakraBreakpoints from "@/utils/useChakraBreakpoints";
+import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
 import SelectButtons from "./chart/SelectButtons";
 
 export type ChartData = {
@@ -17,7 +17,7 @@ export type ChartData = {
   date: number;
 };
 
-const BOTTOM_BASE = 30;
+const DEFAULT_BOTTOM_BASE = 30;
 const TOP_BASE = 70;
 const DESKTOP_RATIO = 0.246;
 const MOBILE_RATIO = 1.147;
@@ -34,6 +34,7 @@ const YearlyBarChart: FC<{
   const [barWidth, setBarWidth] = useState<number>(0);
   const ref = useRef(null);
   const currentRatio = isDesktopScreen ? DESKTOP_RATIO : MOBILE_RATIO;
+  const bottomBase = isDesktopScreen ? DEFAULT_BOTTOM_BASE : 0;
   const { width, height } = useResize(ref, currentRatio);
   const format = timeFormat("%B / %Y");
   // @ts-ignore
@@ -51,9 +52,11 @@ const YearlyBarChart: FC<{
   });
 
   useEffect(() => {
+    if (Object.keys(chartData).length < 1) return;
+
     const currentBarWidth = width / Object.keys(chartData).length - 10;
 
-    if (currentBarWidth > 0) {
+    if (currentBarWidth > 0 && currentBarWidth) {
       setBarWidth(currentBarWidth);
     }
   }, [chartData, width]);
@@ -75,11 +78,11 @@ const YearlyBarChart: FC<{
   const yScale = useMemo(
     () =>
       scaleLinear({
-        range: [height, 0 + TOP_BASE + BOTTOM_BASE],
+        range: [height, 0 + TOP_BASE + bottomBase],
         round: true,
         domain: [0, Math.max(...chartData.map((d) => d.value))],
       }),
-    [chartData, height],
+    [bottomBase, chartData, height],
   );
 
   const findClosest = (input: Array<number>, element: number): number =>
@@ -142,64 +145,68 @@ const YearlyBarChart: FC<{
           defaultOption={startYear}
         />
       </Box>
-      <svg width={width} height={height}>
-        <defs>
-          <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
-            <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#E0E0E0" strokeWidth="1" />
-          </pattern>
-        </defs>
-        <rect width="100%" height={height - BOTTOM_BASE} fill="url(#grid)" />
+      {chartData.length > 0 && width > 0 && height > 0 && (
+        <svg width={width} height={height}>
+          <defs>
+            <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+              <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#E0E0E0" strokeWidth="1" />
+            </pattern>
+          </defs>
+          <rect width="100%" height={height - bottomBase} fill="url(#grid)" />
 
-        {chartData?.map((currentData) => {
-          const barHeight = height - (yScale(currentData.value) ?? 0);
-          const barX = xScale(currentData.date);
-          const barY = height - barHeight - BOTTOM_BASE;
-          return (
-            <Bar
-              key={`bar-${currentData.date}`}
-              x={barX - barWidth / 2}
-              y={barY}
-              width={barWidth}
-              height={barHeight}
-              fill={hoverDate && hoverDate === currentData.date ? "#8B2CFF" : "#D9BAFF"}
+          {chartData.map((currentData) => {
+            const barHeight = height - (yScale(currentData.value) ?? 0);
+            const barX = xScale(currentData.date);
+            const barY = height - barHeight - bottomBase;
+
+            return (
+              <Bar
+                key={`bar-${currentData.date}-${xScale(currentData.date)}-${yScale(
+                  currentData.value,
+                )}`}
+                x={barX - barWidth / 2}
+                y={barY}
+                width={barWidth}
+                height={barHeight}
+                fill={hoverDate && hoverDate === currentData.date ? "#8B2CFF" : "#D9BAFF"}
+              />
+            );
+          })}
+          {isDesktopScreen && (
+            <AxisBottom
+              top={height - bottomBase}
+              scale={xScale}
+              // @ts-ignore
+              tickFormat={formatDate}
+              stroke=""
+              tickStroke="yellow"
+              tickLabelProps={() => ({
+                fill: "black",
+                fontSize: 9,
+                fontWeight: 400,
+                textAnchor: "middle",
+              })}
             />
-          );
-        })}
-        {isDesktopScreen && (
-          <AxisBottom
-            top={height - BOTTOM_BASE}
-            scale={xScale}
-            // @ts-ignore
-            tickFormat={formatDate}
-            stroke=""
-            tickStroke="yellow"
-            tickLabelProps={() => ({
-              fill: "black",
-              fontSize: 9,
-              fontWeight: 400,
-              textAnchor: "middle",
-            })}
-          />
-        )}
+          )}
 
-        {chartData.length > 0 && (
-          <rect
-            width={width}
-            height={height - BOTTOM_BASE}
-            opacity="0"
-            onMouseMove={handleMouseMove}
-            onMouseLeave={() => hideHover()}
-            onTouchMove={handleMouseMove}
-            onTouchEnd={() => hideHover()}
-          />
-        )}
-      </svg>
-
+          {chartData.length > 0 && (
+            <rect
+              width={width}
+              height={height - bottomBase}
+              opacity="0"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={() => hideHover()}
+              onTouchMove={handleMouseMove}
+              onTouchEnd={() => hideHover()}
+            />
+          )}
+        </svg>
+      )}
       {tooltipOpen && tooltipData && (
         <div>
           <TooltipWithBounds
             key={Math.random()}
-            top={tooltipTop - BOTTOM_BASE}
+            top={tooltipTop - bottomBase - 100}
             left={tooltipLeft}
             style={{ position: "absolute", pointerEvents: "none" }}
           >

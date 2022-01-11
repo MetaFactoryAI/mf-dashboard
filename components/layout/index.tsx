@@ -7,13 +7,13 @@ import { LOGO_HEIGHT } from "@/utils/constants";
 import { useWeb3Context } from "@/contexts/Web3Context";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { loading, account } = useWeb3Context();
+  const { loading, account, errors } = useWeb3Context();
   const router = useRouter();
   useEffect(() => {
-    if (!loading && !account && router.pathname !== "/profile") {
+    if (!loading && !errors && !account && router.pathname !== "/profile") {
       router.push("/profile");
     }
-  }, [account, loading, router]);
+  }, [account, errors, loading, router]);
 
   return (
     <Flex flexDirection="column" minH="100vh">

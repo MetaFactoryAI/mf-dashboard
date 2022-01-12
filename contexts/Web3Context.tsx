@@ -25,7 +25,7 @@ const providerOptions: IProviderOptions = {
     package: WalletConnectProvider,
     options: {
       rpc: {
-        1: "https://main-light.eth.linkpool.io",
+        1: "https://c44896c1e1ba4af98ee36d4acf6c0d7a.eth.rpc.rivet.cloud",
       },
     },
   },

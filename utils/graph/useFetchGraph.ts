@@ -12,11 +12,12 @@ const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
 const useFetchGraph = () => {
   const [designerRewards, setDesignerRewards] = useState({});
   const [buyerRewards, setBuyerRewards] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loadingDesigner, setLoadingDesigner] = useState(true);
+  const [loadingBuyer, setLoadingBuyer] = useState(true);
   const [errors, setErrors] = useState({});
 
   const fetchDesignerRewards = (account: string, accountAuthToken: string) => {
-    setLoading(true);
+    setLoadingDesigner(true);
 
     const DESIGNER_REWARDS_QUERY = `
       query DesignerRewards {
@@ -41,12 +42,12 @@ const useFetchGraph = () => {
           }),
         )
         .catch((error) => setErrors({ error }))
-        .finally(() => setLoading(false))
+        .finally(() => setLoadingDesigner(false))
     );
   };
 
   const fetchBuyerRewards = (account: string, accountAuthToken: string) => {
-    setLoading(true);
+    setLoadingBuyer(true);
 
     const BUYER_REWARDS_QUERY = `
       query BuyerRewards {
@@ -70,7 +71,7 @@ const useFetchGraph = () => {
           }),
         )
         .catch((error) => setErrors(error))
-        .finally(() => setLoading(false))
+        .finally(() => setLoadingBuyer(false))
     );
   };
 
@@ -79,7 +80,7 @@ const useFetchGraph = () => {
     buyerRewards,
     fetchDesignerRewards: useCallback(fetchDesignerRewards, []),
     fetchBuyerRewards: useCallback(fetchBuyerRewards, []),
-    loading,
+    loading: loadingBuyer || loadingDesigner,
     errors,
   };
 };

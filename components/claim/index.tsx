@@ -12,7 +12,7 @@ const Claim: NextPage = () => {
   const START_YEAR = 2021;
   // duplicit setClaimsYear state with the bar chart - bad practice but cant isloate chart from rest of buttons
   const { unclaimedTotal, handleClaim, loading, monthlyClaims, claims, setClaimsYear, claimsYear } =
-    useClaims(START_YEAR);
+    useClaims();
 
   const tableColumns = useMemo(
     () => [

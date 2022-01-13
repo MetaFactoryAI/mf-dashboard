@@ -20,7 +20,9 @@ import {
 } from "@/utils/presentationHelper";
 import type { ChartData } from "@/components/atoms/YearlyBarChart";
 
-const useClaims = (year = 2021) => {
+const DEFAULT_YEAR = 2022;
+
+const useClaims = () => {
   const [claimWeeksProofs, setClaimWeeksProofs] = useState<ClaimStruct[]>([]);
   const [unclaimedTotal, setUnclaimedTotal] = useState("0");
   const [claimedTotal, setClaimedTotal] = useState("0");
@@ -28,7 +30,7 @@ const useClaims = (year = 2021) => {
   const [claimEventsLoading, setClaimEventsLoading] = useState<boolean>(false);
   const [claims, setClaims] = useState<{ address: string; amount: string }[]>([]);
   const [monthlyClaims, setMonthlyClaims] = useState<ChartData[]>([]);
-  const [claimsYear, setClaimsYear] = useState<number>(year);
+  const [claimsYear, setClaimsYear] = useState<number>(DEFAULT_YEAR);
 
   // fetches claim info (from IPFS) and calculates total claimed/unclaimed
   // ROBOT, as well calculates all necessary merkle proofs to claim it from the contrat

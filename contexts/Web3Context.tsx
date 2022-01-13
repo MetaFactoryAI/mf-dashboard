@@ -3,23 +3,29 @@ import Web3 from "web3";
 import Web3Modal, { IProviderOptions } from "web3modal";
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import Cookies from "js-cookie";
+import createToken from "@/utils/auth/web3JWT";
+import { APP_NAME } from "@/utils/constants";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const EthDater = require("ethereum-block-by-date");
 
 type Web3ContextType = {
   account: null | string;
+  accountAuthBearer: null | string;
   provider: null | ethers.providers.Web3Provider;
   dater: null | unknown;
   errors: unknown;
 };
+
+const AUTH_TOKEN_KEY = "authToken";
 
 const providerOptions: IProviderOptions = {
   walletconnect: {
     package: WalletConnectProvider,
     options: {
       rpc: {
-        1: "https://main-light.eth.linkpool.io",
+        1: "https://c44896c1e1ba4af98ee36d4acf6c0d7a.eth.rpc.rivet.cloud",
       },
     },
   },
@@ -35,6 +41,7 @@ const web3Modal =
 const Web3Context = createContext<Web3ContextType & { loading: boolean; connectWeb3: () => void }>({
   errors: null,
   account: null,
+  accountAuthBearer: null,
   provider: null,
   dater: null,
   loading: true,
@@ -43,12 +50,22 @@ const Web3Context = createContext<Web3ContextType & { loading: boolean; connectW
 
 export const Web3ContextProvider: React.FC = ({ children }) => {
   const [loading, setLoading] = useState(true);
-  const [{ account, provider, dater, errors }, setWeb3State] = useState<Web3ContextType>({
-    account: null,
-    provider: null,
-    dater: null,
-    errors: null,
-  });
+  const [{ account, provider, dater, errors, accountAuthBearer }, setWeb3State] =
+    useState<Web3ContextType>({
+      account: null,
+      accountAuthBearer: null,
+      provider: null,
+      dater: null,
+      errors: null,
+    });
+
+  const generateAuthToken = async (currentProvider: ethers.providers.Web3Provider) => {
+    const token = await createToken(currentProvider, APP_NAME);
+
+    Cookies.set(AUTH_TOKEN_KEY, token);
+
+    return token;
+  };
 
   const connectWeb3 = useCallback(async () => {
     try {
@@ -58,18 +75,33 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
       const currentprovider = new ethers.providers.Web3Provider(web3Provider);
       const currentAccount = await currentprovider.getSigner().getAddress();
       const currentDater = new EthDater(currentprovider);
-      web3ModalInstance.on("accountsChanged", async (newAcc: string[]) =>
-        setWeb3State((prev) => ({ ...prev, account: newAcc[0] })),
-      );
+      const storedAuthToken = Cookies.get(AUTH_TOKEN_KEY);
+
+      web3ModalInstance.on("accountsChanged", async (newAcc: string[]) => {
+        const generatedAuthToken = await generateAuthToken(currentprovider);
+
+        setWeb3State((prev) => ({
+          ...prev,
+          account: newAcc[0],
+          accountAuthBearer: generatedAuthToken,
+        }));
+      });
 
       setWeb3State({
         provider: currentprovider,
+        accountAuthBearer: storedAuthToken || (await generateAuthToken(currentprovider)),
         account: currentAccount,
         dater: currentDater,
         errors: null,
       });
     } catch (e) {
-      setWeb3State({ provider: null, account: null, dater: null, errors: e });
+      setWeb3State({
+        provider: null,
+        accountAuthBearer: null,
+        account: null,
+        dater: null,
+        errors: e,
+      });
     } finally {
       setLoading(false);
     }
@@ -91,6 +123,7 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
       value={{
         errors,
         account,
+        accountAuthBearer,
         provider,
         dater,
         loading,

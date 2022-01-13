@@ -5,12 +5,12 @@ import Connect from "./Connect";
 import Connected from "./Connected";
 
 const Profile: NextPage = () => {
-  const { account } = useWeb3Context();
+  const { account, loading } = useWeb3Context();
 
   return (
     <div>
-      {!account && <Connect />}
-      {!!account && <Connected />}
+      {!loading && !account && <Connect />}
+      {!loading && !!account && <Connected />}
     </div>
   );
 };

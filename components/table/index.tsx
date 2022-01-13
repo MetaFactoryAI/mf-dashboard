@@ -79,34 +79,35 @@ const Table: React.FC = ({ data, columns, initialState, ...props }) => {
             );
           })}
         </Tbody>
-        <Box mt="20px" mx={{ md: "100%", lg: "100%" }} width="100%">
-          <Flex
-            justifyContent={{ base: "center ", sm: "center", md: "start", lg: "start" }}
-            alignItems="center"
-          >
-            <Button
-              _focus={{ boxShadow: "none" }}
-              onClick={() => previousPage()}
-              disabled={!canPreviousPage}
-              variant="unstyled"
-            >
-              <Image src="/table-paging-left.svg" alt="" width="40px" height="40px" />
-            </Button>
-            <Center border="1px" height="40px" minWidth="40px">
-              <Text>{pageIndex + 1}</Text>
-            </Center>
-            <Text p="10px">of&nbsp;{pageOptions.length}</Text>
-            <Button
-              _focus={{ boxShadow: "none" }}
-              onClick={() => nextPage()}
-              disabled={!canNextPage}
-              variant="unstyled"
-            >
-              <Image src="/table-paging-right.svg" alt="" width="40px" height="40px" />
-            </Button>
-          </Flex>
-        </Box>
       </ChakraTable>
+      <Flex mt="20px" width="100%" direction="column" alignItems="center" justifyContent="center">
+        <Flex
+          justifyContent={{ base: "center ", sm: "center", md: "start", lg: "start" }}
+          alignItems="center"
+          alignSelf="center"
+        >
+          <Button
+            _focus={{ boxShadow: "none" }}
+            onClick={() => previousPage()}
+            disabled={!canPreviousPage}
+            variant="unstyled"
+          >
+            <Image src="/table-paging-left.svg" alt="" width="40px" height="40px" />
+          </Button>
+          <Center border="1px" height="40px" minWidth="40px">
+            <Text>{pageIndex + 1}</Text>
+          </Center>
+          <Text p="10px">of&nbsp;{pageOptions.length}</Text>
+          <Button
+            _focus={{ boxShadow: "none" }}
+            onClick={() => nextPage()}
+            disabled={!canNextPage}
+            variant="unstyled"
+          >
+            <Image src="/table-paging-right.svg" alt="" width="40px" height="40px" />
+          </Button>
+        </Flex>
+      </Flex>
     </Box>
   );
 };

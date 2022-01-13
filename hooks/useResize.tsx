@@ -6,11 +6,12 @@ const useResize = (ref: any, ratio: number) => {
   const [height, setHeight] = useState(0);
 
   const handleResize = useCallback(() => {
-    if (ref) {
-      const currentWidth = ref.current.offsetWidth;
-
-      setWidth(currentWidth);
-      setHeight(currentWidth * ratio);
+    if (ref?.current) {
+      const currentWidth = ref.current.getBoundingClientRect().width;
+      if (currentWidth >= 0) {
+        setWidth(currentWidth);
+        setHeight(currentWidth * ratio);
+      }
     }
   }, [ratio, ref]);
 

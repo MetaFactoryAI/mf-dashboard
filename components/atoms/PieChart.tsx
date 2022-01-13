@@ -1,16 +1,25 @@
+import { Box, HStack, VStack, Text } from "@chakra-ui/react";
 import Pie from "@visx/shape/lib/shapes/Pie";
 import { useTooltip, defaultStyles } from "@visx/tooltip";
 import { Group } from "@visx/group";
-import { FC, useState } from "react";
+import { FC, useState, useRef, useEffect } from "react";
+import useResize from "hooks/useResize";
+import Image from "next/image";
+import { formatNumber } from "@/utils/presentationHelper";
 
 type ChartData = {
   key: string;
   value: number;
   color: string;
+  avatarSrc: string;
 };
 
-const PieChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartData, width }) => {
+type TooltipData = ChartData & { piePercentage: number };
+
+// produces warnings connected to this issue https://github.com/airbnb/visx/issues/737
+const PieChart: FC<{ chartData: Array<ChartData> }> = ({ chartData }) => {
   const [active, setActive] = useState<ChartData | null>(null);
+  const [radius, setRadius] = useState<number>(0);
   const {
     showTooltip,
     hideTooltip,
@@ -22,21 +31,34 @@ const PieChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartDat
     // initial tooltip state
     tooltipOpen: false,
   });
-  const radius = width / 2 - 30;
+  const containerBoxRef = useRef(null);
+  const { width } = useResize(containerBoxRef, 1);
+
+  useEffect(() => {
+    const radiusGap = width * 0.075;
+
+    setRadius(width / 2 - radiusGap);
+  }, [width]);
 
   return (
-    <div style={{ position: "relative" }}>
+    <Box width="100%" height="100%" style={{ position: "relative" }} ref={containerBoxRef}>
       <svg width={width} height={width}>
         <Group top={width / 2} left={width / 2}>
           <Pie
             data={chartData}
             outerRadius={({ data }) => {
-              const size = active && active.key === data.key ? radius + 10 : radius - 10;
+              const outerRatio = width * 0.04;
+              const size =
+                active && active.key === data.key ? radius + outerRatio : radius - outerRatio;
 
               return size;
             }}
             innerRadius={({ data }) => {
-              const size = active && active.key === data.key ? radius - 130 : radius - 120;
+              const outerRatio = width * 0.04;
+              const innerRatio2 = width * 0.3;
+              const innerRatio1 = innerRatio2 + outerRatio;
+              const size =
+                active && active.key === data.key ? radius - innerRatio1 : radius - innerRatio2;
 
               return size;
             }}
@@ -47,6 +69,7 @@ const PieChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartDat
               pie.arcs.map((arc) => {
                 const { key: arcKey, color } = arc.data;
                 const [x, y] = pie.path.centroid(arc);
+                const piePercentage = ((arc.endAngle - arc.startAngle) * 100) / (Math.PI * 2);
 
                 return (
                   <g
@@ -54,7 +77,7 @@ const PieChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartDat
                     onMouseEnter={() => {
                       setActive(arc.data);
                       showTooltip({
-                        tooltipData: arc.data,
+                        tooltipData: { ...arc.data, piePercentage },
                         tooltipLeft: x,
                         tooltipTop: y,
                       });
@@ -84,17 +107,42 @@ const PieChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartDat
             pointerEvents: "none",
             background: "#fff",
             transform: "translate(-50%, -50%)",
+            borderRadius: "0px",
+            border: "2px",
+            borderColor: "#03DDEF",
+            margin: "0px",
+            padding: "0px",
           }}
         >
-          <div>
-            <strong>{(tooltipData as ChartData).key}</strong>
-          </div>
-          <div>
-            <small>{(tooltipData as ChartData).value}</small>
-          </div>
+          <Box border="2px" borderColor="#03DDEF">
+            <HStack p="12px">
+              <Box minWidth="40px" minHeight="40px">
+                <Image
+                  src={(tooltipData as TooltipData).avatarSrc}
+                  alt=""
+                  width="40px"
+                  height="40px"
+                />
+              </Box>
+              <VStack>
+                <Text alignSelf="start" color="black" fontSize="14px" fontFamily="body_regular">
+                  {(tooltipData as ChartData).key}
+                </Text>
+                <HStack spacing="0px">
+                  <Text alignSelf="start" color="black" fontSize="18px" fontFamily="body_regular">
+                    {formatNumber((tooltipData as TooltipData).value)}&nbsp;|&nbsp;
+                  </Text>
+                  <Text color="black" fontSize="18px">
+                    {formatNumber((tooltipData as TooltipData).piePercentage)}%
+                  </Text>
+                  <Text />
+                </HStack>
+              </VStack>
+            </HStack>
+          </Box>
         </div>
       )}
-    </div>
+    </Box>
   );
 };
 

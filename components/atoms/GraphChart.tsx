@@ -11,6 +11,7 @@ type ChartData = {
   date: number;
 };
 
+// produces warnings connected to this issue https://github.com/airbnb/visx/issues/737
 const GraphChart: FC<{ chartData: Array<ChartData>; width: number }> = ({ chartData, width }) => {
   const height = 0.614 * width;
 

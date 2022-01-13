@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { Box, Grid, GridItem, Text, Flex } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import { Loading, YearlyBarChart } from "@/components/atoms";
 import Table from "@/components/table";
@@ -14,7 +14,7 @@ const Claim: NextPage = () => {
   const { unclaimedTotal, handleClaim, loading, monthlyClaims, claims, setClaimsYear, claimsYear } =
     useClaims(START_YEAR);
 
-  const tableColumns = React.useMemo(
+  const tableColumns = useMemo(
     () => [
       {
         Header: "Address",
@@ -42,7 +42,7 @@ const Claim: NextPage = () => {
           fontFamily: "body_regular",
           fontSize: "16px",
           fontWeight: "400",
-          textAlign: "right",
+          textAlign: "left",
         },
       },
     ],

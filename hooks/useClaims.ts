@@ -20,7 +20,7 @@ import {
 } from "@/utils/presentationHelper";
 import type { ChartData } from "@/components/atoms/YearlyBarChart";
 
-const useClaims = (year: number) => {
+const useClaims = (year = 2021) => {
   const [claimWeeksProofs, setClaimWeeksProofs] = useState<ClaimStruct[]>([]);
   const [unclaimedTotal, setUnclaimedTotal] = useState("0");
   const [claimedTotal, setClaimedTotal] = useState("0");

@@ -3,16 +3,18 @@ import { useState, useCallback } from "react";
 import fetchGraph from "@/utils/graph/fetchGraph";
 import { formatNumber } from "@/utils/presentationHelper";
 
-type DesignerReward = { robot_reward: number; product: { id: string; title: string } };
-type BuyerReward = { buyer_reward: number; date: string; order_id: string };
+export type DesignerReward = { robot_reward: number; product: { id: string; title: string } };
+export type BuyerReward = { buyer_reward: number; date: string; order_id: string };
+type DesignerRewards = { total: number; items: DesignerReward[] };
+type BuyerRewards = { total: number; items: BuyerReward[] };
 
 const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
   metafactory: "https://metafactory.hasura.app/v1/graphql",
 };
 
 const useFetchMetafactoryGraph = () => {
-  const [designerRewards, setDesignerRewards] = useState({});
-  const [buyerRewards, setBuyerRewards] = useState({});
+  const [designerRewards, setDesignerRewards] = useState<DesignerRewards>();
+  const [buyerRewards, setBuyerRewards] = useState<BuyerRewards>();
   const [loadingDesigner, setLoadingDesigner] = useState(true);
   const [loadingBuyer, setLoadingBuyer] = useState(true);
   const [errors, setErrors] = useState({});
@@ -68,7 +70,7 @@ const useFetchMetafactoryGraph = () => {
         .then(({ data: { robot_order } }) =>
           setBuyerRewards({
             total: calculateTotalBuyerRewards(robot_order),
-            items: robot_order,
+            items: normaliseRobotOrderItems(robot_order),
           }),
         )
         .catch((error) => setErrors(error))
@@ -87,16 +89,10 @@ const useFetchMetafactoryGraph = () => {
 };
 
 const calculateTotalDesignerRewards = (rewards: DesignerReward[]) =>
-  rewards?.reduce(
-    (sum: number, reward: { robot_reward: string }) => sum + parseFloat(reward.robot_reward),
-    0,
-  );
+  rewards?.reduce((sum: number, reward: { robot_reward: number }) => sum + reward.robot_reward, 0);
 
 const calculateTotalBuyerRewards = (rewards: BuyerReward[]) =>
-  rewards?.reduce(
-    (sum: number, reward: { buyer_reward: string }) => sum + parseFloat(reward.buyer_reward),
-    0,
-  );
+  rewards?.reduce((sum: number, reward: { buyer_reward: number }) => sum + reward.buyer_reward, 0);
 
 const normaliseRobotProductDesignerItems = (items: DesignerReward[]) =>
   items?.map((item) => ({
@@ -104,6 +100,12 @@ const normaliseRobotProductDesignerItems = (items: DesignerReward[]) =>
     product_title: item.product.title,
     product_id: item.product.id,
     amount: formatNumber(item.robot_reward),
+  }));
+
+const normaliseRobotOrderItems = (items: BuyerReward[]) =>
+  items?.map((item) => ({
+    ...item,
+    amount: formatNumber(item.buyer_reward),
   }));
 
 export default useFetchMetafactoryGraph;

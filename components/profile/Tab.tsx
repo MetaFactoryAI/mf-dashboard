@@ -24,7 +24,7 @@ const MobileItem: React.FC<{
       {...props}
       spacing="0px"
       p="15px"
->
+    >
       <Image src={avatar} alt="" width="40px" height="40px" />
       <Text fontWeight="400" fontSize="18px" pl="8px">
         {title}

@@ -3,9 +3,9 @@ import Pie from "@visx/shape/lib/shapes/Pie";
 import { useTooltip, defaultStyles } from "@visx/tooltip";
 import { Group } from "@visx/group";
 import { FC, useState, useRef, useEffect } from "react";
-import { formatNumber } from "@/utils/presentationHelper";
 import useResize from "hooks/useResize";
 import Image from "next/image";
+import { formatNumber } from "@/utils/presentationHelper";
 
 type ChartData = {
   key: string;

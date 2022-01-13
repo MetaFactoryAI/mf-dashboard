@@ -1,5 +1,5 @@
 // eslint-disable-next-line camelcase
-import { Box, Grid, GridItem, Text, Flex, HStack, Center, Button } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Text, Flex, HStack, Center } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useEffect, useState, useMemo } from "react";
@@ -8,13 +8,9 @@ import useFetchMetafactoryGraph from "@/hooks/useFetchMetafactoryGraph";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { Loading, PieChart } from "@/components/atoms";
 import Table from "@/components/table";
+import type { DesignerReward, BuyerReward } from "@/hooks/useFetchMetafactoryGraph";
 import UnclaimedTokens from "../atoms/UnclaimedTokens";
 import Tab from "./Tab";
-
-const TABLE_TABS = [
-  { title: "Buyer", selectColor: "#00ECFF", avatar: "/avatar-default.svg" },
-  { title: "Designer", selectColor: "#FF00C3", avatar: "/avatar-designer.svg" },
-];
 
 const Connected: NextPage = () => {
   const { designerRewards, buyerRewards, loading, fetchDesignerRewards, fetchBuyerRewards } =
@@ -22,11 +18,8 @@ const Connected: NextPage = () => {
   const { loading: loadingWeb3, accountAuthBearer, account } = useWeb3Context();
   const { unclaimedTotal, claimedTotal, handleClaim } = useClaims();
   const [selectedTableTab, setSelectedTableTab] = useState<number>(0);
-  const [tableRows, setTableRows] = useState([]);
-  const [tableColumns, setTableColumns] = useState([]);
-  const handleTabClick = (tabIndex: number) => {
-    setSelectedTableTab(tabIndex);
-  };
+  const [tableRows, setTableRows] = useState<DesignerReward[] | BuyerReward[]>([]);
+  const [tableColumns, setTableColumns] = useState();
   const designerTableColumns = useMemo(
     () => [
       {
@@ -92,37 +85,70 @@ const Connected: NextPage = () => {
           fontFamily: "body_regular",
           fontSize: "16px",
           fontWeight: "400",
-          textAlign: "right",
+          textAlign: "left",
         },
       },
     ],
     [],
   );
-  const pieChartData = [
-    {
-      key: `Buyer${String.fromCharCode(160)}Rewards`,
-      // @ts-ignore
-      value: buyerRewards.total,
-      color: "#00ECFF",
-      avatarSrc: "/avatar-default.svg",
-    },
-    {
-      key: `Designer${String.fromCharCode(160)}Rewards`,
-      // @ts-ignore
-      value: designerRewards.total,
-      color: "#FF2ECE",
-      avatarSrc: "/avatar-designer.svg",
-    },
-    // @ts-ignore
-    designerRewards.total === 0 &&
-      // @ts-ignore
-      buyerRewards.total === 0 && {
+  const TABLE_TABS = useMemo(
+    () => [
+      {
+        title: "Buyer",
+        selectColor: "#00ECFF",
+        avatar: "/avatar-default.svg",
+        tabColumns: buyerTableColumns,
+        tabRows: buyerRewards?.items || [],
+      },
+      {
+        title: "Designer",
+        selectColor: "#FF00C3",
+        avatar: "/avatar-designer.svg",
+        tabColumns: designerTableColumns,
+        tabRows: designerRewards?.items || [],
+      },
+    ],
+    [buyerRewards?.items, buyerTableColumns, designerRewards?.items, designerTableColumns],
+  );
+
+  const pieChartData = useMemo(
+    () => [
+      {
+        key: `Buyer${String.fromCharCode(160)}Rewards`,
+        // @ts-ignore
+        value: buyerRewards?.total || 0,
+        color: "#00ECFF",
+        avatarSrc: "/avatar-default.svg",
+      },
+      {
+        key: `Designer${String.fromCharCode(160)}Rewards`,
+        // @ts-ignore
+        value: designerRewards?.total || 0,
+        color: "#FF2ECE",
+        avatarSrc: "/avatar-designer.svg",
+      },
+    ],
+    [buyerRewards?.total, designerRewards?.total],
+  );
+
+  const emptyPieChartData = useMemo(
+    () => [
+      {
         key: "No Rewards",
         value: 100,
         color: "#00ECFF",
         avatarSrc: "/avatar-default.svg",
       },
-  ];
+    ],
+    [],
+  );
+
+  const handleTabClick = (tabIndex: number) => {
+    setSelectedTableTab(tabIndex);
+    // @ts-ignore
+    setTableColumns(TABLE_TABS[tabIndex].tabColumns);
+    setTableRows(TABLE_TABS[tabIndex].tabRows);
+  };
 
   useEffect(() => {
     if (accountAuthBearer && account) {
@@ -130,6 +156,12 @@ const Connected: NextPage = () => {
       fetchBuyerRewards(account, accountAuthBearer);
     }
   }, [fetchDesignerRewards, accountAuthBearer, account, fetchBuyerRewards]);
+
+  useEffect(() => {
+    // @ts-ignore
+    setTableColumns(TABLE_TABS[0].tabColumns);
+    setTableRows(TABLE_TABS[0].tabRows);
+  }, [TABLE_TABS]);
 
   return (
     <Box>
@@ -182,7 +214,16 @@ const Connected: NextPage = () => {
               <Flex flex="1" justifyContent="center" borderLeft="2px">
                 <Center width="100%">
                   <Box width="100%" maxWidth="400px">
-                    <PieChart chartData={pieChartData} />
+                    <PieChart
+                      chartData={
+                        designerRewards &&
+                        designerRewards.items?.length > 0 &&
+                        buyerRewards &&
+                        buyerRewards?.items.length > 0
+                          ? pieChartData
+                          : emptyPieChartData
+                      }
+                    />
                   </Box>
                 </Center>
               </Flex>
@@ -199,13 +240,17 @@ const Connected: NextPage = () => {
           <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} borderBottom="2px" my="39px">
             <Flex justifyContent={{ base: "start ", sm: "start", md: "start", lg: "start" }}>
               <Tab
-                {...TABLE_TABS[0]}
+                title={TABLE_TABS[0].title}
+                selectColor={TABLE_TABS[0].selectColor}
+                avatar={TABLE_TABS[0].avatar}
                 currentSelection={selectedTableTab}
                 selectOption={0}
                 handleClick={handleTabClick}
               />
               <Tab
-                {...TABLE_TABS[1]}
+                title={TABLE_TABS[1].title}
+                selectColor={TABLE_TABS[1].selectColor}
+                avatar={TABLE_TABS[1].avatar}
                 currentSelection={selectedTableTab}
                 selectOption={1}
                 handleClick={handleTabClick}
@@ -213,8 +258,8 @@ const Connected: NextPage = () => {
             </Flex>
             <Table
               // @ts-ignore
-              columns={designerTableColumns}
-              data={designerRewards.items || []}
+              columns={tableColumns}
+              data={tableRows || []}
               initialState={{
                 pageSize: 10,
               }}

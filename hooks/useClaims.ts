@@ -13,14 +13,25 @@ import {
   getClaimsWeeksProofs,
 } from "@/utils/claims";
 import type { ClaimWeek } from "@/utils/claims";
-import { formatNumber } from "@/utils/presentationHelper";
+import {
+  formatNumber,
+  formatClaimsEventData,
+  formatMonthlyClaimsEventData,
+} from "@/utils/presentationHelper";
+import type { ChartData } from "@/components/atoms/YearlyBarChart";
 
-const useClaims = () => {
+const useClaims = (year: number) => {
   const [claimWeeksProofs, setClaimWeeksProofs] = useState<ClaimStruct[]>([]);
   const [unclaimedTotal, setUnclaimedTotal] = useState("0");
   const [claimedTotal, setClaimedTotal] = useState("0");
-  const { loading, account, provider } = useWeb3Context();
+  const { loading, account, provider, dater } = useWeb3Context();
+  const [claimEventsLoading, setClaimEventsLoading] = useState<boolean>(false);
+  const [claims, setClaims] = useState<{ address: string; amount: string }[]>([]);
+  const [monthlyClaims, setMonthlyClaims] = useState<ChartData[]>([]);
+  const [claimsYear, setClaimsYear] = useState<number>(year);
 
+  // fetches claim info (from IPFS) and calculates total claimed/unclaimed
+  // ROBOT, as well calculates all necessary merkle proofs to claim it from the contrat
   useEffect(() => {
     const getClaimsMetadata = async () => {
       const claimWeeks: Record<number, ClaimWeek> = await getClaimWeeks();
@@ -48,6 +59,30 @@ const useClaims = () => {
     getClaimsMetadata();
   }, [account, loading, provider]);
 
+  // fetches (from the blockchain) historical claims
+  useEffect(() => {
+    const fetchClaimHistory = async () => {
+      if (provider && claimsYear) {
+        const redeem = MerkleRedeem__factory.connect(MERKLE_REDEEM_CONTRACT, provider.getSigner());
+        // @ts-ignore
+        const { block: startBlock } = await dater.getDate(`${claimsYear}-01-01T00:00:00Z`, true);
+        // @ts-ignore
+        const { block: endBlock } = await dater.getDate(`${claimsYear + 1}-01-01T00:00:00Z`, false);
+        const claimedFilter = redeem.filters.Claimed();
+        const fetchedClaims = await redeem.queryFilter(claimedFilter, startBlock, endBlock);
+        const normalizedClaims = await formatClaimsEventData(fetchedClaims);
+        const normalizedMonthlyClaims = formatMonthlyClaimsEventData(normalizedClaims);
+
+        setClaimEventsLoading(false);
+        setClaims(normalizedClaims);
+        setMonthlyClaims(normalizedMonthlyClaims);
+      }
+    };
+
+    setClaimEventsLoading(true);
+    fetchClaimHistory();
+  }, [dater, provider, claimsYear]);
+
   const handleClaim = useCallback(() => {
     const claim = async () => {
       if (claimWeeksProofs.length < 1) return;
@@ -68,7 +103,16 @@ const useClaims = () => {
     claim();
   }, [account, claimWeeksProofs, loading, provider]);
 
-  return { unclaimedTotal, claimedTotal, handleClaim };
+  return {
+    unclaimedTotal,
+    claimedTotal,
+    handleClaim,
+    loading: loading || claimEventsLoading,
+    claims,
+    monthlyClaims,
+    setClaimsYear,
+    claimsYear,
+  };
 };
 
 export default useClaims;

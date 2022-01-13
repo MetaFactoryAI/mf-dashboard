@@ -1,15 +1,16 @@
 /* eslint-disable camelcase */
 import { useState, useCallback } from "react";
-import fetchGraph from "./fetchGraph";
+import fetchGraph from "@/utils/graph/fetchGraph";
+import { formatNumber } from "@/utils/presentationHelper";
 
-type DesignerReward = { robot_reward: string };
-type BuyerReward = { buyer_reward: string };
+type DesignerReward = { robot_reward: number; product: { id: string; title: string } };
+type BuyerReward = { buyer_reward: number; date: string; order_id: string };
 
 const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
   metafactory: "https://metafactory.hasura.app/v1/graphql",
 };
 
-const useFetchGraph = () => {
+const useFetchMetafactoryGraph = () => {
   const [designerRewards, setDesignerRewards] = useState({});
   const [buyerRewards, setBuyerRewards] = useState({});
   const [loadingDesigner, setLoadingDesigner] = useState(true);
@@ -38,7 +39,7 @@ const useFetchGraph = () => {
         .then(({ data: { robot_product_designer } }) =>
           setDesignerRewards({
             total: calculateTotalDesignerRewards(robot_product_designer),
-            items: robot_product_designer,
+            items: normaliseRobotProductDesignerItems(robot_product_designer),
           }),
         )
         .catch((error) => setErrors({ error }))
@@ -97,4 +98,12 @@ const calculateTotalBuyerRewards = (rewards: BuyerReward[]) =>
     0,
   );
 
-export default useFetchGraph;
+const normaliseRobotProductDesignerItems = (items: DesignerReward[]) =>
+  items?.map((item) => ({
+    ...item,
+    product_title: item.product.title,
+    product_id: item.product.id,
+    amount: formatNumber(item.robot_reward),
+  }));
+
+export default useFetchMetafactoryGraph;

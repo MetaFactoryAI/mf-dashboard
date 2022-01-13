@@ -15,7 +15,9 @@ const BigTableRow: React.FC = ({ row, index }) =>
         {cell.column.id === "address" && (
           <HStack>
             {/* @ts-ignore */}
-            <Image src={cell.row.original.avatarSrc} alt="" width="40px" height="40px" />
+            {cell.row.original.avatarSrc && (
+              <Image src={cell.row.original.avatarSrc} alt="" width="40px" height="40px" />
+            )}
             <Text>{cell.render("Cell")}</Text>
           </HStack>
         )}

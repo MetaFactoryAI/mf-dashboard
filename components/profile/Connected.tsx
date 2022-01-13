@@ -1,20 +1,103 @@
 // eslint-disable-next-line camelcase
-import { Box, Grid, GridItem, Text, Flex, HStack, Center } from "@chakra-ui/layout";
+import { Box, Grid, GridItem, Text, Flex, HStack, Center, Button } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import useClaims from "@/hooks/useClaims";
-import useFetchGraph from "@/utils/graph/useFetchGraph";
+import useFetchMetafactoryGraph from "@/hooks/useFetchMetafactoryGraph";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { Loading, PieChart } from "@/components/atoms";
+import Table from "@/components/table";
 import UnclaimedTokens from "../atoms/UnclaimedTokens";
+import Tab from "./Tab";
+
+const TABLE_TABS = [
+  { title: "Buyer", selectColor: "#00ECFF", avatar: "/avatar-default.svg" },
+  { title: "Designer", selectColor: "#FF00C3", avatar: "/avatar-designer.svg" },
+];
 
 const Connected: NextPage = () => {
   const { designerRewards, buyerRewards, loading, fetchDesignerRewards, fetchBuyerRewards } =
-    useFetchGraph();
+    useFetchMetafactoryGraph();
   const { loading: loadingWeb3, accountAuthBearer, account } = useWeb3Context();
   const { unclaimedTotal, claimedTotal, handleClaim } = useClaims();
+  const [selectedTableTab, setSelectedTableTab] = useState<number>(0);
+  const [tableRows, setTableRows] = useState([]);
+  const [tableColumns, setTableColumns] = useState([]);
+  const handleTabClick = (tabIndex: number) => {
+    setSelectedTableTab(tabIndex);
+  };
+  const designerTableColumns = useMemo(
+    () => [
+      {
+        Header: "Product Title",
+        accessor: "product_title",
+        style: {
+          fontSize: "16px",
+          fontFamily: "body_semi_bold",
+          fontWeight: "500",
+          width: { md: "40%", lg: "40%" },
+          minWidth: { md: "210px", lg: "210px" },
+        },
+      },
+      {
+        Header: "Amount ($ROBOT)",
+        accessor: "amount",
+        style: {
+          fontFamily: "body_bold",
+          fontSize: "18px",
+          fontWeight: "800",
+        },
+      },
+      {
+        Header: "Product id",
+        accessor: "product_id",
+        style: {
+          fontFamily: "body_regular",
+          fontSize: "16px",
+          fontWeight: "400",
+          textAlign: "left",
+        },
+      },
+    ],
+    [],
+  );
 
+  const buyerTableColumns = useMemo(
+    () => [
+      {
+        Header: "Order ID",
+        accessor: "order_id",
+        style: {
+          fontSize: "16px",
+          fontFamily: "body_semi_bold",
+          fontWeight: "500",
+          width: { md: "40%", lg: "40%" },
+          minWidth: { md: "210px", lg: "210px" },
+        },
+      },
+      {
+        Header: "Amount ($ROBOT)",
+        accessor: "amount",
+        style: {
+          fontFamily: "body_bold",
+          fontSize: "18px",
+          fontWeight: "800",
+        },
+      },
+      {
+        Header: "Date",
+        accessor: "date",
+        style: {
+          fontFamily: "body_regular",
+          fontSize: "16px",
+          fontWeight: "400",
+          textAlign: "right",
+        },
+      },
+    ],
+    [],
+  );
   const pieChartData = [
     {
       key: `Buyer${String.fromCharCode(160)}Rewards`,
@@ -30,6 +113,15 @@ const Connected: NextPage = () => {
       color: "#FF2ECE",
       avatarSrc: "/avatar-designer.svg",
     },
+    // @ts-ignore
+    designerRewards.total === 0 &&
+      // @ts-ignore
+      buyerRewards.total === 0 && {
+        key: "No Rewards",
+        value: 100,
+        color: "#00ECFF",
+        avatarSrc: "/avatar-default.svg",
+      },
   ];
 
   useEffect(() => {
@@ -104,26 +196,29 @@ const Connected: NextPage = () => {
             <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
           </GridItem>
 
-          <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
-            <Flex
-              justifyContent={{ base: "start ", sm: "start", md: "start", lg: "start" }}
-              borderBottom="2px"
-              my="39px"
-            >
-              <Box backgroundColor="black" color="white">
-                <Text px="10px" py="2px" fontWeight="400" fontSize="18px">
-                  History
-                </Text>
-              </Box>
+          <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} borderBottom="2px" my="39px">
+            <Flex justifyContent={{ base: "start ", sm: "start", md: "start", lg: "start" }}>
+              <Tab
+                {...TABLE_TABS[0]}
+                currentSelection={selectedTableTab}
+                selectOption={0}
+                handleClick={handleTabClick}
+              />
+              <Tab
+                {...TABLE_TABS[1]}
+                currentSelection={selectedTableTab}
+                selectOption={1}
+                handleClick={handleTabClick}
+              />
             </Flex>
-            {/* <Table
-                // @ts-ignore
-                columns={tableColumns}
-                data={claims || []}
-                initialState={{
-                  pageSize: 10,
-                }}
-              /> */}
+            <Table
+              // @ts-ignore
+              columns={designerTableColumns}
+              data={designerRewards.items || []}
+              initialState={{
+                pageSize: 10,
+              }}
+            />
           </GridItem>
         </Grid>
       )}

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Box, Flex, IconButton, Input, Select, Spacer, Text, VStack } from "@chakra-ui/react";
-import { HiOutlineSwitchVertical } from "react-icons/hi";
 
 const Swap: React.FC = () => {
   const [currency1, setCurrency1] = useState("");
@@ -41,7 +40,8 @@ const Swap: React.FC = () => {
         <Spacer />
         <IconButton
           aria-label="Switch Currencies"
-          icon={<HiOutlineSwitchVertical />}
+          // TODO: need to add icon svg from figma
+          // icon=""
           onClick={() => switchCurrencies}
         />
         <Spacer />

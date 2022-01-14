@@ -1,5 +1,5 @@
 // eslint-disable-next-line camelcase
-import { Box, Grid, GridItem, Text, Flex, HStack, Center } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Text, Flex, HStack } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useEffect, useState, useMemo } from "react";

@@ -93,7 +93,12 @@ const PieChart: FC<{ chartData: Array<ChartData> }> = ({ chartData }) => {
                           hideTooltip();
                         }}
                       >
-                        <path d={pie.path(arc) ?? ""} stroke="#000" fill={color} strokeWidth="1px" />
+                        <path
+                          d={pie.path(arc) ?? ""}
+                          stroke="#000"
+                          fill={color}
+                          strokeWidth="1px"
+                        />
                       </g>
                     );
                   })

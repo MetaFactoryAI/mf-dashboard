@@ -144,10 +144,8 @@ const Connected: NextPage = () => {
 
   const isZeroRewards = useMemo(
     () =>
-      designerRewards &&
-      designerRewards.items?.length === 0 &&
-      buyerRewards &&
-      buyerRewards?.items.length === 0,
+      (!designerRewards || designerRewards.items?.length === 0) &&
+      (!buyerRewards || buyerRewards?.items.length === 0),
     [buyerRewards, designerRewards],
   );
 

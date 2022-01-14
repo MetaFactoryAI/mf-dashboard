@@ -45,6 +45,7 @@ const PieChart: FC<{ chartData: Array<ChartData> }> = ({ chartData }) => {
       width="100%"
       backgroundImage="linear-gradient(to right, #E0E0E0 1px, transparent 1px), linear-gradient(to bottom, #E0E0E0 1px, transparent 1px);"
       backgroundSize="24px 24px"
+      borderLeft={{ base: "0px", sm: "0px", md: "2px", lg: "2px" }}
     >
       <Box width="100%" maxWidth="400px">
         <Box width="100%" height="100%" style={{ position: "relative" }} ref={containerBoxRef}>

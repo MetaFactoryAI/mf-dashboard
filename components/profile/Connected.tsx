@@ -1,5 +1,5 @@
 // eslint-disable-next-line camelcase
-import { Box, Grid, GridItem, Text, Flex, HStack, Center } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Text, Flex, Stack, Center } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useEffect, useState, useMemo } from "react";
@@ -182,8 +182,20 @@ const Connected: NextPage = () => {
 
       <PageTitle title="My Profile" />
       <Grid templateColumns="repeat(10, 1fr)" width="100%">
+        <GridItem
+          colSpan={{ base: 10, sm: 10 }}
+          display={{ base: "block", sm: "block", md: "none", lg: "none" }}
+          mb="30px"
+        >
+          <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
+        </GridItem>
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
-          <HStack border="2px" alignItems="start" spacing="0px">
+          <Stack
+            border="2px"
+            alignItems="start"
+            spacing="0px"
+            direction={{ base: "column", sm: "column", md: "row", lg: "row" }}
+          >
             <Box>
               <Box backgroundColor="black" color="white">
                 <Text
@@ -221,10 +233,8 @@ const Connected: NextPage = () => {
                 </Text>
               </Box>
             </Box>
-            <Flex flex="1" justifyContent="center" borderLeft="2px">
-              <PieChart chartData={!isZeroRewards ? pieChartData : emptyPieChartData} />
-            </Flex>
-          </HStack>
+            <PieChart chartData={!isZeroRewards ? pieChartData : emptyPieChartData} />
+          </Stack>
         </GridItem>
         <GridItem
           colSpan={{ md: 3, lg: 3 }}

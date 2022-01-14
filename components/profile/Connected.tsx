@@ -212,18 +212,14 @@ const Connected: NextPage = () => {
                 </Box>
               </Box>
               <Flex flex="1" justifyContent="center" borderLeft="2px">
-                <Center width="100%">
-                  <Box width="100%" maxWidth="400px">
-                    <PieChart
-                      chartData={
-                        (designerRewards && designerRewards.items?.length > 0) ||
-                        (buyerRewards && buyerRewards?.items.length > 0)
-                          ? pieChartData
-                          : emptyPieChartData
-                      }
-                    />
-                  </Box>
-                </Center>
+                <PieChart
+                  chartData={
+                    (designerRewards && designerRewards.items?.length > 0) ||
+                    (buyerRewards && buyerRewards?.items.length > 0)
+                      ? pieChartData
+                      : emptyPieChartData
+                  }
+                />
               </Flex>
             </HStack>
           </GridItem>

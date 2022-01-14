@@ -8,10 +8,10 @@ const Profile: NextPage = () => {
   const { account, loading } = useWeb3Context();
 
   return (
-    <div>
+    <>
       {!loading && !account && <Connect />}
       {!loading && !!account && <Connected />}
-    </div>
+    </>
   );
 };
 

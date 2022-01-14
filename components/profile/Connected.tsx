@@ -1,15 +1,14 @@
 // eslint-disable-next-line camelcase
-import { Box, Grid, GridItem, Text, Flex, HStack, Center } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Text, Flex, Stack, Center } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useEffect, useState, useMemo } from "react";
 import useClaims from "@/hooks/useClaims";
 import useFetchMetafactoryGraph from "@/hooks/useFetchMetafactoryGraph";
 import { useWeb3Context } from "@/contexts/Web3Context";
-import { Loading, PieChart } from "@/components/atoms";
+import { Loading, PieChart, UnclaimedTokens, PageTitle } from "@/components/atoms";
 import Table from "@/components/table";
 import type { DesignerReward, BuyerReward } from "@/hooks/useFetchMetafactoryGraph";
-import UnclaimedTokens from "../atoms/UnclaimedTokens";
 import Tab from "./Tab";
 
 const Connected: NextPage = () => {
@@ -143,6 +142,15 @@ const Connected: NextPage = () => {
     [],
   );
 
+  const isZeroRewards = useMemo(
+    () =>
+      designerRewards &&
+      designerRewards.items?.length === 0 &&
+      buyerRewards &&
+      buyerRewards?.items.length === 0,
+    [buyerRewards, designerRewards],
+  );
+
   const handleTabClick = (tabIndex: number) => {
     setSelectedTableTab(tabIndex);
     // @ts-ignore
@@ -163,97 +171,107 @@ const Connected: NextPage = () => {
     setTableRows(TABLE_TABS[0].tabRows);
   }, [TABLE_TABS]);
 
+  if (loading || loadingWeb3) return <Loading />;
+
   return (
     <Box>
       <Head>
         <title>MetaFactory - Dashboard</title>
-        <meta name="description" content="MetaFactory Dashboard" />
+        <meta name="description" content="My Profile" />
       </Head>
-      {(loading || loadingWeb3) && <Loading />}
-      {!loading && !loadingWeb3 && (
-        <Grid templateColumns="repeat(10, 1fr)" width="100%">
-          <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
-            <HStack border="2px" alignItems="start" spacing="0px">
-              <Box>
-                <Box backgroundColor="black" color="white">
-                  <Text
-                    pt="24px"
-                    pl="24px"
-                    pb="22px"
-                    pr="146px"
-                    fontSize="32px"
-                    fontFamily="body_bold"
-                    fontWeight="800"
-                  >
-                    Earning
-                  </Text>
-                </Box>
-                <Box>
-                  <Text
-                    pt="16px"
-                    pl="24px"
-                    pr="146px"
-                    fontSize="14px"
-                    fontFamily="body_regular"
-                    fontWeight="800"
-                  >
-                    Total Claimed
-                  </Text>
-                  <Text
-                    pt="6px"
-                    pl="24px"
-                    pr="146px"
-                    fontSize="24px"
-                    fontFamily="body_bold"
-                    fontWeight="800"
-                  >
-                    {claimedTotal} ROBOT
-                  </Text>
-                </Box>
-              </Box>
-              <Flex flex="1" justifyContent="center" borderLeft="2px">
-                <Center width="100%">
-                  <Box width="100%" maxWidth="400px">
-                    <PieChart
-                      chartData={
-                        (designerRewards && designerRewards.items?.length > 0) ||
-                        (buyerRewards && buyerRewards?.items.length > 0)
-                          ? pieChartData
-                          : emptyPieChartData
-                      }
-                    />
-                  </Box>
-                </Center>
-              </Flex>
-            </HStack>
-          </GridItem>
-          <GridItem
-            colSpan={{ md: 3, lg: 3 }}
-            display={{ base: "none", sm: "none", md: "block", lg: "block" }}
-            ml="30px"
-          >
-            <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
-          </GridItem>
 
-          <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} borderBottom="2px" my="39px">
-            <Flex justifyContent={{ base: "start ", sm: "start", md: "start", lg: "start" }}>
-              <Tab
-                title={TABLE_TABS[0].title}
-                selectColor={TABLE_TABS[0].selectColor}
-                avatar={TABLE_TABS[0].avatar}
-                currentSelection={selectedTableTab}
-                selectOption={0}
-                handleClick={handleTabClick}
-              />
-              <Tab
-                title={TABLE_TABS[1].title}
-                selectColor={TABLE_TABS[1].selectColor}
-                avatar={TABLE_TABS[1].avatar}
-                currentSelection={selectedTableTab}
-                selectOption={1}
-                handleClick={handleTabClick}
-              />
-            </Flex>
+      <PageTitle title="My Profile" />
+      <Grid templateColumns="repeat(10, 1fr)" width="100%">
+        <GridItem
+          colSpan={{ base: 10, sm: 10 }}
+          display={{ base: "block", sm: "block", md: "none", lg: "none" }}
+          mb="30px"
+        >
+          <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
+        </GridItem>
+        <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
+          <Stack
+            border="2px"
+            alignItems="start"
+            spacing="0px"
+            direction={{ base: "column", sm: "column", md: "row", lg: "row" }}
+          >
+            <Box>
+              <Box backgroundColor="black" color="white">
+                <Text
+                  pt="24px"
+                  pl="24px"
+                  pb="22px"
+                  pr="146px"
+                  fontSize="32px"
+                  fontFamily="body_bold"
+                  fontWeight="800"
+                >
+                  Earning
+                </Text>
+              </Box>
+              <Box>
+                <Text
+                  pt="16px"
+                  pl="24px"
+                  pr="146px"
+                  fontSize="14px"
+                  fontFamily="body_regular"
+                  fontWeight="800"
+                >
+                  Total Claimed
+                </Text>
+                <Text
+                  pt="6px"
+                  pl="24px"
+                  pr="146px"
+                  fontSize="24px"
+                  fontFamily="body_bold"
+                  fontWeight="800"
+                >
+                  {claimedTotal} ROBOT
+                </Text>
+              </Box>
+            </Box>
+            <PieChart chartData={!isZeroRewards ? pieChartData : emptyPieChartData} />
+          </Stack>
+        </GridItem>
+        <GridItem
+          colSpan={{ md: 3, lg: 3 }}
+          display={{ base: "none", sm: "none", md: "block", lg: "block" }}
+          ml="30px"
+        >
+          <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
+        </GridItem>
+
+        <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} borderBottom="2px" my="39px">
+          <Flex
+            justifyContent={{ base: "start ", sm: "start", md: "start", lg: "start" }}
+            borderBottom="2px"
+          >
+            <Tab
+              title={TABLE_TABS[0].title}
+              selectColor={TABLE_TABS[0].selectColor}
+              avatar={TABLE_TABS[0].avatar}
+              currentSelection={selectedTableTab}
+              selectOption={0}
+              handleClick={handleTabClick}
+            />
+            <Tab
+              title={TABLE_TABS[1].title}
+              selectColor={TABLE_TABS[1].selectColor}
+              avatar={TABLE_TABS[1].avatar}
+              currentSelection={selectedTableTab}
+              selectOption={1}
+              handleClick={handleTabClick}
+            />
+          </Flex>
+          {isZeroRewards && (
+            <Center my="20px">
+              <Text fontSize="35px">No data yet ...</Text>
+            </Center>
+          )}
+          {!isZeroRewards && (
             <Table
               // @ts-ignore
               columns={tableColumns}
@@ -262,9 +280,10 @@ const Connected: NextPage = () => {
                 pageSize: 10,
               }}
             />
-          </GridItem>
-        </Grid>
-      )}
+          )}
+        </GridItem>
+      </Grid>
+      <Box />
     </Box>
   );
 };

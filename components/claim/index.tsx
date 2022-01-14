@@ -2,7 +2,8 @@
 import { Box, Grid, GridItem, Text, Flex } from "@chakra-ui/react";
 import { useMemo } from "react";
 import type { NextPage } from "next";
-import { Loading, YearlyBarChart } from "@/components/atoms";
+import Head from "next/head";
+import { Loading, YearlyBarChart, PageTitle } from "@/components/atoms";
 import Table from "@/components/table";
 import { generateYearsUntilToday } from "@/utils/time";
 import UnclaimedTokens from "@/components/atoms/UnclaimedTokens";
@@ -49,68 +50,72 @@ const Claim: NextPage = () => {
     [],
   );
 
+  if (loading) return <Loading />;
+
   return (
     <Box>
-      {loading && <Loading />}
-      {!loading && (
-        <Box>
-          <Box
-            borderX={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}
-            borderTop={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}
-            borderBottom="2px"
-          >
-            <YearlyBarChart
-              chartData={monthlyClaims}
-              title="Distributions"
-              startYear={claimsYear}
-              years={generateYearsUntilToday(START_YEAR)}
-              yearSelectedCallback={setClaimsYear}
-            />
-          </Box>
-          <Grid templateColumns="repeat(10, 1fr)" width="100%" mt="25px">
-            <GridItem
-              colSpan={{ base: 10, sm: 10 }}
-              display={{ base: "block", sm: "block", md: "none", lg: "none" }}
-              mb="30px"
-            >
-              <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
-            </GridItem>
-            <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
-              <Flex
-                justifyContent={{ base: "start ", sm: "start", md: "start", lg: "start" }}
-                borderBottom="2px"
-              >
-                <Text
-                  borderTop="2px"
-                  borderRight="2px"
-                  borderLeft="2px"
-                  px="10px"
-                  py="2px"
-                  fontWeight="400"
-                  fontSize="18px"
-                >
-                  Distributions History
-                </Text>
-              </Flex>
-              <Table
-                // @ts-ignore
-                columns={tableColumns}
-                data={claims || []}
-                initialState={{
-                  pageSize: 10,
-                }}
-              />
-            </GridItem>
-            <GridItem
-              colSpan={{ md: 3, lg: 3 }}
-              display={{ base: "none", sm: "none", md: "block", lg: "block" }}
-              ml="30px"
-            >
-              <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
-            </GridItem>
-          </Grid>
+      <Head>
+        <title>MetaFactory - Dashboard</title>
+        <meta name="description" content="Claim" />
+      </Head>
+      <PageTitle title="Claim" />
+      <Box>
+        <Box
+          borderX={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}
+          borderTop={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}
+          borderBottom="2px"
+        >
+          <YearlyBarChart
+            chartData={monthlyClaims}
+            title="Distributions"
+            startYear={claimsYear}
+            years={generateYearsUntilToday(START_YEAR)}
+            yearSelectedCallback={setClaimsYear}
+          />
         </Box>
-      )}
+        <Grid templateColumns="repeat(10, 1fr)" width="100%" mt="25px">
+          <GridItem
+            colSpan={{ base: 10, sm: 10 }}
+            display={{ base: "block", sm: "block", md: "none", lg: "none" }}
+            mb="30px"
+          >
+            <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
+          </GridItem>
+          <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
+            <Flex
+              justifyContent={{ base: "start ", sm: "start", md: "start", lg: "start" }}
+              borderBottom="2px"
+            >
+              <Text
+                borderTop="2px"
+                borderRight="2px"
+                borderLeft="2px"
+                px="10px"
+                py="2px"
+                fontWeight="400"
+                fontSize="18px"
+              >
+                Distributions History
+              </Text>
+            </Flex>
+            <Table
+              // @ts-ignore
+              columns={tableColumns}
+              data={claims || []}
+              initialState={{
+                pageSize: 10,
+              }}
+            />
+          </GridItem>
+          <GridItem
+            colSpan={{ md: 3, lg: 3 }}
+            display={{ base: "none", sm: "none", md: "block", lg: "block" }}
+            ml="30px"
+          >
+            <UnclaimedTokens unclaimedTotal={unclaimedTotal} handleClaim={handleClaim} />
+          </GridItem>
+        </Grid>
+      </Box>
     </Box>
   );
 };

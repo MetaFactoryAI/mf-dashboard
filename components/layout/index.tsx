@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect } from "react";
-import { Flex, Spacer } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
@@ -16,7 +16,7 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   }, [account, loading, router]);
 
   return (
-    <Flex flexDirection="column" minH="100vh">
+    <Flex flexDirection="column" height="100vh">
       <Navigation />
       <Flex
         flex="1"
@@ -25,9 +25,7 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
         border={{ base: "0px", sm: "00px", md: "2px", lg: "2px" }}
         marginBlockEnd="20px"
       >
-        <Spacer />
         {children}
-        <Spacer />
       </Flex>
       <Footer />
     </Flex>

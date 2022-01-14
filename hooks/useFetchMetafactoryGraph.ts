@@ -25,7 +25,7 @@ const useFetchMetafactoryGraph = () => {
     const DESIGNER_REWARDS_QUERY = `
       query DesignerRewards {
         robot_product_designer (where: {
-          eth_address: {_eq: "${account}"}
+          eth_address: {_eq: "${account.toLowerCase()}"}
         }){
           robot_reward
           product {
@@ -55,7 +55,7 @@ const useFetchMetafactoryGraph = () => {
     const BUYER_REWARDS_QUERY = `
       query BuyerRewards {
         robot_order (where: {
-          buyer_address: {_eq: "${account}"}
+          buyer_address: {_eq: "${account.toLowerCase()}"}
         }, order_by: {date: asc})
         {
           buyer_reward

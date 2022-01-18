@@ -18,7 +18,7 @@ const authLink = (authBearer: string | undefined) =>
     ({
       headers: {
         ...headers,
-        authorization: authBearer ? `Bearer ${authBearer}` : "",
+        ...(authBearer && { authorization: `Bearer ${authBearer}` }),
       },
     }),
   );

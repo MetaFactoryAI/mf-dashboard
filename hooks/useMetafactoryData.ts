@@ -12,7 +12,7 @@ const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
   metafactory: "https://metafactory.hasura.app/v1/graphql",
 };
 
-const useFetchMetafactoryGraph = () => {
+const useMetafactoryData = () => {
   const [designerRewards, setDesignerRewards] = useState<DesignerRewards>();
   const [buyerRewards, setBuyerRewards] = useState<BuyerRewards>();
   const [loadingDesigner, setLoadingDesigner] = useState(true);
@@ -108,4 +108,4 @@ const normaliseRobotOrderItems = (items: BuyerReward[]) =>
     amount: formatNumber(item.buyer_reward),
   }));
 
-export default useFetchMetafactoryGraph;
+export default useMetafactoryData;

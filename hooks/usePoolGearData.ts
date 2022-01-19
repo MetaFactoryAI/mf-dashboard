@@ -59,9 +59,9 @@ const usePoolGearData = () => {
     const totalPoolshare = parseFloat(totalShare);
 
     const userTokenBalances = poolTokens.map((token: PoolToken): TokenBalance => {
-      const totalUserBalance = parseFloat(token.balance);
+      const totalBalance = parseFloat(token.balance);
       const userShareProportion = userPoolShare / totalPoolshare;
-      const userBalance = totalUserBalance * userShareProportion;
+      const userBalance = totalBalance * userShareProportion;
 
       return { symbol: token.symbol, userBalance };
     });

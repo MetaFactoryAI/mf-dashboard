@@ -3,6 +3,7 @@ import { Text, VStack, Button, Flex, Box, HStack } from "@chakra-ui/react";
 import Image from "next/image";
 import { BALANCER_POOL_ID } from "@/utils/constants";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
+import { formatNumber } from "@/utils/presentationHelper";
 
 const PoolLiquidity: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBalances }) => {
   const handleLiquidityRedirect = () => {
@@ -39,7 +40,7 @@ const PoolLiquidity: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBal
                 mx="16px"
                 color="white"
               >
-                {token.userBalance}
+                {formatNumber(token.userBalance)}
               </Text>
             </Box>
           </HStack>

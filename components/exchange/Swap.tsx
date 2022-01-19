@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Box, Flex, IconButton, Input, Select, Spacer, Text, VStack } from "@chakra-ui/react";
-import { useWeb3Context } from "@/contexts/Web3Context";
-import usePoolGearData from "@/hooks/usePoolGearData";
 
 const Swap: React.FC = () => {
-  const { account } = useWeb3Context();
   const [currency1, setCurrency1] = useState("");
   const [currency2, setCurrency2] = useState("");
-  const { fetchBalances, tokensBalances } = usePoolGearData();
 
   const handleCurrency1Change = (selected: string) => {
     setCurrency1(selected);
@@ -23,14 +19,8 @@ const Swap: React.FC = () => {
     setCurrency2(cur1);
   };
 
-  useEffect(() => {
-    if (account) {
-      fetchBalances(account);
-    }
-  }, [account, fetchBalances]);
-
   return (
-    <Box w="420px" h="412px">
+    <Box w="420px" h="412px" border="2px" borderTop="0px">
       <VStack>
         <Text align="start">Send</Text>
         <Flex>

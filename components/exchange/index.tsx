@@ -2,9 +2,10 @@ import { Grid, GridItem, Box, Stack } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import React, { useEffect } from "react";
 import Head from "next/head";
-import { GraphChart, PoolLiquidity, Loading, PageTitle } from "../atoms";
+import { GraphChart, Loading, PageTitle } from "@/components/atoms";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import usePoolGearData from "@/hooks/usePoolGearData";
+import SwapPoolPanel from "./SwapPoolPanel";
 
 const Exchange: NextPage = () => {
   const { account } = useWeb3Context();
@@ -51,7 +52,7 @@ const Exchange: NextPage = () => {
           display={{ base: "block", sm: "block", md: "none", lg: "none" }}
           mb="30px"
         >
-          <PoolLiquidity tokensBalances={tokensBalances} />
+          <SwapPoolPanel tokensBalances={tokensBalances} />
         </GridItem>
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
           <Stack
@@ -68,7 +69,7 @@ const Exchange: NextPage = () => {
           display={{ base: "none", sm: "none", md: "block", lg: "block" }}
           ml="30px"
         >
-          <PoolLiquidity tokensBalances={tokensBalances} />
+          <SwapPoolPanel tokensBalances={tokensBalances} />
         </GridItem>
 
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} borderBottom="2px" my="39px">

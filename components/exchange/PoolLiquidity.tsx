@@ -11,7 +11,7 @@ const PoolLiquidity: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBal
   };
 
   return (
-    <VStack border="2px" spacing="0px">
+    <VStack border="2px" borderTop="0px" borderRight="0px" spacing="0px">
       <VStack spacing="16px" width="100%" px="32px" pt="32px" pb="26px">
         <Box width="100%">
           <Text fontFamily="body_regular" fontWeight="400" fontSize="16px">
@@ -47,7 +47,8 @@ const PoolLiquidity: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBal
         ))}
         <Box width="100%" p="16px">
           <Text fontFamily="body_regular" fontWeight="400" fontSize="12px">
-            Speaking of $ROBOT, transfers are now enabled and liquidity pools are live! $GEAR yourself up while playing.
+            Speaking of $ROBOT, transfers are now enabled and liquidity pools are live! $GEAR
+            yourself up while playing.
           </Text>
         </Box>
       </VStack>

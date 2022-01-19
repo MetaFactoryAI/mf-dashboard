@@ -20,7 +20,7 @@ const Swap: React.FC = () => {
   };
 
   return (
-    <Box w="420px" h="412px">
+    <Box w="420px" h="412px" border="2px" borderTop="0px">
       <VStack>
         <Text align="start">Send</Text>
         <Flex>

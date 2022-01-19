@@ -2,6 +2,7 @@
 import { useState, useCallback } from "react";
 import fetchGraph from "@/utils/graph/fetchGraph";
 import { formatNumber } from "@/utils/presentationHelper";
+import { METAFACTORY_GQL_URL } from "@/utils/constants";
 
 export type DesignerReward = { robot_reward: number; product: { id: string; title: string } };
 export type BuyerReward = { buyer_reward: number; date: string; order_id: string };
@@ -9,10 +10,10 @@ type DesignerRewards = { total: number; items: DesignerReward[] };
 type BuyerRewards = { total: number; items: BuyerReward[] };
 
 const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
-  metafactory: "https://metafactory.hasura.app/v1/graphql",
+  metafactory: METAFACTORY_GQL_URL,
 };
 
-const useFetchMetafactoryGraph = () => {
+const useMetafactoryData = () => {
   const [designerRewards, setDesignerRewards] = useState<DesignerRewards>();
   const [buyerRewards, setBuyerRewards] = useState<BuyerRewards>();
   const [loadingDesigner, setLoadingDesigner] = useState(true);
@@ -108,4 +109,4 @@ const normaliseRobotOrderItems = (items: BuyerReward[]) =>
     amount: formatNumber(item.buyer_reward),
   }));
 
-export default useFetchMetafactoryGraph;
+export default useMetafactoryData;

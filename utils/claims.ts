@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
+import { MerkleRedeem } from "types/ethers-contracts";
 import { IPFS_CLAIMS_SNAPSHOT_URL } from "@/utils/constants";
 import { get } from "@/utils/ipfsClient";
 import { loadTree } from "@/utils/merkle/merkleTree";
-import { MerkleRedeem } from "types/ethers-contracts";
 
 export interface ClaimWeek {
   [address: string]: number;

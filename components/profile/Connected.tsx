@@ -4,16 +4,16 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useEffect, useState, useMemo } from "react";
 import useClaims from "@/hooks/useClaims";
-import useFetchMetafactoryGraph from "@/hooks/useFetchMetafactoryGraph";
+import useMetafactoryData from "@/hooks/useMetafactoryData";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { Loading, PieChart, UnclaimedTokens, PageTitle } from "@/components/atoms";
 import Table from "@/components/table";
-import type { DesignerReward, BuyerReward } from "@/hooks/useFetchMetafactoryGraph";
+import type { DesignerReward, BuyerReward } from "@/hooks/useMetafactoryData";
 import Tab from "./Tab";
 
 const Connected: NextPage = () => {
   const { designerRewards, buyerRewards, loading, fetchDesignerRewards, fetchBuyerRewards } =
-    useFetchMetafactoryGraph();
+    useMetafactoryData();
   const { loading: loadingWeb3, accountAuthBearer, account } = useWeb3Context();
   const { unclaimedTotal, claimedTotal, handleClaim } = useClaims();
   const [selectedTableTab, setSelectedTableTab] = useState<number>(0);

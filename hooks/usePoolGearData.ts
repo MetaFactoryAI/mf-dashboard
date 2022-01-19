@@ -4,7 +4,7 @@ import fetchGraph from "@/utils/graph/fetchGraph";
 import { BALANCER_POOL_ID, BALANCER_GQL_URL } from "@/utils/constants";
 
 type PoolToken = { balance: string; symbol: string };
-type TokenBalance = { userBalance: number; symbol: string };
+export type TokenBalance = { userBalance: number; symbol: string };
 
 const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
   balancerV2Graph: BALANCER_GQL_URL,

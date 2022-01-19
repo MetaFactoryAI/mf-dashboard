@@ -49,7 +49,7 @@ const usePoolGearData = () => {
     const {
       data: { poolShares: userPoolShares },
     } = await fetchGraph(SUBGRAPH_ENDPOINTS.balancerV2Graph, USER_POOL_SHARES, null);
-    const userPoolShare = parseFloat(userPoolShares[0].balance);
+    const userPoolShare = userPoolShares.length > 0 ? parseFloat(userPoolShares[0].balance) : 0;
 
     const {
       data: {

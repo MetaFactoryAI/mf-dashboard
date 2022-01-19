@@ -1,4 +1,4 @@
-import { Grid, GridItem, Box, Flex, Text, Stack } from "@chakra-ui/react";
+import { Grid, GridItem, Box, Stack } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import React, { useEffect } from "react";
 import Head from "next/head";

@@ -55,14 +55,12 @@ const Exchange: NextPage = () => {
           <SwapPoolPanel tokensBalances={tokensBalances} />
         </GridItem>
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
-          <Stack
+          <Box
             border="2px"
-            alignItems="start"
             spacing="0px"
-            direction={{ base: "column", sm: "column", md: "row", lg: "row" }}
           >
-            <GraphChart chartData={graphChartData} width={660} />
-          </Stack>
+            <GraphChart chartData={graphChartData} />
+          </Box>
         </GridItem>
         <GridItem
           colSpan={{ md: 3, lg: 3 }}

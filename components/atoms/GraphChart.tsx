@@ -8,9 +8,8 @@ import useResize from "hooks/useResize";
 import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
 
 type ChartData = {
-  key: string;
   value: number;
-  date: number;
+  date: Date;
 };
 
 // produces warnings connected to this issue https://github.com/airbnb/visx/issues/737
@@ -46,9 +45,12 @@ const GraphChart: FC<{ chartData: Array<ChartData> }> = ({ chartData }) => {
   const yScale = useMemo(
     () =>
       scaleLinear({
-        range: [height, 0],
+        range: [height - 50, 50],
         round: true,
-        domain: [0, Math.max(...chartData.map((d) => d.value))],
+        domain: [
+          Math.min(...chartData.map((d) => d.value)),
+          Math.max(...chartData.map((d) => d.value)),
+        ],
       }),
     [chartData, height],
   );
@@ -61,9 +63,9 @@ const GraphChart: FC<{ chartData: Array<ChartData> }> = ({ chartData }) => {
       const { x } = localPoint(event) || { x: 0 };
 
       const currentDate = xScale.invert(x);
-      const datesArray = chartData.map((element) => element.date);
+      const datesArray = chartData.map((element) => element.date.valueOf());
       const closestDate = findClosest(datesArray, currentDate.valueOf());
-      const currentData = chartData.find((element) => element.date === closestDate);
+      const currentData = chartData.find((element) => element.date.valueOf() === closestDate);
 
       if (currentData !== undefined) {
         showTooltip({
@@ -115,13 +117,13 @@ const GraphChart: FC<{ chartData: Array<ChartData> }> = ({ chartData }) => {
         </linearGradient>
 
         <defs>
-          <pattern id="gridX" width={width} height="28" patternUnits="userSpaceOnUse">
+          <pattern id="gridX" width={width} height="24" patternUnits="userSpaceOnUse">
             {/* <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#E0E0E0" strokeWidth="1" /> */}
-            <line y1="0" x2={width} y2="0" stroke="url(#gradientX)" strokeWidth="5" />
+            <line y1="0" x2={width} y2="0" stroke="url(#gradientX)" strokeWidth="4" />
           </pattern>
-          <pattern id="gridY" width="28" height={height} patternUnits="userSpaceOnUse">
+          <pattern id="gridY" width="24" height={height} patternUnits="userSpaceOnUse">
             {/* <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#E0E0E0" strokeWidth="1" /> */}
-            <line x1="0" x2="0" y2={height} stroke="url(#gradientY)" strokeWidth="5" />
+            <line x1="0" x2="0" y2={height} stroke="url(#gradientY)" strokeWidth="4" />
           </pattern>
         </defs>
         <rect width="100%" height={height} fill="url(#gridX)" opacity="0.25" />

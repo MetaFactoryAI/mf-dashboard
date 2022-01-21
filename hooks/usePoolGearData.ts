@@ -1,21 +1,42 @@
 /* eslint-disable camelcase */
 import { useState, useCallback } from "react";
+import dayjs from "dayjs";
 import fetchGraph from "@/utils/graph/fetchGraph";
 import { BALANCER_POOL_ID, BALANCER_GQL_URL } from "@/utils/constants";
 
-type PoolToken = { balance: string; symbol: string };
 export type TokenBalance = { userBalance: number; symbol: string };
+
+export enum HistoryRange {
+  Week,
+  Month,
+  Year,
+}
+
+export type PoolSnapshot = {
+  amounts: number[];
+  totalShares: string;
+  swapFees: string;
+  swapVolume: string;
+  liquidity: string;
+  timestamp: number;
+  date: Date;
+  value: number;
+};
 
 const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
   balancerV2Graph: BALANCER_GQL_URL,
 };
 
-const usePoolGearData = () => {
+type PoolToken = { balance: string; symbol: string };
+
+export const usePoolGearData = () => {
   const [tokensBalances, setTokensBalances] = useState<TokenBalance[]>();
-  const [loading, setLoading] = useState(false);
+  const [loadingBalances, setLoadingBalances] = useState(false);
+  const [poolHistory, setPoolHistory] = useState<PoolSnapshot[]>();
+  const [loadingPoolHistory, setLoadingPoolHistory] = useState(false);
 
   const fetchBalances = async (account: string) => {
-    setLoading(true);
+    setLoadingBalances(true);
 
     const POOL_TOKENS = `
       query PoolTokens {
@@ -66,15 +87,76 @@ const usePoolGearData = () => {
       return { symbol: token.symbol, userBalance };
     });
 
-    setLoading(false);
+    setLoadingBalances(false);
     setTokensBalances(userTokenBalances);
+  };
+
+  const fetchPoolHistory = async (historyRange: HistoryRange) => {
+    setLoadingPoolHistory(true);
+
+    const startTimestamp = getStartDate(historyRange);
+    const endTimestamp = dayjs().unix();
+    const skipStep = 70;
+    const fetchBatch = async (skip: number): Promise<PoolSnapshot[]> => {
+      const POOL_SNAPSHOTS = `
+        query PoolSnapshots {
+          poolSnapshots(skip: ${skip}, first: ${skipStep}, where:
+            { pool: "${BALANCER_POOL_ID}",
+              timestamp_gte: ${startTimestamp},
+              timestamp_lt: ${endTimestamp}
+            }) {
+            amounts
+            totalShares
+            swapFees
+            swapVolume
+            liquidity
+            timestamp
+          }
+        }
+      `;
+
+      const {
+        data: { poolSnapshots },
+      } = await fetchGraph(SUBGRAPH_ENDPOINTS.balancerV2Graph, POOL_SNAPSHOTS, null);
+
+      if (poolSnapshots.length > 0) {
+        const batch = await fetchBatch(skip + skipStep);
+        return [...poolSnapshots, ...batch];
+      }
+
+      return [];
+    };
+    const result = await fetchBatch(0);
+    const normalizedSnapshots = normalizeSnapshots(result);
+
+    setPoolHistory(normalizedSnapshots);
+    setLoadingPoolHistory(false);
   };
 
   return {
     fetchBalances: useCallback(fetchBalances, []),
-    loading,
+    fetchPoolHistory: useCallback(fetchPoolHistory, []),
+    loadingBalances,
     tokensBalances,
+    loadingPoolHistory,
+    poolHistory,
   };
 };
 
-export default usePoolGearData;
+const getStartDate = (historyRange: HistoryRange) => {
+  switch (historyRange) {
+    case HistoryRange.Week:
+      return dayjs().subtract(7, "day").unix();
+    case HistoryRange.Month:
+      return dayjs().subtract(1, "month").unix();
+    default:
+      return dayjs().subtract(1, "year").unix();
+  }
+};
+
+const normalizeSnapshots = (snapshots: PoolSnapshot[]) =>
+  snapshots.map((snapshot: PoolSnapshot) => ({
+    ...snapshot,
+    date: dayjs.unix(snapshot.timestamp).toDate(),
+    value: parseFloat(snapshot.liquidity),
+  }));

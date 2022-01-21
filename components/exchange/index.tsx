@@ -1,42 +1,31 @@
-import { Grid, GridItem, Box, Stack } from "@chakra-ui/react";
+import { Grid, GridItem, Box } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import React, { useEffect } from "react";
 import Head from "next/head";
 import { GraphChart, Loading, PageTitle } from "@/components/atoms";
 import { useWeb3Context } from "@/contexts/Web3Context";
-import usePoolGearData from "@/hooks/usePoolGearData";
+import { usePoolGearData, HistoryRange } from "@/hooks/usePoolGearData";
 import SwapPoolPanel from "./swapPoolPanel";
 
 const Exchange: NextPage = () => {
   const { account } = useWeb3Context();
-  const { fetchBalances, tokensBalances, loading } = usePoolGearData();
-  const sampleDate = new Date();
-  const graphChartData = [
-    { key: "TEST", value: 0, date: new Date().setDate(sampleDate.getDate() + 1) },
-    { key: "TEST", value: 10, date: new Date().setDate(sampleDate.getDate() + 2) },
-    { key: "TEST2", value: 20, date: new Date().setDate(sampleDate.getDate() + 3) },
-    { key: "TEST3", value: 30, date: new Date().setDate(sampleDate.getDate() + 4) },
-    { key: "TEST", value: 40, date: new Date().setDate(sampleDate.getDate() + 5) },
-    { key: "TEST2", value: 20, date: new Date().setDate(sampleDate.getDate() + 6) },
-    { key: "TEST3", value: 60, date: new Date().setDate(sampleDate.getDate() + 7) },
-    { key: "TEST", value: 10, date: new Date().setDate(sampleDate.getDate() + 8) },
-    { key: "TEST2", value: 80, date: new Date().setDate(sampleDate.getDate() + 9) },
-    { key: "TEST3", value: 70, date: new Date().setDate(sampleDate.getDate() + 10) },
-    { key: "TEST", value: 60, date: new Date().setDate(sampleDate.getDate() + 11) },
-    { key: "TEST2", value: 50, date: new Date().setDate(sampleDate.getDate() + 12) },
-    { key: "TEST3", value: 30, date: new Date().setDate(sampleDate.getDate() + 13) },
-    { key: "TEST", value: 100, date: new Date().setDate(sampleDate.getDate() + 14) },
-    { key: "TEST2", value: 120, date: new Date().setDate(sampleDate.getDate() + 15) },
-    { key: "TEST3", value: 130, date: new Date().setDate(sampleDate.getDate() + 16) },
-  ];
+  const {
+    fetchBalances,
+    tokensBalances,
+    loadingBalances,
+    fetchPoolHistory,
+    poolHistory,
+    loadingPoolHistory,
+  } = usePoolGearData();
 
   useEffect(() => {
     if (account) {
       fetchBalances(account);
+      fetchPoolHistory(HistoryRange.Year);
     }
-  }, [account, fetchBalances]);
+  }, [account, fetchBalances, fetchPoolHistory]);
 
-  if (!tokensBalances || loading) return <Loading />;
+  if (!tokensBalances || loadingBalances || loadingPoolHistory || !poolHistory) return <Loading />;
 
   return (
     <Box>
@@ -56,7 +45,7 @@ const Exchange: NextPage = () => {
         </GridItem>
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
           <Box border="2px" spacing="0px">
-            <GraphChart chartData={graphChartData} />
+            <GraphChart chartData={poolHistory} />
           </Box>
         </GridItem>
         <GridItem

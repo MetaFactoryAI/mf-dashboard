@@ -17,6 +17,8 @@
   ],
   "plugins": ["@typescript-eslint", "react", "prettier"],
   "rules": {
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"],
     "no-use-before-define": "off",
     "prettier/prettier": "error",
     "react/react-in-jsx-scope": "off",

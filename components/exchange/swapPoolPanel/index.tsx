@@ -5,21 +5,26 @@ import type { TokenBalance } from "@/hooks/usePoolGearData";
 import SwapPoolPanelTab from "./SwapPoolPanelTab";
 import Swap from "./Swap";
 
+export enum SwapPoolPanelTabs {
+  SwapTab,
+  PoolTab,
+}
+
 const SwapPoolPanel: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBalances }) => {
   const TABS = useMemo(
     () => [
       {
         title: "Swap",
-        key: "swap",
+        key: SwapPoolPanelTabs.SwapTab,
       },
       {
         title: "Pool",
-        key: "pool",
+        key: SwapPoolPanelTabs.PoolTab,
       },
     ],
     [],
   );
-  const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [selectedTab, setSelectedTab] = useState<SwapPoolPanelTabs>(SwapPoolPanelTabs.SwapTab);
 
   const handleTabClick = (tabIndex: number) => {
     setSelectedTab(tabIndex);
@@ -28,21 +33,19 @@ const SwapPoolPanel: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBal
   return (
     <Box>
       <HStack width="100%" spacing="0px">
-        <SwapPoolPanelTab
-          title={TABS[0].title}
-          currentSelection={selectedTab}
-          selectOption={0}
-          handleClick={handleTabClick}
-        />
-        <SwapPoolPanelTab
-          title={TABS[1].title}
-          currentSelection={selectedTab}
-          selectOption={1}
-          handleClick={handleTabClick}
-        />
+        {TABS.map((tab) => (
+          <SwapPoolPanelTab
+            title={tab.title}
+            currentSelection={selectedTab}
+            selectOption={tab.key}
+            handleClick={handleTabClick}
+          />
+        ))}
       </HStack>
-      {TABS[selectedTab].key === "swap" && <Swap />}
-      {TABS[selectedTab].key === "pool" && <PoolLiquidity tokensBalances={tokensBalances} />}
+      {selectedTab === SwapPoolPanelTabs.SwapTab && <Swap />}
+      {selectedTab === SwapPoolPanelTabs.PoolTab && (
+        <PoolLiquidity tokensBalances={tokensBalances} />
+      )}
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import { Grid, GridItem, Box } from "@chakra-ui/react";
+import { Grid, GridItem, Box, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import React, { useEffect, useState, useMemo } from "react";
 import Head from "next/head";
@@ -124,8 +124,15 @@ const Exchange: NextPage = () => {
           <SwapPoolPanel tokensBalances={tokensBalances} />
         </GridItem>
 
-        <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} borderBottom="2px" my="39px">
-          TEXT
+        <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} borderBottom="2px" p="40px">
+          <Text fontFamily="body_regular" fontWeight="400" fontSize="16px">
+            MetaFactory is a community-owned culture studio and marketplace focused on the creation
+            and sale of digi-physical goods that celebrate crypto. Artists of all types are invited
+            to create products that promote their art, community, project, protocol, token, etc. We
+            abstract away all the production and logistics with our network of fashion houses and
+            production partners in California and Sweden, so creators can focus on their craft while
+            MetaFactory facilitates creation, fulfillment, sales and support.
+          </Text>
         </GridItem>
       </Grid>
       <Box />

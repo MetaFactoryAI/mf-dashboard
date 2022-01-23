@@ -10,7 +10,6 @@ import SwapPoolPanel from "./swapPoolPanel";
 import { getHistoryRangeTimestamps, HistoryRange } from "@/utils/time";
 import SummaryField from "./SummaryField";
 import type { ChartTab } from "@/components/atoms/chart/SelectButtons";
-import type { PoolSnapshot } from "@/hooks/usePoolGearData";
 
 const Exchange: NextPage = () => {
   const TIME_TABS: ChartTab[] = useMemo(
@@ -39,8 +38,8 @@ const Exchange: NextPage = () => {
     fetchPoolData,
     loadingPoolData,
     poolData,
-    poolHistory,
-    loadingPoolHistory,
+    poolChartHistory,
+    loadingPoolChartHistory,
   } = usePoolGearData();
 
   const [selectedTimeRange, setSelectedTimeRange] = useState<HistoryRange>(HistoryRange.Year);
@@ -48,7 +47,6 @@ const Exchange: NextPage = () => {
   useEffect(() => {
     if (account) {
       const { startTimestamp, endTimestamp } = getHistoryRangeTimestamps(selectedTimeRange);
-
       fetchPoolHistory(startTimestamp, endTimestamp);
     }
   }, [account, fetchPoolHistory, selectedTimeRange]);
@@ -66,8 +64,8 @@ const Exchange: NextPage = () => {
   if (
     !tokensBalances ||
     loadingBalances ||
-    loadingPoolHistory ||
-    !poolHistory ||
+    loadingPoolChartHistory ||
+    !poolChartHistory ||
     loadingPoolData ||
     !poolData
   )
@@ -92,7 +90,7 @@ const Exchange: NextPage = () => {
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
           <Box border="2px" spacing="0px">
             <TimeRangeGraphChart
-              chartData={poolHistory as PoolSnapshot[]}
+              chartData={poolChartHistory}
               titleText="$ROBOT + $WETH"
               titleValue={`$${format(".2s")(poolData.totalLiquidity)}`}
               titleColor="black"

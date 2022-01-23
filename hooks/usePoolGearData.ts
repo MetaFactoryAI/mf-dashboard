@@ -3,10 +3,12 @@ import { useState, useCallback } from "react";
 import dayjs from "dayjs";
 import fetchGraph from "@/utils/graph/fetchGraph";
 import { BALANCER_POOL_ID, BALANCER_GQL_URL } from "@/utils/constants";
+import type { ChartData } from "@/components/atoms/TimeRangeGraphChart";
+import { formatNumber } from "@/utils/presentationHelper";
 
 export type TokenBalance = { userBalance: number; symbol: string };
 
-export type PoolSnapshot = {
+type PoolSnapshot = {
   amounts: number[];
   totalShares: string;
   swapFees: string;
@@ -34,8 +36,8 @@ type PoolToken = { balance: string; symbol: string };
 export const usePoolGearData = () => {
   const [tokensBalances, setTokensBalances] = useState<TokenBalance[]>();
   const [loadingBalances, setLoadingBalances] = useState(false);
-  const [poolHistory, setPoolHistory] = useState<PoolSnapshot[]>();
-  const [loadingPoolHistory, setLoadingPoolHistory] = useState(false);
+  const [poolChartHistory, setPoolChartHistory] = useState<ChartData[]>();
+  const [loadingPoolChartHistory, setLoadingPoolChartHistory] = useState(false);
   const [poolData, setPoolData] = useState<PoolData>();
   const [loadingPoolData, setLoadingPoolData] = useState(false);
 
@@ -117,7 +119,7 @@ export const usePoolGearData = () => {
   };
 
   const fetchPoolHistory = async (startTimestamp: number, endTimestamp: number) => {
-    setLoadingPoolHistory(true);
+    setLoadingPoolChartHistory(true);
 
     const skipStep = 70;
     const fetchBatch = async (skip: number): Promise<PoolSnapshot[]> => {
@@ -150,10 +152,10 @@ export const usePoolGearData = () => {
       return [];
     };
     const result = await fetchBatch(0);
-    const normalizedSnapshots = normalizeSnapshots(result);
+    const normalizedSnapshots = normalizeSnapshotsForChart(result);
 
-    setPoolHistory(normalizedSnapshots);
-    setLoadingPoolHistory(false);
+    setPoolChartHistory(normalizedSnapshots);
+    setLoadingPoolChartHistory(false);
   };
 
   return {
@@ -162,19 +164,19 @@ export const usePoolGearData = () => {
     fetchPoolData: useCallback(fetchPoolData, []),
     loadingBalances,
     tokensBalances,
-    loadingPoolHistory,
+    loadingPoolChartHistory,
     loadingPoolData,
-    poolHistory,
+    poolChartHistory,
     poolData,
   };
 };
 
-const normalizeSnapshots = (snapshots: PoolSnapshot[]) =>
+const normalizeSnapshotsForChart = (snapshots: PoolSnapshot[]): ChartData[] =>
   snapshots.map(
-    (snapshot: PoolSnapshot): PoolSnapshot => ({
-      ...snapshot,
+    (snapshot: PoolSnapshot): ChartData => ({
+      key: snapshot.timestamp.toString(),
       date: dayjs.unix(snapshot.timestamp).toDate(),
-      chartValue: parseFloat(snapshot.liquidity),
-      swapFeePercent: parseFloat(snapshot.swapFees) / parseFloat(snapshot.swapVolume),
+      value: parseFloat(snapshot.liquidity),
+      toolBarTitle: `Volume: ${formatNumber(parseFloat(snapshot.swapVolume))}`,
     }),
   );

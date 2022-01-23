@@ -5,7 +5,7 @@ import Head from "next/head";
 import { GraphChart, Loading, PageTitle } from "@/components/atoms";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import usePoolGearData from "@/hooks/usePoolGearData";
-import SwapPoolPanel from "./SwapPoolPanel";
+import SwapPoolPanel from "./swapPoolPanel";
 
 const Exchange: NextPage = () => {
   const { account } = useWeb3Context();

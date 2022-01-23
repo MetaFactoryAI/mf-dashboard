@@ -15,6 +15,7 @@ export type PoolSnapshot = {
   timestamp: number;
   date: Date;
   value: number;
+  swapFeePercent: number;
 };
 
 const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
@@ -140,4 +141,5 @@ const normalizeSnapshots = (snapshots: PoolSnapshot[]) =>
     ...snapshot,
     date: dayjs.unix(snapshot.timestamp).toDate(),
     value: parseFloat(snapshot.liquidity),
+    swapFeePercent: parseFloat(snapshot.swapFees) / parseFloat(snapshot.swapVolume),
   }));

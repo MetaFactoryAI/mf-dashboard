@@ -14,8 +14,15 @@ export type PoolSnapshot = {
   liquidity: string;
   timestamp: number;
   date: Date;
-  value: number;
+  chartValue: number;
   swapFeePercent: number;
+};
+
+export type PoolData = {
+  swapFee: number;
+  totalSwapVolume: string;
+  totalLiquidity: number;
+  holdersCount: string;
 };
 
 const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
@@ -29,6 +36,8 @@ export const usePoolGearData = () => {
   const [loadingBalances, setLoadingBalances] = useState(false);
   const [poolHistory, setPoolHistory] = useState<PoolSnapshot[]>();
   const [loadingPoolHistory, setLoadingPoolHistory] = useState(false);
+  const [poolData, setPoolData] = useState<PoolData>();
+  const [loadingPoolData, setLoadingPoolData] = useState(false);
 
   const fetchBalances = async (account: string) => {
     setLoadingBalances(true);
@@ -86,6 +95,27 @@ export const usePoolGearData = () => {
     setTokensBalances(userTokenBalances);
   };
 
+  const fetchPoolData = async () => {
+    setLoadingPoolData(true);
+
+    const POOL_DATA = `
+      query PoolTokens {
+        pool(id: "${BALANCER_POOL_ID}"){
+          swapFee
+          totalSwapVolume
+          totalLiquidity
+          holdersCount
+        }
+      }
+    `;
+    const {
+      data: { pool },
+    } = await fetchGraph(SUBGRAPH_ENDPOINTS.balancerV2Graph, POOL_DATA, null);
+
+    setPoolData(pool);
+    setLoadingPoolData(false);
+  };
+
   const fetchPoolHistory = async (startTimestamp: number, endTimestamp: number) => {
     setLoadingPoolHistory(true);
 
@@ -129,17 +159,22 @@ export const usePoolGearData = () => {
   return {
     fetchBalances: useCallback(fetchBalances, []),
     fetchPoolHistory: useCallback(fetchPoolHistory, []),
+    fetchPoolData: useCallback(fetchPoolData, []),
     loadingBalances,
     tokensBalances,
     loadingPoolHistory,
+    loadingPoolData,
     poolHistory,
+    poolData,
   };
 };
 
 const normalizeSnapshots = (snapshots: PoolSnapshot[]) =>
-  snapshots.map((snapshot: PoolSnapshot) => ({
-    ...snapshot,
-    date: dayjs.unix(snapshot.timestamp).toDate(),
-    value: parseFloat(snapshot.liquidity),
-    swapFeePercent: parseFloat(snapshot.swapFees) / parseFloat(snapshot.swapVolume),
-  }));
+  snapshots.map(
+    (snapshot: PoolSnapshot): PoolSnapshot => ({
+      ...snapshot,
+      date: dayjs.unix(snapshot.timestamp).toDate(),
+      chartValue: parseFloat(snapshot.liquidity),
+      swapFeePercent: parseFloat(snapshot.swapFees) / parseFloat(snapshot.swapVolume),
+    }),
+  );

@@ -68,8 +68,8 @@ const TimeRangeGraphChart: FC<{
         range: [height, yScaleLimit],
         round: true,
         domain: [
-          Math.min(...chartData.map((d) => d.value)),
-          Math.max(...chartData.map((d) => d.value)),
+          Math.min(...chartData.map((d) => d.chartValue)),
+          Math.max(...chartData.map((d) => d.chartValue)),
         ],
       }),
     [chartData, height, yScaleLimit],
@@ -91,7 +91,7 @@ const TimeRangeGraphChart: FC<{
         showTooltip({
           tooltipData: currentData,
           tooltipLeft: xScale(currentData.date),
-          tooltipTop: yScale(currentData.value) ?? 0,
+          tooltipTop: yScale(currentData.chartValue) ?? 0,
         });
       }
     },
@@ -201,7 +201,7 @@ const TimeRangeGraphChart: FC<{
           strokeWidth={6}
           data={chartData}
           x={(d) => xScale(d.date) ?? 0}
-          y={(d) => yScale(d.value) ?? 0}
+          y={(d) => yScale(d.chartValue) ?? 0}
         />
         <g>
           <Line
@@ -243,7 +243,7 @@ const TimeRangeGraphChart: FC<{
           >
             <Box background="white" border="4px" borderColor="#00ECFF" p="10px" zIndex="9999">
               <Text fontFamily="body_bold" fontWeight="800" fontSize="24px" color="black">
-                ${formatNumber((tooltipData as PoolSnapshot).value)}
+                ${formatNumber((tooltipData as PoolSnapshot).chartValue)}
               </Text>
               <Text fontFamily="body_regular" fontSize="18px">
                 Volume: ${formatNumber(parseFloat((tooltipData as PoolSnapshot).swapVolume))}

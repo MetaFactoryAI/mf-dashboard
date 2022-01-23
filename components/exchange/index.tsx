@@ -2,11 +2,13 @@ import { Grid, GridItem, Box } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import React, { useEffect, useState, useMemo } from "react";
 import Head from "next/head";
+import { format } from "d3-format";
 import { TimeRangeGraphChart, Loading, PageTitle } from "@/components/atoms";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { usePoolGearData } from "@/hooks/usePoolGearData";
 import SwapPoolPanel from "./swapPoolPanel";
 import { getHistoryRangeTimestamps, HistoryRange } from "@/utils/time";
+import SummaryField from "./SummaryField";
 import type { ChartTab } from "@/components/atoms/chart/SelectButtons";
 import type { PoolSnapshot } from "@/hooks/usePoolGearData";
 
@@ -34,6 +36,9 @@ const Exchange: NextPage = () => {
     tokensBalances,
     loadingBalances,
     fetchPoolHistory,
+    fetchPoolData,
+    loadingPoolData,
+    poolData,
     poolHistory,
     loadingPoolHistory,
   } = usePoolGearData();
@@ -54,7 +59,19 @@ const Exchange: NextPage = () => {
     }
   }, [account, fetchBalances]);
 
-  if (!tokensBalances || loadingBalances || loadingPoolHistory || !poolHistory) return <Loading />;
+  useEffect(() => {
+    fetchPoolData();
+  }, [fetchPoolData]);
+
+  if (
+    !tokensBalances ||
+    loadingBalances ||
+    loadingPoolHistory ||
+    !poolHistory ||
+    loadingPoolData ||
+    !poolData
+  )
+    return <Loading />;
 
   return (
     <Box>
@@ -77,13 +94,27 @@ const Exchange: NextPage = () => {
             <TimeRangeGraphChart
               chartData={poolHistory as PoolSnapshot[]}
               titleText="$ROBOT + $WETH"
-              titleValue="$30"
+              titleValue={`$${format(".2s")(poolData.totalLiquidity)}`}
               titleColor="black"
               handleOptionClickCallback={setSelectedTimeRange}
               selectOptions={TIME_TABS}
               selectedOption={selectedTimeRange}
             />
           </Box>
+          <Grid templateColumns="repeat(3, 1fr)" width="100%">
+            <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
+              <SummaryField title="Holders" value={poolData.holdersCount} />
+            </GridItem>
+            <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
+              <SummaryField
+                title="Total Swap Volume"
+                value={`$${format(".2s")(parseFloat(poolData.totalSwapVolume))}`}
+              />
+            </GridItem>
+            <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
+              <SummaryField title="Swap fee" value={`${poolData.swapFee * 100}%`} />
+            </GridItem>
+          </Grid>
         </GridItem>
         <GridItem
           colSpan={{ md: 3, lg: 3 }}

@@ -209,7 +209,7 @@ const YearlyBarChart: FC<{
             left={tooltipLeft}
             style={{ position: "absolute", pointerEvents: "none" }}
           >
-            <Box background="white" border="2px" borderColor="#8B2CFF" p="10px" zIndex="9999">
+            <Box background="white" border="4px" borderColor="#8B2CFF" p="10px" zIndex="9999">
               <Text fontFamily="body_bold" fontWeight="800" fontSize="24px" color="black">
                 $ROBOT
               </Text>

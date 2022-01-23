@@ -10,6 +10,7 @@ import useResize from "hooks/useResize";
 import { AxisBottom } from "@visx/axis";
 import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
 import SelectButtons from "./chart/SelectButtons";
+import type { ChartTab } from "./chart/SelectButtons";
 
 export type ChartData = {
   key: string;
@@ -24,11 +25,11 @@ const MOBILE_RATIO = 1.147;
 
 const YearlyBarChart: FC<{
   chartData: Array<ChartData>;
-  startYear: number;
-  years: number[];
   title: string;
-  yearSelectedCallback: (year: number) => void;
-}> = ({ chartData, startYear, years, title, yearSelectedCallback }) => {
+  selectOptions: ChartTab[];
+  handleOptionClickCallback: (key: number) => void;
+  selectedOption: number;
+}> = ({ chartData, title, selectOptions, handleOptionClickCallback, selectedOption }) => {
   const { isDesktopScreen } = useChakraBreakpoints();
   const [hoverDate, setHoverDate] = useState<number | null>(null);
   const [barWidth, setBarWidth] = useState<number>(0);
@@ -126,10 +127,9 @@ const YearlyBarChart: FC<{
         </Text>
         <Box display={{ base: "block", sm: "block", md: "none", lg: "none" }} zIndex="8888">
           <SelectButtons
-            // @ts-ignore
-            selectOptions={years}
-            handleOptionClickCallback={yearSelectedCallback}
-            defaultOption={startYear}
+            selectOptions={selectOptions}
+            handleOptionClickCallback={handleOptionClickCallback}
+            selectedOption={selectedOption}
           />
         </Box>
       </Box>
@@ -139,10 +139,9 @@ const YearlyBarChart: FC<{
         display={{ base: "none", sm: "none", md: "block", lg: "block" }}
       >
         <SelectButtons
-          // @ts-ignore
-          selectOptions={years}
-          handleOptionClickCallback={yearSelectedCallback}
-          defaultOption={startYear}
+          selectOptions={selectOptions}
+          handleOptionClickCallback={handleOptionClickCallback}
+          selectedOption={selectedOption}
         />
       </Box>
       {chartData.length > 0 && width > 0 && height > 0 && (
@@ -210,7 +209,7 @@ const YearlyBarChart: FC<{
             left={tooltipLeft}
             style={{ position: "absolute", pointerEvents: "none" }}
           >
-            <Box background="white" border="2px" borderColor="#8B2CFF" p="10px" zIndex="9999">
+            <Box background="white" border="4px" borderColor="#8B2CFF" p="10px" zIndex="9999">
               <Text fontFamily="body_bold" fontWeight="800" fontSize="24px" color="black">
                 $ROBOT
               </Text>

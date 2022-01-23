@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { Box, Grid, GridItem, Text, Flex } from "@chakra-ui/react";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { Loading, YearlyBarChart, PageTitle } from "@/components/atoms";
@@ -8,13 +8,24 @@ import Table from "@/components/table";
 import { generateYearsUntilToday } from "@/utils/time";
 import UnclaimedTokens from "@/components/atoms/UnclaimedTokens";
 import useClaims from "@/hooks/useClaims";
+import type { ChartTab } from "@/components/atoms/chart/SelectButtons";
+
+const DEFAULT_YEAR = 2022;
 
 const Claim: NextPage = () => {
+  const [claimsYear, setClaimsYear] = useState<number>(DEFAULT_YEAR);
   const START_YEAR = 2021;
-  // duplicit setClaimsYear state with the bar chart - bad practice but cant isloate chart from rest of buttons
-  const { unclaimedTotal, handleClaim, loading, monthlyClaims, claims, setClaimsYear, claimsYear } =
+  const yearsTilToday = generateYearsUntilToday(START_YEAR);
+  const { unclaimedTotal, handleClaim, loading, monthlyClaims, claims, fetchHistoricalClaims } =
     useClaims();
-
+  const CHART_TABS: ChartTab[] = useMemo(
+    () =>
+      yearsTilToday.map((year) => ({
+        title: year.toString(),
+        key: year,
+      })),
+    [yearsTilToday],
+  );
   const tableColumns = useMemo(
     () => [
       {
@@ -50,6 +61,10 @@ const Claim: NextPage = () => {
     [],
   );
 
+  useEffect(() => {
+    fetchHistoricalClaims(claimsYear);
+  }, [claimsYear, fetchHistoricalClaims]);
+
   if (loading) return <Loading />;
 
   return (
@@ -68,9 +83,9 @@ const Claim: NextPage = () => {
           <YearlyBarChart
             chartData={monthlyClaims}
             title="Distributions"
-            startYear={claimsYear}
-            years={generateYearsUntilToday(START_YEAR)}
-            yearSelectedCallback={setClaimsYear}
+            selectOptions={CHART_TABS}
+            handleOptionClickCallback={setClaimsYear}
+            selectedOption={claimsYear}
           />
         </Box>
         <Grid templateColumns="repeat(10, 1fr)" width="100%" mt="25px">

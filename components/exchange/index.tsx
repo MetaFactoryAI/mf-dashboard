@@ -1,34 +1,57 @@
-import { Grid, GridItem, Box, Stack } from "@chakra-ui/react";
+import { Grid, GridItem, Box, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Head from "next/head";
-import { GraphChart, Loading, PageTitle } from "@/components/atoms";
+import { format } from "d3-format";
+import { TimeRangeGraphChart, Loading, PageTitle } from "@/components/atoms";
 import { useWeb3Context } from "@/contexts/Web3Context";
-import usePoolGearData from "@/hooks/usePoolGearData";
+import { usePoolGearData } from "@/hooks/usePoolGearData";
 import SwapPoolPanel from "./swapPoolPanel";
+import { getHistoryRangeTimestamps, HistoryRange } from "@/utils/time";
+import SummaryField from "./SummaryField";
+import type { ChartTab } from "@/components/atoms/chart/SelectButtons";
+import type { PoolSnapshot } from "@/hooks/usePoolGearData";
 
 const Exchange: NextPage = () => {
+  const TIME_TABS: ChartTab[] = useMemo(
+    () => [
+      {
+        title: "W",
+        key: HistoryRange.Week,
+      },
+      {
+        title: "M",
+        key: HistoryRange.Month,
+      },
+      {
+        title: "Y",
+        key: HistoryRange.Year,
+      },
+    ],
+    [],
+  );
   const { account } = useWeb3Context();
-  const { fetchBalances, tokensBalances, loading } = usePoolGearData();
-  const sampleDate = new Date();
-  const graphChartData = [
-    { key: "TEST", value: 0, date: new Date().setDate(sampleDate.getDate() + 1) },
-    { key: "TEST", value: 10, date: new Date().setDate(sampleDate.getDate() + 2) },
-    { key: "TEST2", value: 20, date: new Date().setDate(sampleDate.getDate() + 3) },
-    { key: "TEST3", value: 30, date: new Date().setDate(sampleDate.getDate() + 4) },
-    { key: "TEST", value: 40, date: new Date().setDate(sampleDate.getDate() + 5) },
-    { key: "TEST2", value: 20, date: new Date().setDate(sampleDate.getDate() + 6) },
-    { key: "TEST3", value: 60, date: new Date().setDate(sampleDate.getDate() + 7) },
-    { key: "TEST", value: 10, date: new Date().setDate(sampleDate.getDate() + 8) },
-    { key: "TEST2", value: 80, date: new Date().setDate(sampleDate.getDate() + 9) },
-    { key: "TEST3", value: 70, date: new Date().setDate(sampleDate.getDate() + 10) },
-    { key: "TEST", value: 60, date: new Date().setDate(sampleDate.getDate() + 11) },
-    { key: "TEST2", value: 50, date: new Date().setDate(sampleDate.getDate() + 12) },
-    { key: "TEST3", value: 30, date: new Date().setDate(sampleDate.getDate() + 13) },
-    { key: "TEST", value: 100, date: new Date().setDate(sampleDate.getDate() + 14) },
-    { key: "TEST2", value: 120, date: new Date().setDate(sampleDate.getDate() + 15) },
-    { key: "TEST3", value: 130, date: new Date().setDate(sampleDate.getDate() + 16) },
-  ];
+  const {
+    fetchBalances,
+    tokensBalances,
+    loadingBalances,
+    fetchPoolHistory,
+    fetchPoolData,
+    loadingPoolData,
+    poolData,
+    poolHistory,
+    loadingPoolHistory,
+  } = usePoolGearData();
+
+  const [selectedTimeRange, setSelectedTimeRange] = useState<HistoryRange>(HistoryRange.Year);
+
+  useEffect(() => {
+    if (account) {
+      const { startTimestamp, endTimestamp } = getHistoryRangeTimestamps(selectedTimeRange);
+
+      fetchPoolHistory(startTimestamp, endTimestamp);
+    }
+  }, [account, fetchPoolHistory, selectedTimeRange]);
 
   useEffect(() => {
     if (account) {
@@ -36,7 +59,19 @@ const Exchange: NextPage = () => {
     }
   }, [account, fetchBalances]);
 
-  if (!tokensBalances || loading) return <Loading />;
+  useEffect(() => {
+    fetchPoolData();
+  }, [fetchPoolData]);
+
+  if (
+    !tokensBalances ||
+    loadingBalances ||
+    loadingPoolHistory ||
+    !poolHistory ||
+    loadingPoolData ||
+    !poolData
+  )
+    return <Loading />;
 
   return (
     <Box>
@@ -55,14 +90,31 @@ const Exchange: NextPage = () => {
           <SwapPoolPanel tokensBalances={tokensBalances} />
         </GridItem>
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
-          <Stack
-            border="2px"
-            alignItems="start"
-            spacing="0px"
-            direction={{ base: "column", sm: "column", md: "row", lg: "row" }}
-          >
-            <GraphChart chartData={graphChartData} width={660} />
-          </Stack>
+          <Box border="2px" spacing="0px">
+            <TimeRangeGraphChart
+              chartData={poolHistory as PoolSnapshot[]}
+              titleText="$ROBOT + $WETH"
+              titleValue={`$${format(".2s")(poolData.totalLiquidity)}`}
+              titleColor="black"
+              handleOptionClickCallback={setSelectedTimeRange}
+              selectOptions={TIME_TABS}
+              selectedOption={selectedTimeRange}
+            />
+          </Box>
+          <Grid templateColumns="repeat(3, 1fr)" width="100%">
+            <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
+              <SummaryField title="Holders" value={poolData.holdersCount} />
+            </GridItem>
+            <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
+              <SummaryField
+                title="Total Swap Volume"
+                value={`$${format(".2s")(parseFloat(poolData.totalSwapVolume))}`}
+              />
+            </GridItem>
+            <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
+              <SummaryField title="Swap fee" value={`${poolData.swapFee * 100}%`} />
+            </GridItem>
+          </Grid>
         </GridItem>
         <GridItem
           colSpan={{ md: 3, lg: 3 }}
@@ -72,8 +124,15 @@ const Exchange: NextPage = () => {
           <SwapPoolPanel tokensBalances={tokensBalances} />
         </GridItem>
 
-        <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} borderBottom="2px" my="39px">
-          TEXT
+        <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} borderBottom="2px" p="40px">
+          <Text fontFamily="body_regular" fontWeight="400" fontSize="16px">
+            MetaFactory is a community-owned culture studio and marketplace focused on the creation
+            and sale of digi-physical goods that celebrate crypto. Artists of all types are invited
+            to create products that promote their art, community, project, protocol, token, etc. We
+            abstract away all the production and logistics with our network of fashion houses and
+            production partners in California and Sweden, so creators can focus on their craft while
+            MetaFactory facilitates creation, fulfillment, sales and support.
+          </Text>
         </GridItem>
       </Grid>
       <Box />

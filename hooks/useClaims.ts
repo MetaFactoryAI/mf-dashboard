@@ -20,8 +20,6 @@ import {
 } from "@/utils/presentationHelper";
 import type { ChartData } from "@/components/atoms/YearlyBarChart";
 
-const DEFAULT_YEAR = 2022;
-
 const useClaims = () => {
   const [claimWeeksProofs, setClaimWeeksProofs] = useState<ClaimStruct[]>([]);
   const [unclaimedTotal, setUnclaimedTotal] = useState("0");
@@ -30,7 +28,6 @@ const useClaims = () => {
   const [claimEventsLoading, setClaimEventsLoading] = useState<boolean>(false);
   const [claims, setClaims] = useState<{ address: string; amount: string }[]>([]);
   const [monthlyClaims, setMonthlyClaims] = useState<ChartData[]>([]);
-  const [claimsYear, setClaimsYear] = useState<number>(DEFAULT_YEAR);
 
   // fetches claim info (from IPFS) and calculates total claimed/unclaimed
   // ROBOT, as well calculates all necessary merkle proofs to claim it from the contrat
@@ -62,28 +59,37 @@ const useClaims = () => {
   }, [account, loading, provider]);
 
   // fetches (from the blockchain) historical claims
-  useEffect(() => {
-    const fetchClaimHistory = async () => {
-      if (provider && claimsYear) {
-        const redeem = MerkleRedeem__factory.connect(MERKLE_REDEEM_CONTRACT, provider.getSigner());
-        // @ts-ignore
-        const { block: startBlock } = await dater.getDate(`${claimsYear}-01-01T00:00:00Z`, true);
-        // @ts-ignore
-        const { block: endBlock } = await dater.getDate(`${claimsYear + 1}-01-01T00:00:00Z`, false);
-        const claimedFilter = redeem.filters.Claimed();
-        const fetchedClaims = await redeem.queryFilter(claimedFilter, startBlock, endBlock);
-        const normalizedClaims = await formatClaimsEventData(fetchedClaims);
-        const normalizedMonthlyClaims = formatMonthlyClaimsEventData(normalizedClaims);
+  const fetchHistoricalClaims = useCallback(
+    (claimsYear) => {
+      const fetchClaimHistory = async () => {
+        if (provider && claimsYear) {
+          const redeem = MerkleRedeem__factory.connect(
+            MERKLE_REDEEM_CONTRACT,
+            provider.getSigner(),
+          );
+          // @ts-ignore
+          const { block: startBlock } = await dater.getDate(`${claimsYear}-01-01T00:00:00Z`, true);
+          // @ts-ignore
+          const { block: endBlock } = await dater.getDate(
+            `${claimsYear + 1}-01-01T00:00:00Z`,
+            false,
+          );
+          const claimedFilter = redeem.filters.Claimed();
+          const fetchedClaims = await redeem.queryFilter(claimedFilter, startBlock, endBlock);
+          const normalizedClaims = await formatClaimsEventData(fetchedClaims);
+          const normalizedMonthlyClaims = formatMonthlyClaimsEventData(normalizedClaims);
 
-        setClaimEventsLoading(false);
-        setClaims(normalizedClaims);
-        setMonthlyClaims(normalizedMonthlyClaims);
-      }
-    };
+          setClaimEventsLoading(false);
+          setClaims(normalizedClaims);
+          setMonthlyClaims(normalizedMonthlyClaims);
+        }
+      };
 
-    setClaimEventsLoading(true);
-    fetchClaimHistory();
-  }, [dater, provider, claimsYear]);
+      setClaimEventsLoading(true);
+      fetchClaimHistory();
+    },
+    [dater, provider],
+  );
 
   const handleClaim = useCallback(() => {
     const claim = async () => {
@@ -109,11 +115,10 @@ const useClaims = () => {
     unclaimedTotal,
     claimedTotal,
     handleClaim,
+    fetchHistoricalClaims,
     loading: loading || claimEventsLoading,
     claims,
     monthlyClaims,
-    setClaimsYear,
-    claimsYear,
   };
 };
 

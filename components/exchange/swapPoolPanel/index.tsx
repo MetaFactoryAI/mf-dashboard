@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Box, HStack } from "@chakra-ui/react";
 import PoolLiquidity from "./PoolLiquidity";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
@@ -10,7 +10,11 @@ export enum SwapPoolPanelTabs {
   PoolTab,
 }
 
-const SwapPoolPanel: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBalances }) => {
+export const SwapPoolPanel: React.FC<{
+  tokensBalances: TokenBalance[];
+  tabClickCallback: (key: SwapPoolPanelTabs) => void;
+  selectedTab: SwapPoolPanelTabs;
+}> = ({ tokensBalances, tabClickCallback, selectedTab }) => {
   const TABS = useMemo(
     () => [
       {
@@ -24,10 +28,8 @@ const SwapPoolPanel: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBal
     ],
     [],
   );
-  const [selectedTab, setSelectedTab] = useState<SwapPoolPanelTabs>(SwapPoolPanelTabs.SwapTab);
-
-  const handleTabClick = (tabIndex: number) => {
-    setSelectedTab(tabIndex);
+  const handleTabClick = (tabIndex: SwapPoolPanelTabs) => {
+    tabClickCallback(tabIndex);
   };
 
   return (
@@ -49,5 +51,3 @@ const SwapPoolPanel: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBal
     </Box>
   );
 };
-
-export default SwapPoolPanel;

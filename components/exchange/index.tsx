@@ -6,7 +6,8 @@ import { format } from "d3-format";
 import { TimeRangeGraphChart, Loading, PageTitle } from "@/components/atoms";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { usePoolGearData } from "@/hooks/usePoolGearData";
-import SwapPoolPanel from "./swapPoolPanel";
+import { useCoinData } from "@/hooks/useCoinData";
+import { SwapPoolPanel, SwapPoolPanelTabs } from "./swapPoolPanel";
 import { getHistoryRangeTimestamps, HistoryRange } from "@/utils/time";
 import SummaryField from "./SummaryField";
 import type { ChartTab } from "@/components/atoms/chart/SelectButtons";
@@ -41,15 +42,19 @@ const Exchange: NextPage = () => {
     poolChartHistory,
     loadingPoolChartHistory,
   } = usePoolGearData();
-
+  const [selectedSwapPoolTab, setSelectedSwapPoolTab] = useState<SwapPoolPanelTabs>(
+    SwapPoolPanelTabs.SwapTab,
+  );
+  const { fetchCoinHistory, coinChartHistory } = useCoinData();
   const [selectedTimeRange, setSelectedTimeRange] = useState<HistoryRange>(HistoryRange.Year);
 
   useEffect(() => {
     if (account) {
       const { startTimestamp, endTimestamp } = getHistoryRangeTimestamps(selectedTimeRange);
       fetchPoolHistory(startTimestamp, endTimestamp);
+      fetchCoinHistory(startTimestamp, endTimestamp);
     }
-  }, [account, fetchPoolHistory, selectedTimeRange]);
+  }, [account, fetchCoinHistory, fetchPoolHistory, selectedTimeRange]);
 
   useEffect(() => {
     if (account) {
@@ -67,7 +72,8 @@ const Exchange: NextPage = () => {
     loadingPoolChartHistory ||
     !poolChartHistory ||
     loadingPoolData ||
-    !poolData
+    !poolData ||
+    !coinChartHistory
   )
     return <Loading />;
 
@@ -85,14 +91,28 @@ const Exchange: NextPage = () => {
           display={{ base: "block", sm: "block", md: "none", lg: "none" }}
           mb="30px"
         >
-          <SwapPoolPanel tokensBalances={tokensBalances} />
+          <SwapPoolPanel
+            tokensBalances={tokensBalances}
+            tabClickCallback={setSelectedSwapPoolTab}
+            selectedTab={selectedSwapPoolTab}
+          />
         </GridItem>
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
           <Box border="2px" spacing="0px">
             <TimeRangeGraphChart
-              chartData={poolChartHistory}
-              titleText="$ROBOT + $WETH"
-              titleValue={`$${format(".2s")(poolData.totalLiquidity)}`}
+              chartData={
+                selectedSwapPoolTab === SwapPoolPanelTabs.PoolTab
+                  ? poolChartHistory
+                  : coinChartHistory
+              }
+              titleText={
+                selectedSwapPoolTab === SwapPoolPanelTabs.PoolTab ? "$ROBOT + $WETH" : "$ROBOT"
+              }
+              titleValue={
+                selectedSwapPoolTab === SwapPoolPanelTabs.PoolTab
+                  ? `$${format(".2s")(poolData.totalLiquidity)}`
+                  : "TBD"
+              }
               titleColor="black"
               handleOptionClickCallback={setSelectedTimeRange}
               selectOptions={TIME_TABS}
@@ -119,7 +139,11 @@ const Exchange: NextPage = () => {
           display={{ base: "none", sm: "none", md: "block", lg: "block" }}
           ml="30px"
         >
-          <SwapPoolPanel tokensBalances={tokensBalances} />
+          <SwapPoolPanel
+            tokensBalances={tokensBalances}
+            tabClickCallback={setSelectedSwapPoolTab}
+            selectedTab={selectedSwapPoolTab}
+          />
         </GridItem>
 
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} borderBottom="2px" p="40px">

@@ -19,7 +19,7 @@ export type CoinData = {
 };
 
 export const useCoinData = () => {
-  const [coinChartHistory, setCoinChartHistory] = useState<CoinSnapshot[]>();
+  const [coinChartHistory, setCoinChartHistory] = useState<ChartData[]>();
   const [loadingCoinChartHistory, setLoadingCoinChartHistory] = useState(false);
 
   // const fetchPoolData = async () => {

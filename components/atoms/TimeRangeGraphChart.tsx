@@ -1,23 +1,21 @@
 import { Box, Text } from "@chakra-ui/react";
+import { timeFormat } from "d3-time-format";
 import { LinePath, Line } from "@visx/shape";
 import { scaleLinear, scaleTime } from "@visx/scale";
 import { extent } from "d3-array";
 import React, { FC, useMemo, useCallback, useRef } from "react";
-import { useTooltip, defaultStyles, TooltipWithBounds } from "@visx/tooltip";
+import { useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
 import useResize from "hooks/useResize";
 import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
 import SelectButtons from "./chart/SelectButtons";
 import type { ChartTab } from "./chart/SelectButtons";
-
-type ChartData = {
-  value: number;
-  date: Date;
-};
+import { formatNumber } from "@/utils/presentationHelper";
+import type { PoolSnapshot } from "@/hooks/usePoolGearData";
 
 // produces warnings connected to this issue https://github.com/airbnb/visx/issues/737
 const TimeRangeGraphChart: FC<{
-  chartData: Array<ChartData>;
+  chartData: Array<PoolSnapshot>;
   titleText: string;
   titleValue: string;
   titleColor: string;
@@ -35,6 +33,7 @@ const TimeRangeGraphChart: FC<{
 }) => {
   const DESKTOP_RATIO = 0.614;
   const MOBILE_RATIO = 1.147;
+  const format = timeFormat("%d/%m/%Y");
   const ref = useRef(null);
   const { isDesktopScreen } = useChakraBreakpoints();
   const currentRatio = isDesktopScreen ? DESKTOP_RATIO : MOBILE_RATIO;
@@ -240,9 +239,19 @@ const TimeRangeGraphChart: FC<{
             key={Math.random()}
             top={tooltipTop}
             left={tooltipLeft}
-            style={{ ...defaultStyles }}
+            style={{ position: "absolute", pointerEvents: "none" }}
           >
-            {(tooltipData as ChartData).value}
+            <Box background="white" border="4px" borderColor="#00ECFF" p="10px" zIndex="9999">
+              <Text fontFamily="body_bold" fontWeight="800" fontSize="24px" color="black">
+                ${formatNumber((tooltipData as PoolSnapshot).value)}
+              </Text>
+              <Text fontFamily="body_regular" fontSize="18px">
+                Volume: ${formatNumber(parseFloat((tooltipData as PoolSnapshot).swapVolume))}
+              </Text>
+              <Text fontFamily="body" fontSize="14px">
+                {format(new Date((tooltipData as PoolSnapshot).date))}
+              </Text>
+            </Box>
           </TooltipWithBounds>
         </div>
       )}

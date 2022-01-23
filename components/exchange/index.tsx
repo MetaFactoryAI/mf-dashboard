@@ -8,6 +8,7 @@ import { usePoolGearData } from "@/hooks/usePoolGearData";
 import SwapPoolPanel from "./swapPoolPanel";
 import { getHistoryRangeTimestamps, HistoryRange } from "@/utils/time";
 import type { ChartTab } from "@/components/atoms/chart/SelectButtons";
+import type { PoolSnapshot } from "@/hooks/usePoolGearData";
 
 const Exchange: NextPage = () => {
   const TIME_TABS: ChartTab[] = useMemo(
@@ -74,7 +75,7 @@ const Exchange: NextPage = () => {
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
           <Box border="2px" spacing="0px">
             <TimeRangeGraphChart
-              chartData={poolHistory}
+              chartData={poolHistory as PoolSnapshot[]}
               titleText="$ROBOT + $WETH"
               titleValue="$30"
               titleColor="black"

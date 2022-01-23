@@ -71,7 +71,7 @@ const TimeRangeGraphChart: FC<{
   const yScale = useMemo(
     () =>
       scaleLinear({
-        range: [height, yScaleLimit],
+        range: [height - 20, yScaleLimit],
         round: true,
         domain: [
           Math.min(...chartData.map((d) => d.value)),

@@ -8,13 +8,21 @@ import Table from "@/components/table";
 import { generateYearsUntilToday } from "@/utils/time";
 import UnclaimedTokens from "@/components/atoms/UnclaimedTokens";
 import useClaims from "@/hooks/useClaims";
+import type { ChartTab } from "@/components/atoms/chart/SelectButtons";
 
 const Claim: NextPage = () => {
   const START_YEAR = 2021;
-  // duplicit setClaimsYear state with the bar chart - bad practice but cant isloate chart from rest of buttons
+  const yearsTilToday = generateYearsUntilToday(START_YEAR);
   const { unclaimedTotal, handleClaim, loading, monthlyClaims, claims, setClaimsYear, claimsYear } =
     useClaims();
-
+  const CHART_TABS: ChartTab[] = useMemo(
+    () =>
+      yearsTilToday.map((year) => ({
+        title: year.toString(),
+        key: year,
+      })),
+    [yearsTilToday],
+  );
   const tableColumns = useMemo(
     () => [
       {
@@ -68,9 +76,9 @@ const Claim: NextPage = () => {
           <YearlyBarChart
             chartData={monthlyClaims}
             title="Distributions"
-            startYear={claimsYear}
-            years={generateYearsUntilToday(START_YEAR)}
-            yearSelectedCallback={setClaimsYear}
+            selectOptions={CHART_TABS}
+            handleOptionClickCallback={setClaimsYear}
+            selectedOption={claimsYear}
           />
         </Box>
         <Grid templateColumns="repeat(10, 1fr)" width="100%" mt="25px">

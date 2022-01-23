@@ -1,13 +1,32 @@
 import { Grid, GridItem, Box } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Head from "next/head";
-import { GraphChart, Loading, PageTitle } from "@/components/atoms";
+import { TimeRangeGraphChart, Loading, PageTitle } from "@/components/atoms";
 import { useWeb3Context } from "@/contexts/Web3Context";
-import { usePoolGearData, HistoryRange } from "@/hooks/usePoolGearData";
+import { usePoolGearData } from "@/hooks/usePoolGearData";
 import SwapPoolPanel from "./swapPoolPanel";
+import { getHistoryRangeTimestamps, HistoryRange } from "@/utils/time";
+import type { ChartTab } from "@/components/atoms/chart/SelectButtons";
 
 const Exchange: NextPage = () => {
+  const TIME_TABS: ChartTab[] = useMemo(
+    () => [
+      {
+        title: "W",
+        key: HistoryRange.Week,
+      },
+      {
+        title: "M",
+        key: HistoryRange.Month,
+      },
+      {
+        title: "Y",
+        key: HistoryRange.Year,
+      },
+    ],
+    [],
+  );
   const { account } = useWeb3Context();
   const {
     fetchBalances,
@@ -18,12 +37,21 @@ const Exchange: NextPage = () => {
     loadingPoolHistory,
   } = usePoolGearData();
 
+  const [selectedTimeRange, setSelectedTimeRange] = useState<HistoryRange>(HistoryRange.Year);
+
+  useEffect(() => {
+    if (account) {
+      const { startTimestamp, endTimestamp } = getHistoryRangeTimestamps(selectedTimeRange);
+
+      fetchPoolHistory(startTimestamp, endTimestamp);
+    }
+  }, [account, fetchPoolHistory, selectedTimeRange]);
+
   useEffect(() => {
     if (account) {
       fetchBalances(account);
-      fetchPoolHistory(HistoryRange.Year);
     }
-  }, [account, fetchBalances, fetchPoolHistory]);
+  }, [account, fetchBalances]);
 
   if (!tokensBalances || loadingBalances || loadingPoolHistory || !poolHistory) return <Loading />;
 
@@ -45,7 +73,15 @@ const Exchange: NextPage = () => {
         </GridItem>
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
           <Box border="2px" spacing="0px">
-            <GraphChart chartData={poolHistory} />
+            <TimeRangeGraphChart
+              chartData={poolHistory}
+              titleText="$ROBOT + $WETH"
+              titleValue="$30"
+              titleColor="black"
+              handleOptionClickCallback={setSelectedTimeRange}
+              selectOptions={TIME_TABS}
+              selectedOption={selectedTimeRange}
+            />
           </Box>
         </GridItem>
         <GridItem

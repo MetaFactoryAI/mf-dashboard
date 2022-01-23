@@ -1,3 +1,4 @@
+import { Box, Text } from "@chakra-ui/react";
 import { LinePath, Line } from "@visx/shape";
 import { scaleLinear, scaleTime } from "@visx/scale";
 import { extent } from "d3-array";
@@ -6,6 +7,8 @@ import { useTooltip, defaultStyles, TooltipWithBounds } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
 import useResize from "hooks/useResize";
 import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
+import SelectButtons from "./chart/SelectButtons";
+import type { ChartTab } from "./chart/SelectButtons";
 
 type ChartData = {
   value: number;
@@ -13,12 +16,30 @@ type ChartData = {
 };
 
 // produces warnings connected to this issue https://github.com/airbnb/visx/issues/737
-const GraphChart: FC<{ chartData: Array<ChartData> }> = ({ chartData }) => {
+const TimeRangeGraphChart: FC<{
+  chartData: Array<ChartData>;
+  titleText: string;
+  titleValue: string;
+  titleColor: string;
+  selectOptions: ChartTab[];
+  handleOptionClickCallback: (key: number) => void;
+  selectedOption: number;
+}> = ({
+  chartData,
+  titleText,
+  titleValue,
+  titleColor,
+  selectOptions,
+  handleOptionClickCallback,
+  selectedOption,
+}) => {
   const DESKTOP_RATIO = 0.614;
   const MOBILE_RATIO = 1.147;
   const ref = useRef(null);
   const { isDesktopScreen } = useChakraBreakpoints();
   const currentRatio = isDesktopScreen ? DESKTOP_RATIO : MOBILE_RATIO;
+  const yScaleLimit = isDesktopScreen ? 150 : 200;
+
   const { width, height } = useResize(ref, currentRatio);
 
   const {
@@ -45,14 +66,14 @@ const GraphChart: FC<{ chartData: Array<ChartData> }> = ({ chartData }) => {
   const yScale = useMemo(
     () =>
       scaleLinear({
-        range: [height - 50, 50],
+        range: [height, yScaleLimit],
         round: true,
         domain: [
           Math.min(...chartData.map((d) => d.value)),
           Math.max(...chartData.map((d) => d.value)),
         ],
       }),
-    [chartData, height],
+    [chartData, height, yScaleLimit],
   );
 
   const findClosest = (input: Array<number>, element: number): number =>
@@ -85,13 +106,60 @@ const GraphChart: FC<{ chartData: Array<ChartData> }> = ({ chartData }) => {
       }}
       ref={ref}
     >
+      <Box position="absolute">
+        <Box backgroundColor={titleColor}>
+          <Text
+            backgroundColor="black"
+            color="white"
+            p="18px"
+            pb="0px"
+            fontFamily="body"
+            fontWeight="400"
+            fontSize="24px"
+            zIndex="8888"
+          >
+            {titleText}
+          </Text>
+          <Text
+            backgroundColor="black"
+            color="white"
+            p="18px"
+            pt="0px"
+            fontFamily="body_bold"
+            fontWeight="800"
+            fontSize="32px"
+            zIndex="8888"
+          >
+            {titleValue}
+          </Text>
+        </Box>
+        <Box display={{ base: "block", sm: "block", md: "none", lg: "none" }} zIndex="8888">
+          <SelectButtons
+            selectOptions={selectOptions}
+            handleOptionClickCallback={handleOptionClickCallback}
+            selectedOption={selectedOption}
+          />
+        </Box>
+      </Box>
+      <Box
+        position="absolute"
+        right="0"
+        display={{ base: "none", sm: "none", md: "block", lg: "block" }}
+      >
+        <SelectButtons
+          selectOptions={selectOptions}
+          handleOptionClickCallback={handleOptionClickCallback}
+          selectedOption={selectedOption}
+        />
+      </Box>
+
       <svg width={width} height={height}>
         <linearGradient
           id="gradientX"
-          x1="-6.84708e-06"
-          y1="53"
-          x2="919"
-          y2="52.9999"
+          x1="-1"
+          y1="1"
+          x2={width}
+          y2="1"
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="#FF2ECE" />
@@ -103,10 +171,10 @@ const GraphChart: FC<{ chartData: Array<ChartData> }> = ({ chartData }) => {
 
         <linearGradient
           id="gradientY"
-          x1="24.5"
-          y1="536"
-          x2="24.4975"
-          y2="3.98617e-06"
+          x1="1"
+          y1={height}
+          x2="1"
+          y2="-1"
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="#FF2ECE" />
@@ -182,4 +250,4 @@ const GraphChart: FC<{ chartData: Array<ChartData> }> = ({ chartData }) => {
   );
 };
 
-export default GraphChart;
+export default TimeRangeGraphChart;

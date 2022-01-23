@@ -6,12 +6,6 @@ import { BALANCER_POOL_ID, BALANCER_GQL_URL } from "@/utils/constants";
 
 export type TokenBalance = { userBalance: number; symbol: string };
 
-export enum HistoryRange {
-  Week,
-  Month,
-  Year,
-}
-
 export type PoolSnapshot = {
   amounts: number[];
   totalShares: string;
@@ -91,11 +85,9 @@ export const usePoolGearData = () => {
     setTokensBalances(userTokenBalances);
   };
 
-  const fetchPoolHistory = async (historyRange: HistoryRange) => {
+  const fetchPoolHistory = async (startTimestamp: number, endTimestamp: number) => {
     setLoadingPoolHistory(true);
 
-    const startTimestamp = getStartDate(historyRange);
-    const endTimestamp = dayjs().unix();
     const skipStep = 70;
     const fetchBatch = async (skip: number): Promise<PoolSnapshot[]> => {
       const POOL_SNAPSHOTS = `
@@ -141,17 +133,6 @@ export const usePoolGearData = () => {
     loadingPoolHistory,
     poolHistory,
   };
-};
-
-const getStartDate = (historyRange: HistoryRange) => {
-  switch (historyRange) {
-    case HistoryRange.Week:
-      return dayjs().subtract(7, "day").unix();
-    case HistoryRange.Month:
-      return dayjs().subtract(1, "month").unix();
-    default:
-      return dayjs().subtract(1, "year").unix();
-  }
 };
 
 const normalizeSnapshots = (snapshots: PoolSnapshot[]) =>

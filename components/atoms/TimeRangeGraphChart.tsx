@@ -11,11 +11,17 @@ import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
 import SelectButtons from "./chart/SelectButtons";
 import type { ChartTab } from "./chart/SelectButtons";
 import { formatNumber } from "@/utils/presentationHelper";
-import type { PoolSnapshot } from "@/hooks/usePoolGearData";
+
+export type ChartData = {
+  key: string;
+  value: number;
+  toolBarTitle?: string;
+  date: Date;
+};
 
 // produces warnings connected to this issue https://github.com/airbnb/visx/issues/737
 const TimeRangeGraphChart: FC<{
-  chartData: Array<PoolSnapshot>;
+  chartData: Array<ChartData>;
   titleText: string;
   titleValue: string;
   titleColor: string;
@@ -65,11 +71,11 @@ const TimeRangeGraphChart: FC<{
   const yScale = useMemo(
     () =>
       scaleLinear({
-        range: [height, yScaleLimit],
+        range: [height - 20, yScaleLimit],
         round: true,
         domain: [
-          Math.min(...chartData.map((d) => d.chartValue)),
-          Math.max(...chartData.map((d) => d.chartValue)),
+          Math.min(...chartData.map((d) => d.value)),
+          Math.max(...chartData.map((d) => d.value)),
         ],
       }),
     [chartData, height, yScaleLimit],
@@ -91,7 +97,7 @@ const TimeRangeGraphChart: FC<{
         showTooltip({
           tooltipData: currentData,
           tooltipLeft: xScale(currentData.date),
-          tooltipTop: yScale(currentData.chartValue) ?? 0,
+          tooltipTop: yScale(currentData.value) ?? 0,
         });
       }
     },
@@ -201,7 +207,7 @@ const TimeRangeGraphChart: FC<{
           strokeWidth={6}
           data={chartData}
           x={(d) => xScale(d.date) ?? 0}
-          y={(d) => yScale(d.chartValue) ?? 0}
+          y={(d) => yScale(d.value) ?? 0}
         />
         <g>
           <Line
@@ -243,13 +249,13 @@ const TimeRangeGraphChart: FC<{
           >
             <Box background="white" border="4px" borderColor="#00ECFF" p="10px" zIndex="9999">
               <Text fontFamily="body_bold" fontWeight="800" fontSize="24px" color="black">
-                ${formatNumber((tooltipData as PoolSnapshot).chartValue)}
+                ${formatNumber((tooltipData as ChartData).value)}
               </Text>
               <Text fontFamily="body_regular" fontSize="18px">
-                Volume: ${formatNumber(parseFloat((tooltipData as PoolSnapshot).swapVolume))}
+                {(tooltipData as ChartData).toolBarTitle}
               </Text>
               <Text fontFamily="body" fontSize="14px">
-                {format(new Date((tooltipData as PoolSnapshot).date))}
+                {format(new Date((tooltipData as ChartData).date))}
               </Text>
             </Box>
           </TooltipWithBounds>

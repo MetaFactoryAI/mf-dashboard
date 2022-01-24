@@ -1,8 +1,8 @@
-import type { Web3Provider } from "@ethersproject/providers";
+import type { Web3Provider, BaseProvider } from "@ethersproject/providers";
 import { Base64 } from "js-base64";
 import { nanoid } from "nanoid";
 
-import requestSignature from "./signature";
+import { requestSignature, verifySignature } from "./signature";
 
 const tokenDuration = 1000 * 60 * 60 * 24 * 7; // 7 days
 
@@ -16,7 +16,7 @@ type Claim = {
 
 const MESSAGE = "Please sign this message with your wallet to authenticate.\n\n";
 
-export default async function createToken(
+export async function createToken(
   provider: Web3Provider,
   appName: string,
 ): Promise<string> {
@@ -39,3 +39,30 @@ export default async function createToken(
 
   return Base64.encode(JSON.stringify([proof, signInMessage]));
 }
+
+export async function verifyToken(
+  token: string,
+  provider: BaseProvider,
+  appName: string,
+): Promise<Claim | null> {
+  try {
+    const rawToken = Base64.decode(token);
+    const [proof, rawClaim] = JSON.parse(rawToken) as [string, string];
+
+    const claim = JSON.parse(rawClaim.replace(MESSAGE, "")) as Claim;
+    const address = claim.iss;
+
+    const valid = await verifySignature(address, rawClaim, proof, provider);
+    if (!valid) {
+      throw new Error("invalid signature");
+    }
+    if (claim.aud !== appName) {
+      throw new Error("token not issued by this app");
+    }
+    return claim;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error("Token verification failed", e);
+    return null;
+  }
+};

@@ -4,7 +4,7 @@ import Web3Modal, { IProviderOptions } from "web3modal";
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Cookies from "js-cookie";
-import createToken from "@/utils/auth/web3JWT";
+import { createToken, verifyToken } from "@/utils/auth/web3JWT";
 import { APP_NAME } from "@/utils/constants";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -61,7 +61,9 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
 
   const generateAuthToken = async (currentProvider: ethers.providers.Web3Provider) => {
     const token = await createToken(currentProvider, APP_NAME);
-
+    const result = await verifyToken(token, currentProvider, APP_NAME);
+console.log(result)
+console.log('xxxxx')
     Cookies.set(AUTH_TOKEN_KEY, token);
 
     return token;

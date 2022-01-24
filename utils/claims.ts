@@ -31,9 +31,10 @@ export const getUnclaimedWeeksForAddress = async (
   const latestWeek = Math.max(...Object.keys(claimWeeks).map((numStr) => parseInt(numStr, 10)));
   const claimStatus = await redeemContract.claimStatus(address, 1, latestWeek);
 
-  const unclaimedWeeks = Object.entries(claimStatus)
+  const unclaimedWeeks = claimStatus
+    .map((value: boolean, index): [string, boolean] => [(index + 1).toString(), value])
     .filter((status) => !status[1])
-    .map((status) => status[0]);
+    .map((status): string => status[0]);
 
   return unclaimedWeeks;
 };

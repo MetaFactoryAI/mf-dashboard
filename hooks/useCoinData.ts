@@ -21,33 +21,27 @@ export type CoinData = {
 export const useCoinData = () => {
   const [coinChartHistory, setCoinChartHistory] = useState<ChartData[]>();
   const [loadingCoinChartHistory, setLoadingCoinChartHistory] = useState(false);
+  const [coinData, setCoinData] = useState<ChartData[]>();
+  const [loadingCoinData, setloadingCoinData] = useState(false);
 
-  // const fetchPoolData = async () => {
-  //   setLoadingPoolData(true);
-
-  //   const POOL_DATA = `
-  //     query PoolTokens {
-  //       pool(id: "${BALANCER_POOL_ID}"){
-  //         swapFee
-  //         totalSwapVolume
-  //         totalLiquidity
-  //         holdersCount
-  //       }
-  //     }
-  //   `;
-  //   const {
-  //     data: { pool },
-  //   } = await fetchGraph(SUBGRAPH_ENDPOINTS.balancerV2Graph, POOL_DATA, null);
-
-  //   setPoolData(pool);
-  //   setLoadingPoolData(false);
-  // };
-
-  const fetchCoinHistory = async (startTimestamp: number, endTimestamp: number) => {
+  const fetchCoinData = async (coinId: string) => {
     setLoadingCoinChartHistory(true);
 
     const response = await fetch(
-      `https://api.coingecko.com/api/v3/coins/robot/market_chart/range?vs_currency=usd&from=${startTimestamp}&to=${endTimestamp}`,
+      `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart/range?vs_currency=usd&from=${startTimestamp}&to=${endTimestamp}`,
+    );
+    const parsedResponse = await response.json();
+    const normalizedSnapshots = normalizeSnapshotsForChart(parsedResponse);
+
+    setCoinChartHistory(normalizedSnapshots);
+    setLoadingCoinChartHistory(false);
+  };
+
+  const fetchCoinHistory = async (coinId: string, startTimestamp: number, endTimestamp: number) => {
+    setLoadingCoinChartHistory(true);
+
+    const response = await fetch(
+      `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart/range?vs_currency=usd&from=${startTimestamp}&to=${endTimestamp}`,
     );
     const parsedResponse = await response.json();
     const normalizedSnapshots = normalizeSnapshotsForChart(parsedResponse);
@@ -58,6 +52,7 @@ export const useCoinData = () => {
 
   return {
     fetchCoinHistory: useCallback(fetchCoinHistory, []),
+    fetchCoinData: useCallback(fetchCoinData, []),
     coinChartHistory,
     loadingCoinChartHistory,
   };

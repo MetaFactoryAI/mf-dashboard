@@ -49,7 +49,7 @@ const Claim: NextPage = () => {
       },
       {
         Header: "Date",
-        accessor: "date",
+        accessor: "dateFormatted",
         style: {
           fontFamily: "body_regular",
           fontSize: "16px",

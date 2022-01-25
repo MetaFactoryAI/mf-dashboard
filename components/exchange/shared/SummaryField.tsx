@@ -5,7 +5,7 @@ const SummaryField: React.FC<{
   title: string;
   value: string;
 }> = ({ title, value }) => (
-  <Box py="16px" px="24px" border="2px">
+  <Box py="16px" px="24px" border="2px" borderLeft="0px" borderTop="0px">
     <Text fontWeight="400px" fontSize="14px">
       {title}
     </Text>

@@ -114,7 +114,6 @@ const TimeRangeGraphChart: FC<{
       <Box position="absolute">
         <Box backgroundColor={titleColor}>
           <Text
-            backgroundColor="black"
             color="white"
             p="18px"
             pb="0px"
@@ -126,7 +125,6 @@ const TimeRangeGraphChart: FC<{
             {titleText}
           </Text>
           <Text
-            backgroundColor="black"
             color="white"
             p="18px"
             pt="0px"

@@ -9,8 +9,12 @@ import { usePoolGearData } from "@/hooks/usePoolGearData";
 import { useCoinData } from "@/hooks/useCoinData";
 import { SwapPoolPanel, SwapPoolPanelTabs } from "./swapPoolPanel";
 import { getHistoryRangeTimestamps, HistoryRange } from "@/utils/time";
-import SummaryField from "./SummaryField";
+import SummaryField from "./shared/SummaryField";
 import type { ChartTab } from "@/components/atoms/chart/SelectButtons";
+import CoinDataSummary from "./CoinDataSummary";
+import { formatNumber } from "@/utils/presentationHelper";
+
+const COIN_ID = "robot";
 
 const Exchange: NextPage = () => {
   const TIME_TABS: ChartTab[] = useMemo(
@@ -45,26 +49,23 @@ const Exchange: NextPage = () => {
   const [selectedSwapPoolTab, setSelectedSwapPoolTab] = useState<SwapPoolPanelTabs>(
     SwapPoolPanelTabs.SwapTab,
   );
-  const { fetchCoinHistory, coinChartHistory } = useCoinData();
+  const { fetchCoinHistory, coinChartHistory, fetchCoinData, coinData } = useCoinData();
   const [selectedTimeRange, setSelectedTimeRange] = useState<HistoryRange>(HistoryRange.Year);
 
   useEffect(() => {
-    if (account) {
-      const { startTimestamp, endTimestamp } = getHistoryRangeTimestamps(selectedTimeRange);
-      fetchPoolHistory(startTimestamp, endTimestamp);
-      fetchCoinHistory(startTimestamp, endTimestamp);
-    }
-  }, [account, fetchCoinHistory, fetchPoolHistory, selectedTimeRange]);
+    const { startTimestamp, endTimestamp } = getHistoryRangeTimestamps(selectedTimeRange);
+
+    fetchPoolHistory(startTimestamp, endTimestamp);
+    fetchCoinHistory(COIN_ID, startTimestamp, endTimestamp);
+    fetchPoolData();
+    fetchCoinData(COIN_ID);
+  }, [fetchCoinData, fetchCoinHistory, fetchPoolData, fetchPoolHistory, selectedTimeRange]);
 
   useEffect(() => {
     if (account) {
       fetchBalances(account);
     }
   }, [account, fetchBalances]);
-
-  useEffect(() => {
-    fetchPoolData();
-  }, [fetchPoolData]);
 
   if (
     !tokensBalances ||
@@ -73,7 +74,8 @@ const Exchange: NextPage = () => {
     !poolChartHistory ||
     loadingPoolData ||
     !poolData ||
-    !coinChartHistory
+    !coinChartHistory ||
+    !coinData
   )
     return <Loading />;
 
@@ -98,7 +100,7 @@ const Exchange: NextPage = () => {
           />
         </GridItem>
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
-          <Box border="2px" spacing="0px">
+          <Box border="2px" borderLeft="0px" spacing="0px">
             <TimeRangeGraphChart
               chartData={
                 selectedSwapPoolTab === SwapPoolPanelTabs.PoolTab
@@ -111,28 +113,44 @@ const Exchange: NextPage = () => {
               titleValue={
                 selectedSwapPoolTab === SwapPoolPanelTabs.PoolTab
                   ? `$${format(".2s")(poolData.totalLiquidity)}`
-                  : "TBD"
+                  : `$${formatNumber(
+                      // @ts-ignore
+                      coinData?.find(({ title }) => title === "Current Price").value,
+                    )}`
               }
-              titleColor="black"
+              titleColor={selectedSwapPoolTab === SwapPoolPanelTabs.PoolTab ? "black" : "#8B2CFF"}
               handleOptionClickCallback={setSelectedTimeRange}
               selectOptions={TIME_TABS}
               selectedOption={selectedTimeRange}
             />
           </Box>
-          <Grid templateColumns="repeat(3, 1fr)" width="100%">
-            <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
-              <SummaryField title="Holders" value={poolData.holdersCount} />
-            </GridItem>
-            <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
-              <SummaryField
-                title="Total Swap Volume"
-                value={`$${format(".2s")(parseFloat(poolData.totalSwapVolume))}`}
-              />
-            </GridItem>
-            <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
-              <SummaryField title="Swap fee" value={`${poolData.swapFee * 100}%`} />
-            </GridItem>
-          </Grid>
+          {/* TODO refactor: move to isolated component */}
+          {selectedSwapPoolTab === SwapPoolPanelTabs.PoolTab && (
+            <Grid templateColumns="repeat(3, 1fr)" width="100%">
+              <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
+                <SummaryField title="Holders" value={poolData.holdersCount} />
+              </GridItem>
+              <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
+                <SummaryField
+                  title="Total Swap Vol"
+                  value={`$${format(".2s")(parseFloat(poolData.totalSwapVolume))}`}
+                />
+              </GridItem>
+              <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
+                <SummaryField title="Swap fee" value={`${poolData.swapFee * 100}%`} />
+              </GridItem>
+            </Grid>
+          )}
+          {selectedSwapPoolTab === SwapPoolPanelTabs.SwapTab && (
+            <Grid templateColumns="repeat(3, 1fr)" width="100%">
+              {/* take first few values which will be shown under the Chart in the main page */}
+              {coinData.slice(1, 4).map((element) => (
+                <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
+                  <SummaryField title={element.title} value={element.value.toString()} />
+                </GridItem>
+              ))}
+            </Grid>
+          )}
         </GridItem>
         <GridItem
           colSpan={{ md: 3, lg: 3 }}
@@ -146,7 +164,7 @@ const Exchange: NextPage = () => {
           />
         </GridItem>
 
-        <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} borderBottom="2px" p="40px">
+        <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} p="40px">
           <Text fontFamily="body_regular" fontWeight="400" fontSize="16px">
             MetaFactory is a community-owned culture studio and marketplace focused on the creation
             and sale of digi-physical goods that celebrate crypto. Artists of all types are invited
@@ -155,6 +173,9 @@ const Exchange: NextPage = () => {
             production partners in California and Sweden, so creators can focus on their craft while
             MetaFactory facilitates creation, fulfillment, sales and support.
           </Text>
+          {selectedSwapPoolTab === SwapPoolPanelTabs.SwapTab && (
+            <CoinDataSummary coinData={coinData} />
+          )}
         </GridItem>
       </Grid>
       <Box />

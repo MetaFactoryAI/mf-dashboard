@@ -124,7 +124,7 @@ const Exchange: NextPage = () => {
               selectedOption={selectedTimeRange}
             />
           </Box>
-          {/* TODO refactor: move to isolated component */}
+          {/* TODO refactor: move below to isolated component */}
           {selectedSwapPoolTab === SwapPoolPanelTabs.PoolTab && (
             <Grid templateColumns="repeat(3, 1fr)" width="100%">
               <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>

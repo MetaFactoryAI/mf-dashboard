@@ -13,7 +13,7 @@ const SummaryField2: React.FC<{
   };
 
   return (
-    <Flex border="1px" p="16px" width="100%" justifyContent="space-between">
+    <Flex p="16px" width="100%" justifyContent="space-between">
       <Text fontWeight="400px" fontSize="16px" fontFamily="body_regular">
         {title}
       </Text>

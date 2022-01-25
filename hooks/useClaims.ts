@@ -67,16 +67,24 @@ const useClaims = () => {
             MERKLE_REDEEM_CONTRACT,
             provider.getSigner(),
           );
+
+          const startYearDate = `${claimsYear}-01-01T00:00:00Z`;
+          const endYearDate = `${claimsYear + 1}-01-01T00:00:00Z`;
           // @ts-ignore
-          const { block: startBlock } = await dater.getDate(`${claimsYear}-01-01T00:00:00Z`, true);
+          const { block: startBlock } = await dater.getDate(startYearDate, true);
           // @ts-ignore
-          const { block: endBlock } = await dater.getDate(
-            `${claimsYear + 1}-01-01T00:00:00Z`,
-            false,
+          const { block: endBlock } = await dater.getDate(endYearDate, false);
+
+          const monthlyStartBlocks = await dater.getEvery(
+            'months', // Period, required. Valid value: years, quarters, months, weeks, days, hours, minutes
+            startYearDate, // Start date, required. Any valid moment.js value: string, milliseconds, Date() object, moment() object.
+            endYearDate, // End date, required. Any valid moment.js value: string, milliseconds, Date() object, moment() object.
+            1, // Duration, optional, integer. By default 1.
+            false, // Block after, optional. Search for the nearest block before or after the given date. By default true.
           );
           const claimedFilter = redeem.filters.Claimed();
           const fetchedClaims = await redeem.queryFilter(claimedFilter, startBlock, endBlock);
-          const normalizedClaims = await formatClaimsEventData(fetchedClaims);
+          const normalizedClaims = await formatClaimsEventData(fetchedClaims, monthlyStartBlocks);
           const normalizedMonthlyClaims = formatMonthlyClaimsEventData(normalizedClaims);
 
           setClaimEventsLoading(false);

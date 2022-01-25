@@ -37,7 +37,7 @@ const YearlyBarChart: FC<{
   const currentRatio = isDesktopScreen ? DESKTOP_RATIO : MOBILE_RATIO;
   const bottomBase = isDesktopScreen ? DEFAULT_BOTTOM_BASE : 0;
   const { width, height } = useResize(ref, currentRatio);
-  const format = timeFormat("%B / %Y");
+  const format = timeFormat("%b / %Y");
   // @ts-ignore
   const formatDate = (date: number) => format(new Date(date)) as Date;
   const {

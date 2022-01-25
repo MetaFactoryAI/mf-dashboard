@@ -17,10 +17,26 @@ const SmallTableRow: React.FC = ({ row, index }) => (
         {/* @ts-ignore */}
         {row.cells.map((cell) => {
           const cellKey = `table_row_${index}_${cell.value}`;
+          const handleRedirect = (redirectLink: string) => {
+            window.location.assign(redirectLink);
+          };
 
           return (
             <Flex {...cell.column.style} key={cellKey} justifyContent="start">
-              <Flex alignContent="start">{cell.render("Cell")}</Flex>
+              {/* handle specific case */}
+              {cell.column.id === "redirect" && (
+                <Box
+                  onClick={() => handleRedirect(cell.row.original.redirectLink)}
+                  cursor="pointer"
+                >
+                  {cell.row.original.redirectValue}&nbsp;&nbsp;
+                  <Image src="/arrow.svg" alt="" width="15px" height="15px" />
+                </Box>
+              )}
+              {/* render other cases */}
+              {cell.column.id !== "redirect" && (
+                <Flex alignContent="start">{cell.render("Cell")}</Flex>
+              )}
             </Flex>
           );
         })}

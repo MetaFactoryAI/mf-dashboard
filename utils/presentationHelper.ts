@@ -4,29 +4,57 @@ import { formatUnits } from "@ethersproject/units";
 import { ClaimedEvent } from "types/ethers-contracts/MerkleRedeem";
 import { ethers } from "ethers";
 import moment from "moment";
+import dayjs from "dayjs";
 import type { ChartData } from "@/components/atoms/YearlyBarChart";
 
-export const formatClaimsEventData = async (claims: ClaimedEvent[]) =>
-  Promise.all(
-    claims.map((claim) =>
-      claim.getBlock().then((block) => {
-        const dateFormatOptions = {
-          year: "numeric",
-          month: "numeric",
-        };
-        const blockDateTime = new Date(block.timestamp * 1000);
-        // @ts-ignore
-        const blockDateTimeFormat = new Intl.DateTimeFormat("en-GB", dateFormatOptions);
+type MonthlyStartBlock = {
+  date: Date;
+  dateTimestamp: number;
+  block: number;
+  timestmamp: number;
+};
 
-        return {
-          avatarSrc: "/avatar-default.svg",
-          address: formatAddress(claim.args._claimant),
-          date: blockDateTimeFormat.format(blockDateTime),
-          amount: Number(ethers.utils.formatEther(claim.args._balance)).toFixed(2),
-        };
-      }),
-    ),
-  );
+export const formatClaimsEventData = (
+  claims: ClaimedEvent[],
+  monthlyStartBlocks: MonthlyStartBlock[],
+) =>
+  claims.map((claim) => {
+    const monthDate = assignMonthToBlock(claim.blockNumber, monthlyStartBlocks);
+
+    return {
+      avatarSrc: "/avatar-default.svg",
+      address: formatAddress(claim.args._claimant),
+      amount: Number(ethers.utils.formatEther(claim.args._balance)).toFixed(2),
+      date: dayjs(monthDate).valueOf(),
+      // specific fields handled in @/components/Table to redirect on click
+      redirectLink: `https://etherscan.io/tx/${claim.transactionHash}`,
+      redirectValue: formatAddress(claim.transactionHash),
+    };
+  });
+
+
+// export const formatClaimsEventData = async (claims: ClaimedEvent[]) =>
+//   Promise.all(
+//     claims.map((claim) =>
+//       claim.getBlock().then((block) => {
+//         const dateFormatOptions = {
+//           year: "numeric",
+//           month: "numeric",
+//         };
+//         const blockDateTime = new Date(block.timestamp * 1000);
+//         // @ts-ignore
+//         const blockDateTimeFormat = new Intl.DateTimeFormat("en-GB", dateFormatOptions);
+// console.log(blockDateTimeFormat.format(blockDateTime),)
+//         return {
+//           avatarSrc: "/avatar-default.svg",
+//           address: formatAddress(claim.args._claimant),
+//           date: blockDateTimeFormat.format(blockDateTime).valueOf(),
+//           amount: Number(ethers.utils.formatEther(claim.args._balance)).toFixed(2),
+//         };
+//       }),
+//     ),
+//   );
+
 
 // @ts-ignore
 export const formatMonthlyClaimsEventData = (claims): ChartData[] => {
@@ -44,7 +72,7 @@ export const formatMonthlyClaimsEventData = (claims): ChartData[] => {
   return Object.keys(reducedClaims).map((claimKey) => ({
     key: `yearlyBarChartData${claimKey}`,
     value: reducedClaims[claimKey].toFixed(1),
-    date: moment(claimKey, ["MM/YYYY"]).valueOf(),
+    date: Number(claimKey),
   }));
 };
 
@@ -86,4 +114,17 @@ export const formatToken = (
   }
   // eslint-disable-next-line consistent-return
   return formatted;
+};
+
+const assignMonthToBlock = (blockNumber: number, monthlyStartBlocks: MonthlyStartBlock[]) => {
+  const assignedMonhtlyBlock = monthlyStartBlocks.find(
+    (monthlyStartBlock: MonthlyStartBlock, index) =>
+      monthlyStartBlock.block <= blockNumber &&
+      blockNumber <= monthlyStartBlocks[index + 1].block &&
+      index < monthlyStartBlocks.length,
+  );
+
+  if (!assignedMonhtlyBlock) return monthlyStartBlocks[monthlyStartBlocks.length - 1].date;
+
+  return assignedMonhtlyBlock.date;
 };

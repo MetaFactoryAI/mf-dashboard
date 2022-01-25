@@ -48,8 +48,8 @@ const Claim: NextPage = () => {
         },
       },
       {
-        Header: "Date",
-        accessor: "date",
+        Header: "Tx Hash",
+        accessor: "redirect",
         style: {
           fontFamily: "body_regular",
           fontSize: "16px",

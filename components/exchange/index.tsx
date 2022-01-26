@@ -115,7 +115,7 @@ const Exchange: NextPage = () => {
                   ? `$${format(".2s")(poolData.totalLiquidity)}`
                   : `$${formatNumber(
                       // @ts-ignore
-                      coinData?.find(({ title }) => title === "Current Price").value,
+                      coinData?.chartSummary?.find(({ title }) => title === "Current Price").value,
                     )}`
               }
               titleColor={selectedSwapPoolTab === SwapPoolPanelTabs.PoolTab ? "black" : "#8B2CFF"}
@@ -144,8 +144,11 @@ const Exchange: NextPage = () => {
           {selectedSwapPoolTab === SwapPoolPanelTabs.SwapTab && (
             <Grid templateColumns="repeat(3, 1fr)" width="100%">
               {/* take first few values which will be shown under the Chart in the main page */}
-              {coinData.slice(1, 4).map((element) => (
-                <GridItem colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}>
+              {coinData.chartSummary.slice(1, 4).map((element) => (
+                <GridItem
+                  colSpan={{ base: 3, sm: 3, md: 1, lg: 1 }}
+                  key={`exchange-chart-sum-${element.title}`}
+                >
                   <SummaryField title={element.title} value={element.value.toString()} />
                 </GridItem>
               ))}
@@ -174,7 +177,7 @@ const Exchange: NextPage = () => {
             MetaFactory facilitates creation, fulfillment, sales and support.
           </Text>
           {selectedSwapPoolTab === SwapPoolPanelTabs.SwapTab && (
-            <CoinDataSummary coinData={coinData} />
+            <CoinDataSummary coinData={coinData.tableSummary} />
           )}
         </GridItem>
       </Grid>

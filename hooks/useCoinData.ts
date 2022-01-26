@@ -12,12 +12,13 @@ type CoinSnapshots = {
   total_volumes: number[][];
 };
 
-export type CoinData = { title: string; value: string | number };
+export type CoinRow = { title: string; value: string | number };
+export type CoinData = { chartSummary: CoinRow[]; tableSummary: CoinRow[][] };
 
 export const useCoinData = () => {
   const [coinChartHistory, setCoinChartHistory] = useState<ChartData[]>();
   const [loadingCoinChartHistory, setLoadingCoinChartHistory] = useState(false);
-  const [coinData, setCoinData] = useState<CoinData[]>();
+  const [coinData, setCoinData] = useState<CoinData>();
   const [loadingCoinData, setloadingCoinData] = useState(false);
 
   const fetchCoinData = async (coinId: string) => {
@@ -25,21 +26,31 @@ export const useCoinData = () => {
 
     const response = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`);
     const { market_data, contract_address } = await response.json();
-    const normalizedResponse = [
-      { title: "Current Price", value: market_data.current_price.usd },
-      { title: "Total Volume", value: `$${market_data.total_volume.usd}` },
-      { title: "All Time High", value: `$${market_data.ath.usd}` },
-      {
-        title: "Price Change 24h:",
-        value: `${formatNumber(parseFloat(market_data.price_change_24h))}%`,
-      },
-      { title: "Market Cap:", value: market_data.market_cap.usd },
-      { title: "Fully Diluted Valuation:", value: market_data.fully_diluted_valuation.usd },
-      { title: "Circulating Supply:", value: parseInt(market_data.circulating_supply, 10) },
-      { title: "Max Supply:", value: market_data.max_supply },
-      { title: "Contract Address:", value: contract_address },
-      { title: "Pool Address:", value: BALANCER_POOL_ADDR },
-    ];
+    const normalizedResponse = {
+      chartSummary: [
+        { title: "Current Price", value: market_data.current_price.usd },
+        { title: "Total Volume", value: `$${market_data.total_volume.usd}` },
+        { title: "All Time High", value: `$${market_data.ath.usd}` },
+        {
+          title: "Price Change 24h:",
+          value: `${formatNumber(parseFloat(market_data.price_change_24h))}%`,
+        },
+      ],
+      tableSummary: [
+        [
+          { title: "Market Cap:", value: market_data.market_cap.usd },
+          { title: "Fully Diluted Valuation:", value: market_data.fully_diluted_valuation.usd },
+        ],
+        [
+          { title: "Circulating Supply:", value: parseInt(market_data.circulating_supply, 10) },
+          { title: "Max Supply:", value: market_data.max_supply },
+        ],
+        [
+          { title: "Contract Address:", value: contract_address },
+          { title: "Pool Address:", value: BALANCER_POOL_ADDR },
+        ],
+      ],
+    };
 
     setCoinData(normalizedResponse);
     setloadingCoinData(false);

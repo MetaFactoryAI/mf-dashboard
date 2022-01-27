@@ -12,6 +12,7 @@ const EthDater = require("ethereum-block-by-date");
 
 type Web3ContextType = {
   account: null | string;
+  web3: any;
   accountAuthBearer: null | string;
   provider: null | ethers.providers.Web3Provider;
   chainId: null | number;
@@ -26,7 +27,8 @@ const providerOptions: IProviderOptions = {
     package: WalletConnectProvider,
     options: {
       rpc: {
-        1: "https://c44896c1e1ba4af98ee36d4acf6c0d7a.eth.rpc.rivet.cloud",
+        // 1: "https://c44896c1e1ba4af98ee36d4acf6c0d7a.eth.rpc.rivet.cloud",
+        1: "https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
       },
     },
   },
@@ -41,6 +43,7 @@ const web3Modal =
 
 const Web3Context = createContext<Web3ContextType & { loading: boolean; connectWeb3: () => void }>({
   errors: null,
+  web3: null,
   account: null,
   accountAuthBearer: null,
   provider: null,
@@ -55,6 +58,7 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
   const [{ account, provider, chainId, dater, errors, accountAuthBearer }, setWeb3State] =
     useState<Web3ContextType>({
       account: null,
+      web3: null,
       accountAuthBearer: null,
       provider: null,
       chainId: null,
@@ -73,6 +77,7 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
   const connectWeb3 = useCallback(async () => {
     try {
       const web3ModalInstance = web3Modal && (await web3Modal.connect());
+      const web3 = new Web3(web3ModalInstance);
       const web3Provider = new Web3(web3ModalInstance)
         .currentProvider as ethers.providers.ExternalProvider;
       const currentprovider = new ethers.providers.Web3Provider(web3Provider);
@@ -135,6 +140,7 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
     <Web3Context.Provider
       value={{
         errors,
+        web3,
         account,
         accountAuthBearer,
         provider,

@@ -41,6 +41,7 @@ export const SwapPoolPanel: React.FC<{
             currentSelection={selectedTab}
             selectOption={tab.key}
             handleClick={handleTabClick}
+            key={`swap-pool=panel-tab-${tab.key}`}
           />
         ))}
       </HStack>

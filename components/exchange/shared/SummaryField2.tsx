@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Flex, Box } from "@chakra-ui/react";
+import { Text, Flex, HStack } from "@chakra-ui/react";
 import Image from "next/image";
 
 const SummaryField2: React.FC<{
@@ -23,12 +23,18 @@ const SummaryField2: React.FC<{
         </Text>
       )}
       {redirectLink && (
-        <Box onClick={handleRedirect} cursor="pointer">
-          <Text textAlign="end" fontWeight="400px" fontSize="16px" fontFamily="body_regular">
-            {value}&nbsp;
-            <Image src="/arrow.svg" alt="" width="15px" height="15px" />
+        <HStack spacing="0px" onClick={handleRedirect} cursor="pointer">
+          <Text
+            pr="5px"
+            textAlign="end"
+            fontWeight="400px"
+            fontSize="16px"
+            fontFamily="body_regular"
+          >
+            {value}
           </Text>
-        </Box>
+          <Image src="/arrow.svg" alt="" width="12px" height="15px" />
+        </HStack>
       )}
     </Flex>
   );

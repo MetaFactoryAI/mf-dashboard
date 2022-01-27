@@ -2,28 +2,22 @@ import React from "react";
 import { Box } from "@chakra-ui/react";
 import SummaryField2 from "./shared/SummaryField2";
 import { formatAddress } from "@/utils/presentationHelper";
-import type { CoinData } from "@/hooks/useCoinData";
+import type { CoinRow } from "@/hooks/useCoinData";
 import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
 
 const CoinDataSummary: React.FC<{
-  coinData: CoinData[];
+  coinData: CoinRow[][];
 }> = ({ coinData }) => {
   const { isDesktopScreen } = useChakraBreakpoints();
-  const clickableLeftColumn = (
-    <td style={{ border: "1px solid black", width: "50%" }}>
+  const createClickableComponent = (col: CoinRow) => (
+    <td
+      style={{ border: "1px solid black", width: "50%" }}
+      key={`coin-data-sum-clickable-td-${col.title}`}
+    >
       <SummaryField2
-        title={coinData[8].title}
-        value={formatAddress(coinData[8].value.toString())}
-        redirectLink={`https://etherscan.io/address/${coinData[8].value}`}
-      />
-    </td>
-  );
-  const clickableRightColumn = (
-    <td style={{ border: "1px solid black", width: "50%" }}>
-      <SummaryField2
-        title={coinData[9].title}
-        value={formatAddress(coinData[9].value.toString())}
-        redirectLink={`https://etherscan.io/address/${coinData[9].value}`}
+        title={col.title}
+        value={formatAddress(col.value.toString())}
+        redirectLink={`https://etherscan.io/address/${col.value}`}
       />
     </td>
   );
@@ -31,60 +25,44 @@ const CoinDataSummary: React.FC<{
   return (
     <Box pt="40px">
       <table cellSpacing="0" cellPadding="0" style={{ border: "1px solid black", width: "100%" }}>
-        {coinData.map((_element, index) => {
-          // skip first few values which are shown under the Chart in the main page
-          if (index > 3 && index < 8 && index % 2 === 0) {
-            const leftColumn = (
-              <td style={{ border: "1px solid black", width: "50%" }}>
-                <SummaryField2
-                  title={coinData[index].title}
-                  value={coinData[index].value.toString()}
-                />
+        <tbody>
+          {coinData.slice(0, 2).map((cols) => {
+            const createComponent = (col: CoinRow) => (
+              <td
+                style={{ border: "1px solid black", width: "50%" }}
+                key={`coin-data-sum-td-${col.title}`}
+              >
+                <SummaryField2 title={col.title} value={col.value.toString()} />
               </td>
             );
 
-            const rightColumn = (
-              <td style={{ border: "1px solid black", width: "50%" }}>
-                <SummaryField2
-                  title={coinData[index + 1].title}
-                  value={coinData[index + 1].value.toString()}
-                />
-              </td>
-            );
+            if (isDesktopScreen)
+              return (
+                <tr key={`coin-data-sum-tr-${cols[0].title}`}>
+                  {createComponent(cols[0])}
+                  {createComponent(cols[1])}
+                </tr>
+              );
 
-            return (
-              <>
-                {isDesktopScreen && (
-                  <tr>
-                    {leftColumn}
-                    {rightColumn}
-                  </tr>
-                )}
-                {!isDesktopScreen && (
-                  <>
-                    <tr>{leftColumn}</tr>
-                    <tr>{rightColumn}</tr>
-                  </>
-                )}
-              </>
-            );
-          }
+            return cols.map((col: CoinRow) => (
+              <tr key={`coin-data-sum-tr2-${col.title}`}>{createComponent(col)}</tr>
+            ));
+          })}
 
-          return null;
-        })}
+          {isDesktopScreen && (
+            <tr>
+              {createClickableComponent(coinData[2][0])}
+              {createClickableComponent(coinData[2][1])}
+            </tr>
+          )}
 
-        {isDesktopScreen && (
-          <tr>
-            {clickableLeftColumn}
-            {clickableRightColumn}
-          </tr>
-        )}
-        {!isDesktopScreen && (
-          <>
-            <tr>{clickableLeftColumn}</tr>
-            <tr>{clickableRightColumn}</tr>
-          </>
-        )}
+          {!isDesktopScreen &&
+            coinData[2].map((col: CoinRow) => (
+              <tr key={`coin-data-sum-tr-clickable-${col.title}`}>
+                {createClickableComponent(col)}
+              </tr>
+            ))}
+        </tbody>
       </table>
     </Box>
   );

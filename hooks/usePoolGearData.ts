@@ -6,7 +6,7 @@ import { BALANCER_POOL_ID, BALANCER_GQL_URL } from "@/utils/constants";
 import type { ChartData } from "@/components/atoms/TimeRangeGraphChart";
 import { formatNumber } from "@/utils/presentationHelper";
 
-export type TokenBalance = { userBalance: number; symbol: string };
+export type TokenBalance = { balance: number; symbol: string };
 
 type PoolSnapshot = {
   amounts: number[];
@@ -90,7 +90,7 @@ export const usePoolGearData = () => {
       const userShareProportion = userPoolShare / totalPoolshare;
       const userBalance = totalBalance * userShareProportion;
 
-      return { symbol: token.symbol, userBalance };
+      return { symbol: token.symbol, balance: userBalance };
     });
 
     setLoadingBalances(false);

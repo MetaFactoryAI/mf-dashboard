@@ -4,8 +4,6 @@ import type { ChartData } from "@/components/atoms/TimeRangeGraphChart";
 import { formatNumber } from "@/utils/presentationHelper";
 import { BALANCER_POOL_ADDR } from "@/utils/constants";
 
-export type TokenBalance = { userBalance: number; symbol: string };
-
 type CoinSnapshots = {
   market_caps: number[][];
   prices: number[][];

@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Box, HStack } from "@chakra-ui/react";
-import PoolLiquidity from "./PoolLiquidity";
+import Pool from "./Pool";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
 import SwapPoolPanelTab from "./SwapPoolPanelTab";
 import Swap from "./Swap";
@@ -46,9 +46,7 @@ export const SwapPoolPanel: React.FC<{
         ))}
       </HStack>
       {selectedTab === SwapPoolPanelTabs.SwapTab && <Swap />}
-      {selectedTab === SwapPoolPanelTabs.PoolTab && (
-        <PoolLiquidity tokensBalances={tokensBalances} />
-      )}
+      {selectedTab === SwapPoolPanelTabs.PoolTab && <Pool tokensBalances={tokensBalances} />}
     </Box>
   );
 };

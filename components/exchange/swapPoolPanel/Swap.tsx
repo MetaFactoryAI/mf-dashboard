@@ -45,7 +45,6 @@ const Swap: React.FC = () => {
             Sell
           </Text>
         </Box>
-        {console.log(sellToken.balance)}
         <SwapTokenField
           selectedToken={sellToken}
           disableInput={!!buyToken.balance && buyToken.balance > 0}

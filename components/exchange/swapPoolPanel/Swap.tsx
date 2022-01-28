@@ -35,7 +35,9 @@ const Swap: React.FC = () => {
     setBuyTokenList(currentSellTokenList);
   };
 
-  const handleSwap = () => {console.log("handle SWAP")};
+  const handleSwap = () => {
+    // TODO HANDLE SWAP
+  };
 
   return (
     <VStack border="2px" borderTop="0px" borderRight="0px" spacing="0px">

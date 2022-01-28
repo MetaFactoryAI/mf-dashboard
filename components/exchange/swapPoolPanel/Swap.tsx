@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Text,
-  VStack,
-  Button,
-  Flex,
-  Box,
-  Center,
-} from "@chakra-ui/react";
+import { Text, VStack, Button, Flex, Box, Center } from "@chakra-ui/react";
 import Image from "next/image";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
 import SwapTokenField from "./shared/SwapTokenField";

@@ -4,8 +4,9 @@ import Image from "next/image";
 import { BALANCER_POOL_ID } from "@/utils/constants";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
 import { formatNumber } from "@/utils/presentationHelper";
+import Token from "./shared/Token";
 
-const PoolLiquidity: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBalances }) => {
+const Pool: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBalances }) => {
   const handleLiquidityRedirect = () => {
     window.location.assign(`https://app.balancer.fi/#/pool/${BALANCER_POOL_ID}`);
   };
@@ -19,17 +20,15 @@ const PoolLiquidity: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBal
           </Text>
         </Box>
         {tokensBalances.map((token) => (
-          <HStack width="100%" spacing="0px" backgroundColor="black" border="2px">
+          <HStack
+            width="100%"
+            spacing="0px"
+            backgroundColor="black"
+            border="2px"
+            key={`pool-panel-token-balance-${token.symbol}`}
+          >
             <HStack width="50%" spacing="0px" backgroundColor="white">
-              <Image
-                src={`/token-${token.symbol.toLowerCase()}.svg`}
-                alt=""
-                width="52px"
-                height="52px"
-              />
-              <Text fontFamily="body_regular" px="16px" fontWeight="400" fontSize="16px">
-                {token.symbol}
-              </Text>
+              <Token tokenSymbol={token.symbol} />
             </HStack>
             <Box width="50%" backgroundColor="black">
               <Text
@@ -40,7 +39,7 @@ const PoolLiquidity: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBal
                 mx="16px"
                 color="white"
               >
-                {formatNumber(token.userBalance)}
+                {formatNumber(token.balance)}
               </Text>
             </Box>
           </HStack>
@@ -75,4 +74,4 @@ const PoolLiquidity: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBal
   );
 };
 
-export default PoolLiquidity;
+export default Pool;

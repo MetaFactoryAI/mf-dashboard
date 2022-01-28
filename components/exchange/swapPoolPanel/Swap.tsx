@@ -1,67 +1,96 @@
 import React, { useState } from "react";
-import { Box, Flex, IconButton, Input, Select, Spacer, Text, VStack } from "@chakra-ui/react";
+import {
+  Text,
+  VStack,
+  Button,
+  Flex,
+  Box,
+  Center,
+} from "@chakra-ui/react";
+import Image from "next/image";
+import type { TokenBalance } from "@/hooks/usePoolGearData";
+import SwapTokenField from "./shared/SwapTokenField";
 
 const Swap: React.FC = () => {
-  const [currency1, setCurrency1] = useState("");
-  const [currency2, setCurrency2] = useState("");
+  const NON_METAFACTORY_TOKEN_SYMBOLS: string[] = ["WETH", "DAI"];
+  const METAFACTORY_TOKEN_SYMBOLS: string[] = ["ROBOT"];
+  const [sellToken, setSellToken] = useState<TokenBalance>({
+    symbol: NON_METAFACTORY_TOKEN_SYMBOLS[0],
+    balance: 0,
+  });
+  const [sellTokenList, setSellTokenList] = useState<string[]>(NON_METAFACTORY_TOKEN_SYMBOLS);
 
-  const handleCurrency1Change = (selected: string) => {
-    setCurrency1(selected);
-  };
-
-  const handleCurrency2Change = (selected: string) => {
-    setCurrency2(selected);
-  };
-
+  const [buyToken, setBuyToken] = useState<TokenBalance>({
+    symbol: METAFACTORY_TOKEN_SYMBOLS[0],
+    balance: 0,
+  });
+  const [buyTokenList, setBuyTokenList] = useState<string[]>(METAFACTORY_TOKEN_SYMBOLS);
   const switchCurrencies = () => {
-    const cur1 = currency1;
-    setCurrency1(currency2);
-    setCurrency2(cur1);
+    const currentSellToken = { ...sellToken };
+    const currentSellTokenList = sellTokenList;
+
+    setSellToken({ ...buyToken });
+    setBuyToken({ ...currentSellToken });
+    setSellTokenList(buyTokenList);
+    setBuyTokenList(currentSellTokenList);
   };
+
+  const handleSwap = () => {console.log("handle SWAP")};
 
   return (
-    <Box w="420px" h="412px" border="2px" borderTop="0px">
-      <VStack>
-        <Text align="start">Send</Text>
-        <Flex>
-          <Select
-            h="50px"
-            value={currency1}
-            borderRadius={0}
-            variant="unstyled"
-            onChange={(event) => handleCurrency1Change(event.target.value)}
-          >
-            <option value="ETH">ETH</option>
-            <option value="BTC">BTC</option>
-            <option value="ROBOT">ROBOT</option>
-          </Select>
-          <Input h="50px" placeholder={currency1} size="lg" borderRadius={0} />
-        </Flex>
-        <Spacer />
-        <IconButton
-          aria-label="Switch Currencies"
-          // TODO: need to add icon svg from figma
-          // icon=""
-          onClick={() => switchCurrencies}
+    <VStack border="2px" borderTop="0px" borderRight="0px" spacing="0px">
+      <VStack spacing="16px" width="100%" px="32px" pt="32px" pb="26px">
+        <Box width="100%">
+          <Text fontFamily="body_regular" fontWeight="400" fontSize="16px">
+            Sell
+          </Text>
+        </Box>
+        {console.log(sellToken.balance)}
+        <SwapTokenField
+          selectedToken={sellToken}
+          disableInput={!!buyToken.balance && buyToken.balance > 0}
+          tokenList={sellTokenList}
+          setSelectedTokenCallback={setSellToken}
         />
-        <Spacer />
-        <Text align="start">Receive</Text>
-        <Flex>
-          <Select
-            h="50px"
-            borderRadius={0}
-            variant="unstyled"
-            placeholder={currency2}
-            onChange={(event) => handleCurrency2Change(event.target.value)}
-          >
-            <option value="ETH">ETH</option>
-            <option value="BTC">BTC</option>
-            <option value="ROBOT">ROBOT</option>
-          </Select>
-          <Input h="50px" placeholder={currency2} size="lg" borderRadius={0} />
-        </Flex>
+        <Center
+          boxShadow="0px 4px 6px rgba(0, 0, 0, 0.1)"
+          borderRadius="10px"
+          cursor="pointer"
+          onClick={switchCurrencies}
+        >
+          <Image src="/switch.svg" alt="" width="40px" height="40px" />
+        </Center>
+        <Box width="100%">
+          <Text fontFamily="body_regular" fontWeight="400" fontSize="16px">
+            Buy
+          </Text>
+        </Box>
+        <SwapTokenField
+          selectedToken={buyToken}
+          disableInput={!!sellToken.balance && sellToken.balance > 0}
+          tokenList={buyTokenList}
+          setSelectedTokenCallback={setBuyToken}
+        />
       </VStack>
-    </Box>
+      <Flex width="100%" backgroundColor="#D9BAFF">
+        <Button
+          onClick={handleSwap}
+          _focus={{ boxShadow: "none" }}
+          variant="unstyled"
+          alignSelf="center"
+          width="100%"
+          borderRadius="0px"
+          mt="16px"
+          mb="20px"
+        >
+          <Flex spacing="0px" justifyContent="center">
+            <Text color="##8B2CFF" fontFamily="body_bold" fontWeight="800" fontSize="24px" m="5px">
+              Preview trade
+            </Text>
+          </Flex>
+        </Button>
+      </Flex>
+    </VStack>
   );
 };
 

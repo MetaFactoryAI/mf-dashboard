@@ -7,9 +7,9 @@ const MobileItem: React.FC<{
   title: string;
   selectColor: string;
   avatar: string;
-  selectOption: number;
-  currentSelection: number;
-  handleClick: (key: number) => void;
+  selectOption: string;
+  currentSelection: string;
+  handleClick: (key: string) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
 }> = ({ title, selectColor, avatar, selectOption, currentSelection, handleClick, ...props }) => {

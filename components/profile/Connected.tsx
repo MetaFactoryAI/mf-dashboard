@@ -16,7 +16,7 @@ const Connected: NextPage = () => {
     useMetafactoryData();
   const { loading: loadingWeb3, accountAuthBearer, account } = useWeb3Context();
   const { unclaimedTotal, claimedTotal, handleClaim } = useClaims();
-  const [selectedTableTab, setSelectedTableTab] = useState<number>(0);
+  const [selectedTableTab, setSelectedTableTab] = useState<string>("buyer");
   const [tableRows, setTableRows] = useState<DesignerReward[] | BuyerReward[]>([]);
   const [tableColumns, setTableColumns] = useState();
   const designerTableColumns = useMemo(
@@ -90,23 +90,24 @@ const Connected: NextPage = () => {
     ],
     [],
   );
+
   const TABLE_TABS = useMemo(
-    () => [
-      {
+    () => ({
+      buyer: {
         title: "Buyer",
         selectColor: "#00ECFF",
         avatar: "/avatar-default.svg",
         tabColumns: buyerTableColumns,
         tabRows: buyerRewards?.items || [],
       },
-      {
+      designer: {
         title: "Designer",
         selectColor: "#FF00C3",
         avatar: "/avatar-designer.svg",
         tabColumns: designerTableColumns,
         tabRows: designerRewards?.items || [],
       },
-    ],
+    }),
     [buyerRewards?.items, buyerTableColumns, designerRewards?.items, designerTableColumns],
   );
 
@@ -142,18 +143,27 @@ const Connected: NextPage = () => {
     [],
   );
 
-  const isZeroRewards = useMemo(
-    () =>
-      (!designerRewards || designerRewards.items?.length === 0) &&
-      (!buyerRewards || buyerRewards?.items.length === 0),
-    [buyerRewards, designerRewards],
+  const isZeroDesignerRewards = useMemo(
+    () => !designerRewards || designerRewards.items?.length === 0,
+    [designerRewards],
   );
 
-  const handleTabClick = (tabIndex: number) => {
-    setSelectedTableTab(tabIndex);
+  const isZeroBuyerRewards = useMemo(
+    () => !buyerRewards || buyerRewards?.items.length === 0,
+    [buyerRewards],
+  );
+
+  const isZeroRewards = useMemo(
+    () => isZeroDesignerRewards && isZeroBuyerRewards,
+    [isZeroBuyerRewards, isZeroDesignerRewards],
+  );
+
+  const handleTabClick = (tabKey: string) => {
+    setSelectedTableTab(tabKey);
     // @ts-ignore
-    setTableColumns(TABLE_TABS[tabIndex].tabColumns);
-    setTableRows(TABLE_TABS[tabIndex].tabRows);
+    setTableColumns(TABLE_TABS[tabKey].tabColumns);
+    // @ts-ignore
+    setTableRows(TABLE_TABS[tabKey].tabRows);
   };
 
   useEffect(() => {
@@ -165,8 +175,8 @@ const Connected: NextPage = () => {
 
   useEffect(() => {
     // @ts-ignore
-    setTableColumns(TABLE_TABS[0].tabColumns);
-    setTableRows(TABLE_TABS[0].tabRows);
+    setTableColumns(TABLE_TABS.buyer.tabColumns);
+    setTableRows(TABLE_TABS.buyer.tabRows);
   }, [TABLE_TABS]);
 
   if (loading || loadingWeb3) return <Loading />;
@@ -247,22 +257,26 @@ const Connected: NextPage = () => {
             justifyContent={{ base: "start ", sm: "start", md: "start", lg: "start" }}
             borderBottom="2px"
           >
-            <Tab
-              title={TABLE_TABS[0].title}
-              selectColor={TABLE_TABS[0].selectColor}
-              avatar={TABLE_TABS[0].avatar}
-              currentSelection={selectedTableTab}
-              selectOption={0}
-              handleClick={handleTabClick}
-            />
-            <Tab
-              title={TABLE_TABS[1].title}
-              selectColor={TABLE_TABS[1].selectColor}
-              avatar={TABLE_TABS[1].avatar}
-              currentSelection={selectedTableTab}
-              selectOption={1}
-              handleClick={handleTabClick}
-            />
+            {!isZeroBuyerRewards && (
+              <Tab
+                title={TABLE_TABS.buyer.title}
+                selectColor={TABLE_TABS.buyer.selectColor}
+                avatar={TABLE_TABS.buyer.avatar}
+                currentSelection={selectedTableTab}
+                selectOption="buyer"
+                handleClick={handleTabClick}
+              />
+            )}
+            {!isZeroDesignerRewards && (
+              <Tab
+                title={TABLE_TABS.designer.title}
+                selectColor={TABLE_TABS.designer.selectColor}
+                avatar={TABLE_TABS.designer.avatar}
+                currentSelection={selectedTableTab}
+                selectOption="designer"
+                handleClick={handleTabClick}
+              />
+            )}
           </Flex>
           {isZeroRewards && (
             <Center my="20px">

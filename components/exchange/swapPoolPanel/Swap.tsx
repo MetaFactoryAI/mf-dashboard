@@ -45,7 +45,7 @@ const Swap: React.FC = () => {
     console.log(`https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`);
 
 
-    if (provider && account && web3) {
+    if (provider && account) {
       const signer = provider.getSigner();
       const response = await fetch(`https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`);
       const quote = await response.json();

@@ -12,7 +12,6 @@ const EthDater = require("ethereum-block-by-date");
 
 type Web3ContextType = {
   account: null | string;
-  web3: any;
   accountAuthBearer: null | string;
   provider: null | ethers.providers.Web3Provider;
   chainId: null | number;
@@ -43,7 +42,6 @@ const web3Modal =
 
 const Web3Context = createContext<Web3ContextType & { loading: boolean; connectWeb3: () => void }>({
   errors: null,
-  web3: null,
   account: null,
   accountAuthBearer: null,
   provider: null,
@@ -58,7 +56,6 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
   const [{ account, provider, chainId, dater, errors, accountAuthBearer }, setWeb3State] =
     useState<Web3ContextType>({
       account: null,
-      web3: null,
       accountAuthBearer: null,
       provider: null,
       chainId: null,
@@ -77,7 +74,6 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
   const connectWeb3 = useCallback(async () => {
     try {
       const web3ModalInstance = web3Modal && (await web3Modal.connect());
-      const currentWeb3 = new Web3(web3ModalInstance);
       const web3Provider = new Web3(web3ModalInstance)
         .currentProvider as ethers.providers.ExternalProvider;
       const currentprovider = new ethers.providers.Web3Provider(web3Provider);
@@ -140,7 +136,6 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
     <Web3Context.Provider
       value={{
         errors,
-        web3,
         account,
         accountAuthBearer,
         provider,

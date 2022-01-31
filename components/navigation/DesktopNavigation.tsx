@@ -32,20 +32,17 @@ const DesktopNavigation: React.FC = () => {
       </Box>
       <Flex p="4">
         <Box px="2" bg={router.asPath === "/project" ? "yellow" : ""}>
-          <Link href="/project">Project</Link>
+          <Link href="https://www.metafactory.ai/project">Project</Link>
         </Box>
         <Box px="2" bg={router.asPath === "/robot" ? "yellow" : ""}>
-          <Link href="/robot">$Robot</Link>
+          <Link href="https://www.metafactory.ai/robots">$Robot</Link>
         </Box>
         <Flex px="2" bg={router.asPath === "/shop" ? "yellow" : ""}>
           <Box pr="1">
             <Image src="/arrow.svg" alt="" width="10px" height="10px" />
           </Box>
-          <Link href="/shop">Shop</Link>
+          <Link href="https://shop.metafactory.ai/">Shop</Link>
         </Flex>
-        <Box px="2" bg={router.asPath === "/curate" ? "yellow" : ""}>
-          <Link href="/curate">Curate</Link>
-        </Box>
       </Flex>
       <Spacer />
       <Flex>

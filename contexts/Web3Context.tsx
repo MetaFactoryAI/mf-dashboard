@@ -14,6 +14,7 @@ type Web3ContextType = {
   account: null | string;
   accountAuthBearer: null | string;
   provider: null | ethers.providers.Web3Provider;
+  chainId: null | number;
   dater: null | unknown;
   errors: unknown;
 };
@@ -43,6 +44,7 @@ const Web3Context = createContext<Web3ContextType & { loading: boolean; connectW
   account: null,
   accountAuthBearer: null,
   provider: null,
+  chainId: null,
   dater: null,
   loading: true,
   connectWeb3: () => null,
@@ -50,11 +52,12 @@ const Web3Context = createContext<Web3ContextType & { loading: boolean; connectW
 
 export const Web3ContextProvider: React.FC = ({ children }) => {
   const [loading, setLoading] = useState(true);
-  const [{ account, provider, dater, errors, accountAuthBearer }, setWeb3State] =
+  const [{ account, provider, chainId, dater, errors, accountAuthBearer }, setWeb3State] =
     useState<Web3ContextType>({
       account: null,
       accountAuthBearer: null,
       provider: null,
+      chainId: null,
       dater: null,
       errors: null,
     });
@@ -73,10 +76,18 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
       const web3Provider = new Web3(web3ModalInstance)
         .currentProvider as ethers.providers.ExternalProvider;
       const currentprovider = new ethers.providers.Web3Provider(web3Provider);
+      const { chainId: currentChainId } = await currentprovider.getNetwork();
       const currentAccount = await currentprovider.getSigner().getAddress();
       const currentDater = new EthDater(currentprovider);
       const storedAuthToken = Cookies.get(AUTH_TOKEN_KEY);
 
+      // eslint-disable-next-line @typescript-eslint/no-shadow
+      web3ModalInstance.on("chainChanged", (chainId: string) => {
+        setWeb3State((prev) => ({
+          ...prev,
+          chainId: parseInt(chainId, 16),
+        }));
+      });
       web3ModalInstance.on("accountsChanged", async (newAcc: string[]) => {
         const generatedAuthToken = await generateAuthToken(currentprovider);
 
@@ -89,6 +100,7 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
 
       setWeb3State({
         provider: currentprovider,
+        chainId: currentChainId,
         accountAuthBearer: storedAuthToken || (await generateAuthToken(currentprovider)),
         account: currentAccount,
         dater: currentDater,
@@ -97,6 +109,7 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
     } catch (e) {
       setWeb3State({
         provider: null,
+        chainId: null,
         accountAuthBearer: null,
         account: null,
         dater: null,
@@ -125,6 +138,7 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
         account,
         accountAuthBearer,
         provider,
+        chainId,
         dater,
         loading,
         connectWeb3,

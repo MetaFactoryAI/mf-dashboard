@@ -1,29 +1,44 @@
+/* eslint-disable camelcase */
 import { BigNumber } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
-import React, { useState } from "react";
-import { Text, VStack, Button, Flex, Box, Center } from "@chakra-ui/react";
+import React, { useState, useCallback } from "react";
+import { Text, VStack, Button, Flex, Box, Center, useToast } from "@chakra-ui/react";
 import Image from "next/image";
 import qs from "qs";
+import { IERC20__factory } from "types/ethers-contracts";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
 import SwapTokenField from "./shared/SwapTokenField";
 import { useWeb3Context } from "@/contexts/Web3Context";
+import { Alert } from "@/components/atoms";
+
+export interface SwapToken extends TokenBalance {
+  address: string;
+}
+
+const NON_METAFACTORY_TOKEN_SYMBOLS: SwapToken[] = [
+  { symbol: "ETH", address: "ETH", balance: 0 },
+  { symbol: "DAI", address: "0x6b175474e89094c44da98b954eedeac495271d0f", balance: 0 },
+];
+const METAFACTORY_TOKEN_SYMBOLS: SwapToken[] = [
+  { symbol: "ROBOT", address: "0xfb5453340c03db5ade474b27e68b6a9c6b2823eb", balance: 0 },
+];
 
 const Swap: React.FC = () => {
+  const toast = useToast();
+  const [swapAlertMsg, setSwapAlertMsg] = React.useState<string>("");
+  const [swapQuote, setSwapQuote] = React.useState<TransactionReceipt>();
+  const [isAlertOpen, setIsAlertOpen] = React.useState<boolean>(false);
   const { loading, account, provider } = useWeb3Context();
-  const NON_METAFACTORY_TOKEN_SYMBOLS: string[] = ["WETH", "DAI"];
-  const METAFACTORY_TOKEN_SYMBOLS: string[] = ["ROBOT"];
-  const [sellToken, setSellToken] = useState<TokenBalance>({
-    symbol: NON_METAFACTORY_TOKEN_SYMBOLS[0],
-    balance: 0,
+  const [sellToken, setSellToken] = useState<SwapToken>({
+    ...NON_METAFACTORY_TOKEN_SYMBOLS[0],
   });
-  const [sellTokenList, setSellTokenList] = useState<string[]>(NON_METAFACTORY_TOKEN_SYMBOLS);
+  const [sellTokenList, setSellTokenList] = useState<SwapToken[]>(NON_METAFACTORY_TOKEN_SYMBOLS);
 
-  const [buyToken, setBuyToken] = useState<TokenBalance>({
-    symbol: METAFACTORY_TOKEN_SYMBOLS[0],
-    balance: 0,
+  const [buyToken, setBuyToken] = useState<SwapToken>({
+    ...METAFACTORY_TOKEN_SYMBOLS[0],
   });
-  const [buyTokenList, setBuyTokenList] = useState<string[]>(METAFACTORY_TOKEN_SYMBOLS);
-  const switchCurrencies = () => {
+  const [buyTokenList, setBuyTokenList] = useState<SwapToken[]>(METAFACTORY_TOKEN_SYMBOLS);
+  const switchTokens = () => {
     const currentSellToken = { ...sellToken };
     const currentSellTokenList = sellTokenList;
 
@@ -33,91 +48,82 @@ const Swap: React.FC = () => {
     setBuyTokenList(currentSellTokenList);
   };
 
-  const handleSwap = async () => {
-    const params = {
-      sellToken: "0xfb5453340c03db5ade474b27e68b6a9c6b2823eb",
-      buyToken: "ETH",
-      sellAmount: ethers.utils.parseEther("1.5").toString(),
-    };
-    console.log(`https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`);
-
-
+  const handleSwap = useCallback(async () => {
     if (provider && account) {
-      const signer = provider.getSigner();
+      const normalizedSellBalance = () =>
+        ethers.utils.parseEther(sellToken.balance.toString()).toString();
+      const normalizedBuyBalance = () =>
+        ethers.utils.parseEther(buyToken.balance.toString()).toString();
+      const swapAmount =
+        sellToken.balance > 0
+          ? { sellAmount: normalizedSellBalance() }
+          : { buyAmount: normalizedBuyBalance() };
+      const params = {
+        sellToken: sellToken.address,
+        buyToken: buyToken.address,
+        ...swapAmount,
+      };
       const response = await fetch(`https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`);
-      const quote = await response.json();
-      console.log(quote);
 
-      const erc20Contract = IERC20__factory.connect("0xfb5453340c03db5ade474b27e68b6a9c6b2823eb", signer);
-      const balance = await erc20Contract.balanceOf(account);
-      console.log(ethers.utils.formatEther(balance));
-
-
-      // const wethContract = IWETH__factory.connect(quote.allowanceTarget, signer);
-      // const daiContract = IERC20__factory.connect(quote.allowanceTarget, signer);
-
-      // await daiContract.approve(ethers.constants.MaxUint256);
-
-      // const tx = {
-      //   from: account,
-      //   to: quote.to,
-      //   data: ethers.utils.hexlify(quote.data),
-      //   value: ethers.utils.parseEther(quote.value),
-      //   gasLimit: ethers.utils.hexlify(Number(quote.gas)),
-      //   gasPrice: BigNumber.from(quote.gasPrice),
-      // };
-      // await signer.sendTransaction(tx);
-
-      // await web3.eth.sendTransaction({
-      //   from: account,
-      //   to: quote.to,
-      //   data: quote.data,
-      //   value: quote.value,
-      //   gas: quote.gas,
-      //   gasPrice: quote.gasPrice,
-      // });
-
-      // const response = await fetch(
-      //   `https://api.0x.org/swap/v0/quote?buyToken=DAI&sellToken=ETH&sellAmount=${ethers.utils.parseEther("0.01").toString()}`,
-      // );
       if (response.ok) {
-        if (quote.allowanceTarget && quote.allowanceTarget > 0) {
-          const erc20Contract = IERC20__factory.connect(quote.sellTokenAddress, signer);
-          await erc20Contract.approve(quote.allowanceTarget, BigNumber.from(quote.sellAmount));
-        }
+        const quote = await response.json();
+        const sellAmount = ethers.utils.formatEther(BigNumber.from(quote.sellAmount));
+        const buyAmount = ethers.utils.formatEther(BigNumber.from(quote.buyAmount));
+        const swapAlert = `Are you sure to sell ${sellAmount} ${sellToken.symbol} for ${buyAmount} ${buyToken.symbol}?`;
 
-        // await web3.eth.sendTransaction({
-        //   from: account,
-        //   to: quote.to,
-        //   data: quote.data,
-        //   value: quote.value,
-        //   gasPrice: quote.gasPrice,
-        //   // 0x-API cannot estimate gas in forked mode.
-        //   // takerAddress: account,
-        // });
-
-        const tx = {
-          from: account,
-          to: quote.to,
-          data: ethers.utils.hexlify(quote.data),
-          value: BigNumber.from(quote.value),
-          // gasLimit: ethers.utils.hexlify(Number(quote.gas)),
-          gasPrice: BigNumber.from(quote.gasPrice),
-        };
-        await signer.sendTransaction(tx);
+        setSwapAlertMsg(swapAlert);
+        setSwapQuote(quote);
+        setIsAlertOpen(true);
+      } else {
+        toast({
+          title: "Something went wrong",
+          status: "error",
+          isClosable: true,
+        });
       }
     }
-  };
+  }, [account, buyToken, provider, sellToken, toast]);
 
-  //   web3.eth.sendTransaction({
-  //     from: taker,
-  //     to: quote.to,
-  //     data: quote.data,
-  //     value: quote.value,
-  //     gasPrice: quote.gasPrice,
-  //     // 0x-API cannot estimate gas in forked mode.
-  //     ...(FORKED ? {} : { gas : quote.gas }),
-  // }));};
+  const executeSwap = useCallback(async () => {
+    if (provider && account && swapQuote) {
+      const signer = provider.getSigner();
+
+      if (swapQuote.allowanceTarget && swapQuote.allowanceTarget > 0) {
+        const erc20Contract = IERC20__factory.connect(swapQuote.sellTokenAddress, signer);
+        await erc20Contract.approve(
+          swapQuote.allowanceTarget,
+          BigNumber.from(swapQuote.sellAmount),
+        );
+      }
+
+      const tx = {
+        from: account,
+        to: swapQuote.to,
+        data: ethers.utils.hexlify(swapQuote.data),
+        value: BigNumber.from(swapQuote.value),
+        // gasLimit: ethers.utils.hexlify(Number(quote.gas)),
+        gasPrice: BigNumber.from(swapQuote.gasPrice),
+      };
+      signer
+        .sendTransaction(tx)
+        .then((_result) => {
+          toast({
+            title: "SWAP processed and send to the blockchain",
+            status: "success",
+            isClosable: true,
+          });
+          setBuyToken({ ...buyToken, balance: 0 });
+          setSellToken({ ...sellToken, balance: 0 });
+        })
+        .catch((error) => {
+          toast({
+            title: error.message,
+            status: "error",
+            isClosable: true,
+          });
+        });
+    }
+  }, [account, buyToken, provider, sellToken, swapQuote, toast]);
 
   if (loading || !account) return null;
 
@@ -139,7 +145,7 @@ const Swap: React.FC = () => {
           boxShadow="0px 4px 6px rgba(0, 0, 0, 0.1)"
           borderRadius="10px"
           cursor="pointer"
-          onClick={switchCurrencies}
+          onClick={switchTokens}
         >
           <Image src="/switch.svg" alt="" width="40px" height="40px" />
         </Center>
@@ -165,6 +171,7 @@ const Swap: React.FC = () => {
           borderRadius="0px"
           mt="16px"
           mb="20px"
+          disabled={sellToken.balance === 0 && buyToken.balance === 0}
         >
           <Flex spacing="0px" justifyContent="center">
             <Text color="##8B2CFF" fontFamily="body_bold" fontWeight="800" fontSize="24px" m="5px">
@@ -173,6 +180,13 @@ const Swap: React.FC = () => {
           </Flex>
         </Button>
       </Flex>
+      <Alert
+        isOpen={isAlertOpen}
+        setIsOpen={setIsAlertOpen}
+        message={swapAlertMsg}
+        title="SWAP"
+        confirmCallback={executeSwap}
+      />
     </VStack>
   );
 };

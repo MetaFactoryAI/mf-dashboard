@@ -3,7 +3,7 @@ import { Flex, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import { LOGO_HEIGHT } from "@/utils/constants";
+import { LOGO_HEIGHT, CHAIN_ID } from "@/utils/constants";
 import { useWeb3Context } from "@/contexts/Web3Context";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -14,7 +14,8 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
     if (!loading && !account && router.pathname !== "/profile") {
       router.push("/profile");
     }
-    if (chainId && chainId !== CHAIN_ID) {
+
+    if (!loading && account && chainId !== CHAIN_ID) {
       toast({
         title: "Please select Ethereum mainnet network",
         status: "error",

@@ -38,22 +38,28 @@ const Swap: React.FC = () => {
 
   const handleSwap = async () => {
     const params = {
-      buyToken: "WETH",
-      sellToken: "DAI",
-      buyAmount: ethers.utils.parseEther("0.01").toString(),
+      sellToken: "0xfb5453340c03db5ade474b27e68b6a9c6b2823eb",
+      buyToken: "ETH",
+      sellAmount: ethers.utils.parseEther("1.5").toString(),
     };
+    console.log(`https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`);
+
 
     if (provider && account && web3) {
       const signer = provider.getSigner();
-      const response = await fetch(`https://ropsten.api.0x.org/swap/v1/quote?${qs.stringify(params)}`);
+      const response = await fetch(`https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`);
       const quote = await response.json();
       console.log(quote);
 
-      const wethContract = IWETH__factory.connect(quote.allowanceTarget, signer);
-      const daiContract = IERC20__factory.connect(quote.allowanceTarget, signer);
+      const erc20Contract = IERC20__factory.connect("0xfb5453340c03db5ade474b27e68b6a9c6b2823eb", signer);
+      const balance = await erc20Contract.balanceOf(account);
+      console.log(ethers.utils.formatEther(balance));
 
-      await daiContract.approve(ethers.constants.MaxUint256);
 
+      // const wethContract = IWETH__factory.connect(quote.allowanceTarget, signer);
+      // const daiContract = IERC20__factory.connect(quote.allowanceTarget, signer);
+
+      // await daiContract.approve(ethers.constants.MaxUint256);
 
       // const tx = {
       //   from: account,
@@ -73,6 +79,36 @@ const Swap: React.FC = () => {
       //   gas: quote.gas,
       //   gasPrice: quote.gasPrice,
       // });
+
+      // const response = await fetch(
+      //   `https://api.0x.org/swap/v0/quote?buyToken=DAI&sellToken=ETH&sellAmount=${ethers.utils.parseEther("0.01").toString()}`,
+      // );
+      if (response.ok) {
+        if (quote.allowanceTarget && quote.allowanceTarget > 0) {
+          const erc20Contract = IERC20__factory.connect(quote.sellTokenAddress, signer);
+          await erc20Contract.approve(quote.allowanceTarget, BigNumber.from(quote.sellAmount));
+        }
+
+        // await web3.eth.sendTransaction({
+        //   from: account,
+        //   to: quote.to,
+        //   data: quote.data,
+        //   value: quote.value,
+        //   gasPrice: quote.gasPrice,
+        //   // 0x-API cannot estimate gas in forked mode.
+        //   // takerAddress: account,
+        // });
+
+        const tx = {
+          from: account,
+          to: quote.to,
+          data: ethers.utils.hexlify(quote.data),
+          value: BigNumber.from(quote.value),
+          // gasLimit: ethers.utils.hexlify(Number(quote.gas)),
+          gasPrice: BigNumber.from(quote.gasPrice),
+        };
+        await signer.sendTransaction(tx);
+      }
     }
   };
 

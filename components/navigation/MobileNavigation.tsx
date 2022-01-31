@@ -80,13 +80,13 @@ const MobileNavigation: React.FC = () => {
         <VStack alignItems="start" width="100%" mt="90px">
           <MobileItem
             currentPath={router.asPath}
-            redirectPath="/project"
+            redirectPath="https://www.metafactory.ai/project"
             handleRedirect={handleRedirect}
             label="Project"
           />
           <MobileItem
             currentPath={router.asPath}
-            redirectPath="/robot"
+            redirectPath="https://www.metafactory.ai/robots"
             handleRedirect={handleRedirect}
             label="$Robot"
           />
@@ -96,19 +96,13 @@ const MobileNavigation: React.FC = () => {
             </Center>
             <Button
               _focus={{ boxShadow: "none" }}
-              onClick={() => handleRedirect("/shop")}
+              onClick={() => handleRedirect("https://shop.metafactory.ai/")}
               variant="unstyled"
               fontWeight="400"
             >
               Shop
             </Button>
           </Flex>
-          <MobileItem
-            currentPath={router.asPath}
-            redirectPath="/curate"
-            handleRedirect={handleRedirect}
-            label="Curate"
-          />
           <MobileItem
             currentPath={router.asPath}
             redirectPath="/exchange"

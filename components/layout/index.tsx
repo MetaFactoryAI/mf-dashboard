@@ -1,19 +1,28 @@
 import React, { ReactNode, useEffect } from "react";
-import { Flex } from "@chakra-ui/react";
+import { Flex, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import { LOGO_HEIGHT } from "@/utils/constants";
+import { LOGO_HEIGHT, CHAIN_ID } from "@/utils/constants";
 import { useWeb3Context } from "@/contexts/Web3Context";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { loading, account } = useWeb3Context();
+  const { loading, account, chainId } = useWeb3Context();
+  const toast = useToast();
   const router = useRouter();
   useEffect(() => {
     if (!loading && !account && router.pathname !== "/profile") {
       router.push("/profile");
     }
-  }, [account, loading, router]);
+
+    if (!loading && account && chainId !== CHAIN_ID) {
+      toast({
+        title: "Please select Ethereum mainnet network",
+        status: "error",
+        isClosable: true,
+      });
+    }
+  }, [account, chainId, loading, router, toast]);
 
   return (
     <Flex flexDirection="column" height="100vh">

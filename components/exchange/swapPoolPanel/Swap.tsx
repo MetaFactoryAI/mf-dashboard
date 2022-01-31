@@ -3,12 +3,13 @@ import { ethers } from "ethers";
 import React, { useState } from "react";
 import { Text, VStack, Button, Flex, Box, Center } from "@chakra-ui/react";
 import Image from "next/image";
+import qs from "qs";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
 import SwapTokenField from "./shared/SwapTokenField";
 import { useWeb3Context } from "@/contexts/Web3Context";
 
 const Swap: React.FC = () => {
-  const { loading, account, provider, web3 } = useWeb3Context();
+  const { loading, account, provider } = useWeb3Context();
   const NON_METAFACTORY_TOKEN_SYMBOLS: string[] = ["WETH", "DAI"];
   const METAFACTORY_TOKEN_SYMBOLS: string[] = ["ROBOT"];
   const [sellToken, setSellToken] = useState<TokenBalance>({
@@ -30,10 +31,6 @@ const Swap: React.FC = () => {
     setBuyToken({ ...currentSellToken });
     setSellTokenList(buyTokenList);
     setBuyTokenList(currentSellTokenList);
-  };
-
-  const handleSwap = () => {
-    // TODO HANDLE SWAP
   };
 
   const handleSwap = async () => {

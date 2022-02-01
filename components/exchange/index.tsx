@@ -58,7 +58,7 @@ const Exchange: NextPage = () => {
     fetchPoolHistory(startTimestamp, endTimestamp);
     fetchCoinHistory(COIN_ID, startTimestamp, endTimestamp);
     fetchPoolData();
-    fetchCoinData(COIN_ID);
+    fetchCoinData(COIN_ID, selectedTimeRange);
   }, [fetchCoinData, fetchCoinHistory, fetchPoolData, fetchPoolHistory, selectedTimeRange]);
 
   useEffect(() => {

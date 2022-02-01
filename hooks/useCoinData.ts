@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { useState, useCallback } from "react";
 import type { ChartData } from "@/components/atoms/TimeRangeGraphChart";
+import { HistoryRange } from "@/utils/time";
 import { formatNumber } from "@/utils/presentationHelper";
 import { BALANCER_POOL_ADDR } from "@/utils/constants";
 
@@ -19,21 +20,35 @@ export const useCoinData = () => {
   const [coinData, setCoinData] = useState<CoinData>();
   const [loadingCoinData, setloadingCoinData] = useState(false);
 
-  const fetchCoinData = async (coinId: string) => {
+  const fetchCoinData = async (coinId: string, selectedTimeRange: HistoryRange) => {
     setloadingCoinData(true);
 
     const response = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`);
     const { market_data, contract_address } = await response.json();
+    const chartSummary = [
+      { title: "Current Price", value: market_data.current_price.usd },
+      { title: "Total Volume", value: `$${market_data.total_volume.usd}` },
+      { title: "All Time High", value: `$${market_data.ath.usd}` },
+    ];
+
+    if (selectedTimeRange === HistoryRange.Year)
+      chartSummary.push({
+        title: "Price Change",
+        value: `${formatNumber(parseFloat(market_data.price_change_percentage_1y))}%`,
+      });
+    if (selectedTimeRange === HistoryRange.Month)
+      chartSummary.push({
+        title: "Price Change",
+        value: `${formatNumber(parseFloat(market_data.price_change_percentage_30d))}%`,
+      });
+    if (selectedTimeRange === HistoryRange.Week)
+      chartSummary.push({
+        title: "Price Change",
+        value: `${formatNumber(parseFloat(market_data.price_change_percentage_7d))}%`,
+      });
+
     const normalizedResponse = {
-      chartSummary: [
-        { title: "Current Price", value: market_data.current_price.usd },
-        { title: "Total Volume", value: `$${market_data.total_volume.usd}` },
-        { title: "All Time High", value: `$${market_data.ath.usd}` },
-        {
-          title: "Price Change 24h:",
-          value: `${formatNumber(parseFloat(market_data.price_change_24h))}%`,
-        },
-      ],
+      chartSummary,
       tableSummary: [
         [
           { title: "Market Cap:", value: market_data.market_cap.usd },

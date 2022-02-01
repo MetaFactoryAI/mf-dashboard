@@ -5,7 +5,7 @@ const UnclaimedTokens: React.FC<{ unclaimedTotal: string; handleClaim: () => voi
   unclaimedTotal,
   handleClaim,
 }) => (
-  <VStack border="2px" spacing="0px">
+  <VStack border="2px" spacing="0px" borderRight={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}>
     <Text alignSelf="start" fontFamily="body_bold" fontWeight="800" fontSize="24px" m="16px">
       Total pending ROBOT
     </Text>

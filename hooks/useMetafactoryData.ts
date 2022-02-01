@@ -5,7 +5,7 @@ import { formatNumber } from "@/utils/presentationHelper";
 import { METAFACTORY_GQL_URL } from "@/utils/constants";
 
 export type DesignerReward = { robot_reward: number; product: { id: string; title: string } };
-export type BuyerReward = { buyer_reward: number; date: string; order_id: string };
+export type BuyerReward = { buyer_reward: number; date: string; order_number: string };
 type DesignerRewards = { total: number; items: DesignerReward[] };
 type BuyerRewards = { total: number; items: BuyerReward[] };
 
@@ -61,7 +61,7 @@ const useMetafactoryData = () => {
         {
           buyer_reward
           date
-          order_id
+          order_number
         }
       }
     `;

@@ -15,6 +15,16 @@ export interface SwapToken extends TokenBalance {
   address: string;
 }
 
+type Quote0xApi = {
+  allowanceTarget: string;
+  sellTokenAddress: string;
+  sellAmount: string;
+  to: string;
+  data: string;
+  value: string;
+  gasPrice: string;
+};
+
 const NON_METAFACTORY_TOKEN_SYMBOLS: SwapToken[] = [
   { symbol: "ETH", address: "ETH", balance: 0 },
   { symbol: "DAI", address: "0x6b175474e89094c44da98b954eedeac495271d0f", balance: 0 },
@@ -26,7 +36,7 @@ const METAFACTORY_TOKEN_SYMBOLS: SwapToken[] = [
 const Swap: React.FC = () => {
   const toast = useToast();
   const [swapAlertMsg, setSwapAlertMsg] = React.useState<string>("");
-  const [swapQuote, setSwapQuote] = React.useState<TransactionReceipt>();
+  const [swapQuote, setSwapQuote] = React.useState<Quote0xApi>();
   const [isAlertOpen, setIsAlertOpen] = React.useState<boolean>(false);
   const { loading, account, provider } = useWeb3Context();
   const [sellToken, setSellToken] = useState<SwapToken>({
@@ -88,7 +98,7 @@ const Swap: React.FC = () => {
     if (provider && account && swapQuote) {
       const signer = provider.getSigner();
 
-      if (swapQuote.allowanceTarget && swapQuote.allowanceTarget > 0) {
+      if (swapQuote.allowanceTarget !== "0x0000000000000000000000000000000000000000") {
         const erc20Contract = IERC20__factory.connect(swapQuote.sellTokenAddress, signer);
         await erc20Contract.approve(
           swapQuote.allowanceTarget,

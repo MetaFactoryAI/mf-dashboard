@@ -4,27 +4,15 @@ import { ethers } from "ethers";
 import React, { useState, useCallback } from "react";
 import { Text, VStack, Button, Flex, Box, Center, useToast } from "@chakra-ui/react";
 import Image from "next/image";
-import qs from "qs";
-import { IERC20__factory } from "types/ethers-contracts";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
 import SwapTokenField from "./shared/SwapTokenField";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { Alert } from "@/components/atoms";
+import { getQuote, swapTokens, Quote0xApi } from "@/utils/swap";
 
 export interface SwapToken extends TokenBalance {
   address: string;
 }
-
-type Quote0xApi = {
-  allowanceTarget: string;
-  sellTokenAddress: string;
-  sellAmount: string;
-  to: string;
-  data: string;
-  value: string;
-  gasPrice: string;
-  gas: string;
-};
 
 const NON_METAFACTORY_TOKEN_SYMBOLS: SwapToken[] = [
   { symbol: "ETH", address: "ETH", balance: 0 },
@@ -61,20 +49,7 @@ const Swap: React.FC = () => {
 
   const handleSwap = useCallback(async () => {
     if (provider && account) {
-      const normalizedSellBalance = () =>
-        ethers.utils.parseEther(sellToken.balance.toString()).toString();
-      const normalizedBuyBalance = () =>
-        ethers.utils.parseEther(buyToken.balance.toString()).toString();
-      const swapAmount =
-        sellToken.balance > 0
-          ? { sellAmount: normalizedSellBalance() }
-          : { buyAmount: normalizedBuyBalance() };
-      const params = {
-        sellToken: sellToken.address,
-        buyToken: buyToken.address,
-        ...swapAmount,
-      };
-      const response = await fetch(`https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`);
+      const response = await getQuote(sellToken, buyToken);
 
       if (response.ok) {
         const quote = await response.json();
@@ -97,43 +72,24 @@ const Swap: React.FC = () => {
 
   const executeSwap = useCallback(async () => {
     if (provider && account && swapQuote) {
-      const signer = provider.getSigner();
-
-      // grant allowance for all but the ETH token
-      if (swapQuote.allowanceTarget !== "0x0000000000000000000000000000000000000000") {
-        const erc20Contract = IERC20__factory.connect(swapQuote.sellTokenAddress, signer);
-        await erc20Contract.approve(
-          swapQuote.allowanceTarget,
-          BigNumber.from(swapQuote.sellAmount),
-        );
-      }
-
-      const tx = {
-        from: account,
-        to: swapQuote.to,
-        data: ethers.utils.hexlify(swapQuote.data),
-        value: BigNumber.from(swapQuote.value),
-        gasLimit: BigNumber.from(swapQuote.gas),
-        gasPrice: BigNumber.from(swapQuote.gasPrice),
-      };
-      signer
-        .sendTransaction(tx)
-        .then((_result) => {
-          toast({
-            title: "SWAP processed and send to the blockchain",
-            status: "success",
-            isClosable: true,
-          });
-          setBuyToken({ ...buyToken, balance: 0 });
-          setSellToken({ ...sellToken, balance: 0 });
-        })
-        .catch((error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            isClosable: true,
-          });
+      const swapSuccessful = () => {
+        toast({
+          title: "SWAP processed and send to the blockchain",
+          status: "success",
+          isClosable: true,
         });
+        setBuyToken({ ...buyToken, balance: 0 });
+        setSellToken({ ...sellToken, balance: 0 });
+      };
+      // @ts-ignore
+      const swapFailed = (error) => {
+        toast({
+          title: error.message,
+          status: "error",
+          isClosable: true,
+        });
+      };
+      swapTokens(account, provider, swapQuote, swapSuccessful, swapFailed);
     }
   }, [account, buyToken, provider, sellToken, swapQuote, toast]);
 

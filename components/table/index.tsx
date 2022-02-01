@@ -69,7 +69,13 @@ const Table: React.FC = ({ data, columns, initialState, ...props }) => {
             prepareRow(row);
 
             return (
-              <Tr {...row.getRowProps()} key={`table_row_${i}`} border="2px" height="76px">
+              <Tr
+                {...row.getRowProps()}
+                key={`table_row_${i}`}
+                border="2px"
+                borderLeft={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}
+                height="76px"
+              >
                 {/* @ts-ignore */}
                 {isDesktopScreen && <BigTableRow row={row} index={i} />}
                 {/* @ts-ignore */}

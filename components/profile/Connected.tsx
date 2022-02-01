@@ -265,7 +265,8 @@ const Connected: NextPage = () => {
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} borderBottom="2px" my="39px">
           <Flex
             justifyContent={{ base: "start ", sm: "start", md: "start", lg: "start" }}
-            borderBottom="2px"
+            borderBottom={{ base: "0px", sm: "0px", md: "2px", lg: "2px" }}
+            borderLeft={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}
           >
             {!isZeroBuyerRewards && (
               <Tab

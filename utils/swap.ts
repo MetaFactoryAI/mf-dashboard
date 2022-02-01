@@ -46,7 +46,7 @@ export const swapTokens = async (
   // grant allowance for all but the ETH token
   if (swapQuote.allowanceTarget !== "0x0000000000000000000000000000000000000000") {
     const erc20Contract = IERC20__factory.connect(swapQuote.sellTokenAddress, signer);
-    await erc20Contract.approve(swapQuote.allowanceTarget, BigNumber.from(swapQuote.sellAmount));
+    await erc20Contract.approve(swapQuote.allowanceTarget, ethers.constants.MaxUint256);
   }
 
   const tx = {
@@ -65,4 +65,4 @@ export const swapTokens = async (
     .catch((error) => {
       failCallback(error);
     });
-}
+};

@@ -11,13 +11,13 @@ import {
   Box,
 } from "@chakra-ui/react";
 import Token from "./Token";
-import type { TokenBalance } from "@/hooks/usePoolGearData";
+import type { SwapToken } from "../Swap";
 
 const SwapTokenField: React.FC<{
-  selectedToken: TokenBalance;
+  selectedToken: SwapToken;
   disableInput: boolean;
-  tokenList: string[];
-  setSelectedTokenCallback: (token: TokenBalance) => void;
+  tokenList: SwapToken[];
+  setSelectedTokenCallback: (token: SwapToken) => void;
 }> = ({ selectedToken, disableInput, setSelectedTokenCallback, tokenList }) => (
   <HStack
     width="100%"
@@ -41,12 +41,12 @@ const SwapTokenField: React.FC<{
         </HStack>
       </MenuButton>
       <MenuList>
-        {tokenList.map((tokenSymbol) => (
+        {tokenList.map((token) => (
           <MenuItem
-            key={`swap-token-field-menu-item-${tokenSymbol}`}
-            onClick={() => setSelectedTokenCallback({ ...selectedToken, symbol: tokenSymbol })}
+            key={`swap-token-field-menu-item-${token.symbol}`}
+            onClick={() => setSelectedTokenCallback({ ...token })}
           >
-            <Token tokenSymbol={tokenSymbol} />
+            <Token tokenSymbol={token.symbol} />
           </MenuItem>
         ))}
       </MenuList>

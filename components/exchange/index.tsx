@@ -100,7 +100,11 @@ const Exchange: NextPage = () => {
           />
         </GridItem>
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
-          <Box border="2px" borderLeft="0px" spacing="0px">
+          <Box
+            border="2px"
+            borderLeft={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}
+            spacing="0px"
+          >
             <TimeRangeGraphChart
               chartData={
                 selectedSwapPoolTab === SwapPoolPanelTabs.PoolTab

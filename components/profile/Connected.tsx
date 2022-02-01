@@ -2,7 +2,7 @@
 import { Box, Grid, GridItem, Text, Flex, Stack, Center } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import useClaims from "@/hooks/useClaims";
 import useMetafactoryData from "@/hooks/useMetafactoryData";
 import { useWeb3Context } from "@/contexts/Web3Context";
@@ -58,8 +58,8 @@ const Connected: NextPage = () => {
   const buyerTableColumns = useMemo(
     () => [
       {
-        Header: "Order ID",
-        accessor: "order_id",
+        Header: "Order Number",
+        accessor: "order_number",
         style: {
           fontSize: "16px",
           fontFamily: "body_semi_bold",
@@ -158,13 +158,16 @@ const Connected: NextPage = () => {
     [isZeroBuyerRewards, isZeroDesignerRewards],
   );
 
-  const handleTabClick = (tabKey: string) => {
-    setSelectedTableTab(tabKey);
-    // @ts-ignore
-    setTableColumns(TABLE_TABS[tabKey].tabColumns);
-    // @ts-ignore
-    setTableRows(TABLE_TABS[tabKey].tabRows);
-  };
+  const handleTabClick = useCallback(
+    (tabKey: string) => {
+      setSelectedTableTab(tabKey);
+      // @ts-ignore
+      setTableColumns(TABLE_TABS[tabKey].tabColumns);
+      // @ts-ignore
+      setTableRows(TABLE_TABS[tabKey].tabRows);
+    },
+    [TABLE_TABS],
+  );
 
   useEffect(() => {
     if (accountAuthBearer && account) {
@@ -172,6 +175,12 @@ const Connected: NextPage = () => {
       fetchBuyerRewards(account, accountAuthBearer);
     }
   }, [fetchDesignerRewards, accountAuthBearer, account, fetchBuyerRewards]);
+
+  useEffect(() => {
+    if (!loading && isZeroBuyerRewards) {
+      handleTabClick("designer");
+    }
+  }, [handleTabClick, isZeroBuyerRewards, loading]);
 
   useEffect(() => {
     // @ts-ignore
@@ -200,6 +209,7 @@ const Connected: NextPage = () => {
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
           <Stack
             border="2px"
+            borderLeft={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}
             alignItems="start"
             spacing="0px"
             direction={{ base: "column", sm: "column", md: "row", lg: "row" }}
@@ -255,7 +265,8 @@ const Connected: NextPage = () => {
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }} borderBottom="2px" my="39px">
           <Flex
             justifyContent={{ base: "start ", sm: "start", md: "start", lg: "start" }}
-            borderBottom="2px"
+            borderBottom={{ base: "0px", sm: "0px", md: "2px", lg: "2px" }}
+            borderLeft={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}
           >
             {!isZeroBuyerRewards && (
               <Tab

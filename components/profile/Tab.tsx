@@ -18,9 +18,8 @@ const MobileItem: React.FC<{
   return (
     <Box
       backgroundColor={selectOption === currentSelection ? selectColor : "white"}
-      borderX="2px"
+      borderRight="2px"
       borderTop="2px"
-      mr="5px"
     >
       <HStack
         onClick={() => handleClick(selectOption)}

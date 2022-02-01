@@ -33,7 +33,11 @@ export const SwapPoolPanel: React.FC<{
   };
 
   return (
-    <Box>
+    <Box
+      borderRight={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}
+      borderColor="black"
+      borderStyle="solid"
+    >
       <HStack width="100%" spacing="0px">
         {TABS.map((tab) => (
           <SwapPoolPanelTab

@@ -23,6 +23,7 @@ type Quote0xApi = {
   data: string;
   value: string;
   gasPrice: string;
+  gas: string;
 };
 
 const NON_METAFACTORY_TOKEN_SYMBOLS: SwapToken[] = [
@@ -98,6 +99,7 @@ const Swap: React.FC = () => {
     if (provider && account && swapQuote) {
       const signer = provider.getSigner();
 
+      // grant allowance for all but the ETH token
       if (swapQuote.allowanceTarget !== "0x0000000000000000000000000000000000000000") {
         const erc20Contract = IERC20__factory.connect(swapQuote.sellTokenAddress, signer);
         await erc20Contract.approve(
@@ -111,7 +113,7 @@ const Swap: React.FC = () => {
         to: swapQuote.to,
         data: ethers.utils.hexlify(swapQuote.data),
         value: BigNumber.from(swapQuote.value),
-        // gasLimit: ethers.utils.hexlify(Number(quote.gas)),
+        gasLimit: BigNumber.from(swapQuote.gas),
         gasPrice: BigNumber.from(swapQuote.gasPrice),
       };
       signer

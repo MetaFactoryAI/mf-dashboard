@@ -55,10 +55,7 @@ export const formatAddress = (
 };
 
 export const formatNumber = (number: number): string =>
-  number.toLocaleString(undefined, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  });
+  new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(number);
 
 export const formatToUSD = ({ usdPrice, number }: { usdPrice: number; number?: BigNumber }) => {
   const usdValue = usdPrice * Number(formatToken(number));

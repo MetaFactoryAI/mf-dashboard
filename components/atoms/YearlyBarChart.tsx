@@ -11,6 +11,7 @@ import { AxisBottom } from "@visx/axis";
 import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
 import SelectButtons from "./chart/SelectButtons";
 import type { ChartTab } from "./chart/SelectButtons";
+import { formatNumber } from "@/utils/presentationHelper";
 
 export type ChartData = {
   key: string;
@@ -215,7 +216,7 @@ const YearlyBarChart: FC<{
                 $ROBOT
               </Text>
               <Text fontFamily="body_regular" fontSize="18px">
-                {(tooltipData as ChartData).value}
+                {formatNumber((tooltipData as ChartData).value)}
               </Text>
               <Text fontFamily="body" fontSize="14px">
                 {format(new Date((tooltipData as ChartData).date))}

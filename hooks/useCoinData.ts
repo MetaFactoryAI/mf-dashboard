@@ -26,9 +26,9 @@ export const useCoinData = () => {
     const response = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}`);
     const { market_data, contract_address } = await response.json();
     const chartSummary = [
-      { title: "Current Price", value: market_data.current_price.usd },
-      { title: "Total Volume", value: `$${market_data.total_volume.usd}` },
-      { title: "All Time High", value: `$${market_data.ath.usd}` },
+      { title: "Current Price", value: formatNumber(market_data.current_price.usd) },
+      { title: "Total Volume", value: `$${formatNumber(market_data.total_volume.usd)}` },
+      { title: "All Time High", value: `$${formatNumber(market_data.ath.usd)}` },
     ];
 
     if (selectedTimeRange === HistoryRange.Year)
@@ -51,12 +51,18 @@ export const useCoinData = () => {
       chartSummary,
       tableSummary: [
         [
-          { title: "Market Cap:", value: market_data.market_cap.usd },
-          { title: "Fully Diluted Valuation:", value: market_data.fully_diluted_valuation.usd },
+          { title: "Market Cap:", value: `$${formatNumber(market_data.market_cap.usd)}` },
+          {
+            title: "Fully Diluted Valuation:",
+            value: `$${formatNumber(market_data.fully_diluted_valuation.usd)}`,
+          },
         ],
         [
-          { title: "Circulating Supply:", value: parseInt(market_data.circulating_supply, 10) },
-          { title: "Max Supply:", value: market_data.max_supply },
+          {
+            title: "Circulating Supply:",
+            value: formatNumber(parseInt(market_data.circulating_supply, 10)),
+          },
+          { title: "Max Supply:", value: formatNumber(market_data.max_supply) },
         ],
         [
           { title: "Contract Address:", value: contract_address },

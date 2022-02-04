@@ -55,7 +55,7 @@ const Swap: React.FC = () => {
         const quote = await response.json();
         const sellAmount = ethers.utils.formatEther(BigNumber.from(quote.sellAmount));
         const buyAmount = ethers.utils.formatEther(BigNumber.from(quote.buyAmount));
-        const swapAlert = `Are you sure to sell ${sellAmount} ${sellToken.symbol} for ${buyAmount} ${buyToken.symbol}?`;
+        const swapAlert = `Are you sure to trade ${sellAmount} ${sellToken.symbol} for ${buyAmount} ${buyToken.symbol}?`;
 
         setSwapAlertMsg(swapAlert);
         setSwapQuote(quote);

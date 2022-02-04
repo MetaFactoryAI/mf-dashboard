@@ -71,7 +71,7 @@ const YearlyBarChart: FC<{
     () =>
       scaleTime({
         range: [0 + barWidth / 2, width - barWidth / 2],
-        domain: extent(chartData, (d) => d.date.valueOf()) as number[],
+        domain: extent(chartData, (d) => d.date) as number[],
       }),
     [barWidth, chartData, width],
   );
@@ -177,8 +177,9 @@ const YearlyBarChart: FC<{
               scale={xScale}
               // @ts-ignore
               tickFormat={formatDate}
+              numTicks={chartData.length}
               stroke=""
-              tickStroke="yellow"
+              tickStroke="none"
               tickLabelProps={() => ({
                 fill: "black",
                 fontSize: 9,

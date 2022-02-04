@@ -8,7 +8,7 @@ import type { ChartData } from "@/components/atoms/YearlyBarChart";
 
 export const formatClaimsEventData = async (claims: ClaimedEvent[]) =>
   Promise.all(
-    claims.map((claim) =>
+    claims.reverse().map((claim) =>
       claim.getBlock().then((block) => {
         const blockMonth = dayjs.unix(block.timestamp).startOf("month");
 
@@ -55,10 +55,7 @@ export const formatAddress = (
 };
 
 export const formatNumber = (number: number): string =>
-  number.toLocaleString(undefined, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  });
+  new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(number);
 
 export const formatToUSD = ({ usdPrice, number }: { usdPrice: number; number?: BigNumber }) => {
   const usdValue = usdPrice * Number(formatToken(number));

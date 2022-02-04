@@ -57,7 +57,7 @@ const useMetafactoryData = () => {
       query BuyerRewards {
         robot_order (where: {
           buyer_address: {_eq: "${account.toLowerCase()}"}
-        }, order_by: {date: asc})
+        }, order_by: {date: desc})
         {
           buyer_reward
           date

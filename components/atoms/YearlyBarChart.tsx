@@ -11,6 +11,7 @@ import { AxisBottom } from "@visx/axis";
 import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
 import SelectButtons from "./chart/SelectButtons";
 import type { ChartTab } from "./chart/SelectButtons";
+import { formatNumber } from "@/utils/presentationHelper";
 
 export type ChartData = {
   key: string;
@@ -71,7 +72,7 @@ const YearlyBarChart: FC<{
     () =>
       scaleTime({
         range: [0 + barWidth / 2, width - barWidth / 2],
-        domain: extent(chartData, (d) => d.date.valueOf()) as number[],
+        domain: extent(chartData, (d) => d.date) as number[],
       }),
     [barWidth, chartData, width],
   );
@@ -177,8 +178,9 @@ const YearlyBarChart: FC<{
               scale={xScale}
               // @ts-ignore
               tickFormat={formatDate}
+              numTicks={chartData.length}
               stroke=""
-              tickStroke="yellow"
+              tickStroke="none"
               tickLabelProps={() => ({
                 fill: "black",
                 fontSize: 9,
@@ -214,7 +216,7 @@ const YearlyBarChart: FC<{
                 $ROBOT
               </Text>
               <Text fontFamily="body_regular" fontSize="18px">
-                {(tooltipData as ChartData).value}
+                {formatNumber((tooltipData as ChartData).value)}
               </Text>
               <Text fontFamily="body" fontSize="14px">
                 {format(new Date((tooltipData as ChartData).date))}

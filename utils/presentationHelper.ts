@@ -8,7 +8,7 @@ import type { ChartData } from "@/components/atoms/YearlyBarChart";
 
 export const formatClaimsEventData = async (claims: ClaimedEvent[]) =>
   Promise.all(
-    claims.map((claim) =>
+    claims.reverse().map((claim) =>
       claim.getBlock().then((block) => {
         const blockMonth = dayjs.unix(block.timestamp).startOf("month");
 

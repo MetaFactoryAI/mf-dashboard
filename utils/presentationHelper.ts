@@ -14,7 +14,8 @@ export const formatClaimsEventData = async (claims: ClaimedEvent[]) =>
 
         return {
           avatarSrc: "/avatar-default.svg",
-          address: formatAddress(claim.args._claimant),
+          redirectValue: formatAddress(claim.args._claimant),
+          redirectLink: `https://etherscan.io/address/${claim.args._claimant}`,
           date: blockMonth.valueOf(),
           dateFormatted: blockMonth.format("MM/YYYY"),
           amount: Number(ethers.utils.formatEther(claim.args._balance)).toFixed(2),

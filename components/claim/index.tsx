@@ -30,7 +30,7 @@ const Claim: NextPage = () => {
     () => [
       {
         Header: "Address",
-        accessor: "address",
+        accessor: "redirect",
         style: {
           fontSize: "18px",
           fontWeight: "400",

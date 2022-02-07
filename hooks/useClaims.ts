@@ -80,6 +80,7 @@ const useClaims = () => {
           const normalizedMonthlyClaims = formatMonthlyClaimsEventData(normalizedClaims);
 
           setClaimEventsLoading(false);
+          // @ts-ignore
           setClaims(normalizedClaims);
           setMonthlyClaims(normalizedMonthlyClaims);
         }

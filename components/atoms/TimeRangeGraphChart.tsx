@@ -39,7 +39,7 @@ const TimeRangeGraphChart: FC<{
 }) => {
   const DESKTOP_RATIO = 0.614;
   const MOBILE_RATIO = 1.147;
-  const format = timeFormat("%d/%m/%Y");
+  const format = timeFormat("%m/%d/%Y");
   const ref = useRef(null);
   const { isDesktopScreen } = useChakraBreakpoints();
   const currentRatio = isDesktopScreen ? DESKTOP_RATIO : MOBILE_RATIO;

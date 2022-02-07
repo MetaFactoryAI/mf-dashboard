@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import dayjs from 'dayjs'
 import { useState, useCallback } from "react";
 import fetchGraph from "@/utils/graph/fetchGraph";
 import { formatNumber } from "@/utils/presentationHelper";
@@ -106,6 +107,7 @@ const normaliseRobotProductDesignerItems = (items: DesignerReward[]) =>
 const normaliseRobotOrderItems = (items: BuyerReward[]) =>
   items?.map((item) => ({
     ...item,
+    date: dayjs(item.date, "YYYY-MM-DD").format("MM/DD/YYYY"),
     amount: formatNumber(item.buyer_reward),
   }));
 

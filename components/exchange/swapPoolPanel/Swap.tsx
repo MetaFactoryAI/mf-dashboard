@@ -168,7 +168,13 @@ const Swap: React.FC = () => {
           confirmCallback={executeSwap}
         />
       </VStack>
-      <Flex spacing="0px" justifyContent="center" pt="30px" onClick={handleBalancerRedirect} cursor="pointer">
+      <Flex
+        spacing="0px"
+        justifyContent="center"
+        pt="30px"
+        onClick={handleBalancerRedirect}
+        cursor="pointer"
+      >
         <Text color="black" fontFamily="body" fontWeight="400" fontSize="18px" pr="5px">
           Trade on Balancer
         </Text>

@@ -1,5 +1,4 @@
 import { Box, Text } from "@chakra-ui/react";
-import { timeFormat } from "d3-time-format";
 import { LinePath, Line } from "@visx/shape";
 import { scaleLinear, scaleTime } from "@visx/scale";
 import { extent } from "d3-array";
@@ -16,6 +15,7 @@ export type ChartData = {
   key: string;
   value: number;
   toolBarTitle?: string;
+  toolBarTitle2?: string;
   date: Date;
 };
 
@@ -39,7 +39,6 @@ const TimeRangeGraphChart: FC<{
 }) => {
   const DESKTOP_RATIO = 0.614;
   const MOBILE_RATIO = 1.147;
-  const format = timeFormat("%d/%m/%Y");
   const ref = useRef(null);
   const { isDesktopScreen } = useChakraBreakpoints();
   const currentRatio = isDesktopScreen ? DESKTOP_RATIO : MOBILE_RATIO;
@@ -253,7 +252,7 @@ const TimeRangeGraphChart: FC<{
                 {(tooltipData as ChartData).toolBarTitle}
               </Text>
               <Text fontFamily="body" fontSize="14px">
-                {format(new Date((tooltipData as ChartData).date))}
+                {(tooltipData as ChartData).toolBarTitle2}
               </Text>
             </Box>
           </TooltipWithBounds>

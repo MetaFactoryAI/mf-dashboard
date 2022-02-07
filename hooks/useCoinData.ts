@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import dayjs from "dayjs";
 import { useState, useCallback } from "react";
 import type { ChartData } from "@/components/atoms/TimeRangeGraphChart";
 import { HistoryRange } from "@/utils/time";
@@ -105,5 +106,6 @@ const normalizeSnapshotsForChart = (snapshots: CoinSnapshots): ChartData[] =>
       date: new Date(price[0]),
       value: price[1],
       toolBarTitle: `Volume: $${formatNumber(snapshots.total_volumes[index][1])}`,
+      toolBarTitle2: dayjs(price[0]).format("MM/DD/YYYY h:mm A"),
     }),
   );

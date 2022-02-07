@@ -9,6 +9,7 @@ import SwapTokenField from "./shared/SwapTokenField";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { Alert } from "@/components/atoms";
 import { getQuote, swapTokens, Quote0xApi } from "@/utils/swap";
+import { BALANCER_POOL_ID } from "@/utils/constants";
 
 export interface SwapToken extends TokenBalance {
   address: string;
@@ -45,6 +46,10 @@ const Swap: React.FC = () => {
     setBuyToken({ ...currentSellToken });
     setSellTokenList(buyTokenList);
     setBuyTokenList(currentSellTokenList);
+  };
+
+  const handleBalancerRedirect = () => {
+    window.location.assign(`https://app.balancer.fi/#/pool/${BALANCER_POOL_ID}`);
   };
 
   const handleSwap = useCallback(async () => {
@@ -96,65 +101,85 @@ const Swap: React.FC = () => {
   if (loading || !account) return null;
 
   return (
-    <VStack border="2px" borderTop="0px" borderRight="0px" spacing="0px">
-      <VStack spacing="16px" width="100%" px="32px" pt="32px" pb="26px">
-        <Box width="100%">
-          <Text fontFamily="body_regular" fontWeight="400" fontSize="16px">
-            Sell
-          </Text>
-        </Box>
-        <SwapTokenField
-          selectedToken={sellToken}
-          disableInput={!!buyToken.balance && buyToken.balance > 0}
-          tokenList={sellTokenList}
-          setSelectedTokenCallback={setSellToken}
-        />
-        <Center
-          boxShadow="0px 4px 6px rgba(0, 0, 0, 0.1)"
-          borderRadius="10px"
-          cursor="pointer"
-          onClick={switchTokens}
-        >
-          <Image src="/switch.svg" alt="" width="40px" height="40px" />
-        </Center>
-        <Box width="100%">
-          <Text fontFamily="body_regular" fontWeight="400" fontSize="16px">
-            Buy
-          </Text>
-        </Box>
-        <SwapTokenField
-          selectedToken={buyToken}
-          disableInput={!!sellToken.balance && sellToken.balance > 0}
-          tokenList={buyTokenList}
-          setSelectedTokenCallback={setBuyToken}
+    <VStack>
+      <VStack border="2px" borderTop="0px" borderRight="0px" spacing="0px">
+        <VStack spacing="16px" width="100%" px="32px" pt="32px" pb="26px">
+          <Box width="100%">
+            <Text fontFamily="body_regular" fontWeight="400" fontSize="16px">
+              Sell
+            </Text>
+          </Box>
+          <SwapTokenField
+            selectedToken={sellToken}
+            disableInput={!!buyToken.balance && buyToken.balance > 0}
+            tokenList={sellTokenList}
+            setSelectedTokenCallback={setSellToken}
+          />
+          <Center
+            boxShadow="0px 4px 6px rgba(0, 0, 0, 0.1)"
+            borderRadius="10px"
+            cursor="pointer"
+            onClick={switchTokens}
+          >
+            <Image src="/switch.svg" alt="" width="40px" height="40px" />
+          </Center>
+          <Box width="100%">
+            <Text fontFamily="body_regular" fontWeight="400" fontSize="16px">
+              Buy
+            </Text>
+          </Box>
+          <SwapTokenField
+            selectedToken={buyToken}
+            disableInput={!!sellToken.balance && sellToken.balance > 0}
+            tokenList={buyTokenList}
+            setSelectedTokenCallback={setBuyToken}
+          />
+        </VStack>
+        <Flex width="100%" backgroundColor="#D9BAFF">
+          <Button
+            onClick={handleSwap}
+            _focus={{ boxShadow: "none" }}
+            variant="unstyled"
+            alignSelf="center"
+            width="100%"
+            borderRadius="0px"
+            mt="16px"
+            mb="20px"
+            disabled={sellToken.balance === 0 && buyToken.balance === 0}
+          >
+            <Flex spacing="0px" justifyContent="center">
+              <Text
+                color="##8B2CFF"
+                fontFamily="body_bold"
+                fontWeight="800"
+                fontSize="24px"
+                m="5px"
+              >
+                Preview trade
+              </Text>
+            </Flex>
+          </Button>
+        </Flex>
+        <Alert
+          isOpen={isAlertOpen}
+          setIsOpen={setIsAlertOpen}
+          message={swapAlertMsg}
+          title="SWAP"
+          confirmCallback={executeSwap}
         />
       </VStack>
-      <Flex width="100%" backgroundColor="#D9BAFF">
-        <Button
-          onClick={handleSwap}
-          _focus={{ boxShadow: "none" }}
-          variant="unstyled"
-          alignSelf="center"
-          width="100%"
-          borderRadius="0px"
-          mt="16px"
-          mb="20px"
-          disabled={sellToken.balance === 0 && buyToken.balance === 0}
-        >
-          <Flex spacing="0px" justifyContent="center">
-            <Text color="##8B2CFF" fontFamily="body_bold" fontWeight="800" fontSize="24px" m="5px">
-              Preview trade
-            </Text>
-          </Flex>
-        </Button>
+      <Flex
+        spacing="0px"
+        justifyContent="center"
+        pt="30px"
+        onClick={handleBalancerRedirect}
+        cursor="pointer"
+      >
+        <Text color="black" fontFamily="body" fontWeight="400" fontSize="18px" pr="5px">
+          Trade on Balancer
+        </Text>
+        <Image src="/arrow.svg" alt="" width="15px" height="15px" />
       </Flex>
-      <Alert
-        isOpen={isAlertOpen}
-        setIsOpen={setIsAlertOpen}
-        message={swapAlertMsg}
-        title="SWAP"
-        confirmCallback={executeSwap}
-      />
     </VStack>
   );
 };

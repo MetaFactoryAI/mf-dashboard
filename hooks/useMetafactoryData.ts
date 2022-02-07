@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import dayjs from 'dayjs'
+import dayjs from "dayjs";
 import { useState, useCallback } from "react";
 import fetchGraph from "@/utils/graph/fetchGraph";
 import { formatNumber } from "@/utils/presentationHelper";

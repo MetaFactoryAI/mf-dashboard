@@ -178,5 +178,6 @@ const normalizeSnapshotsForChart = (snapshots: PoolSnapshot[]): ChartData[] =>
       date: dayjs.unix(snapshot.timestamp).toDate(),
       value: parseFloat(snapshot.liquidity),
       toolBarTitle: `Volume: ${formatNumber(parseFloat(snapshot.swapVolume))}`,
+      toolBarTitle2: dayjs.unix(snapshot.timestamp).format("MM/DD/YYYY h:mm A"),
     }),
   );

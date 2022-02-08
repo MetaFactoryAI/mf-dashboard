@@ -113,7 +113,7 @@ const MobileNavigation: React.FC = () => {
             currentPath={router.asPath}
             redirectPath="/claim"
             handleRedirect={handleRedirect}
-            label="Claim"
+            label="Distribution"
           />
           <MobileItem
             currentPath={router.asPath}

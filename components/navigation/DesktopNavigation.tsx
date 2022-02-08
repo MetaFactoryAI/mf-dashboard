@@ -50,7 +50,7 @@ const DesktopNavigation: React.FC = () => {
           <Link href="/exchange">Exchange</Link>
         </Box>
         <Box px="2" bg={router.asPath === "/claim" ? "yellow" : ""}>
-          <Link href="/claim">Claim</Link>
+          <Link href="/claim">Distribution</Link>
         </Box>
         <Box px="2" border="1px" bg={router.asPath === "/profile" ? "yellow" : ""}>
           <Link href="/profile">

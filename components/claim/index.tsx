@@ -71,9 +71,9 @@ const Claim: NextPage = () => {
     <Box>
       <Head>
         <title>MetaFactory - Dashboard</title>
-        <meta name="description" content="Claim" />
+        <meta name="description" content="Token Distribution" />
       </Head>
-      <PageTitle title="Claim" />
+      <PageTitle title="Token Distribution" />
       <Box>
         <Box
           borderX={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}

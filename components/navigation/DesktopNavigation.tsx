@@ -21,7 +21,7 @@ const DesktopNavigation: React.FC = () => {
       fontSize="18px"
     >
       <Box>
-        <a href="https://www.metafactory.ai/">
+        <a href="https://www.metafactory.ai/" target="_blank" rel="noopener noreferrer">
           <Image
             src="/header-logo-mf.svg"
             alt=""
@@ -32,15 +32,15 @@ const DesktopNavigation: React.FC = () => {
       </Box>
       <Flex p="4">
         <Box px="2" bg={router.asPath === "/project" ? "yellow" : ""}>
-          <a target="_blank" href="https://www.metafactory.ai/project" rel="noopener noreferrer">
-            Project
+          <a target="_blank" href="https://www.metafactory.ai" rel="noopener noreferrer">
+            Home
           </a>
         </Box>
-        <Box px="2" bg={router.asPath === "/robot" ? "yellow" : ""}>
+        {/* <Box px="2" bg={router.asPath === "/robot" ? "yellow" : ""}>
           <a target="_blank" href="https://www.metafactory.ai/robots" rel="noopener noreferrer">
             $Robot
           </a>
-        </Box>
+        </Box> */}
         <Flex px="2" bg={router.asPath === "/shop" ? "yellow" : ""}>
           <Box pr="1">
             <Image src="/arrow.svg" alt="" width="10px" height="10px" />
@@ -56,7 +56,7 @@ const DesktopNavigation: React.FC = () => {
           <Link href="/exchange">Exchange</Link>
         </Box>
         <Box px="2" bg={router.asPath === "/claim" ? "yellow" : ""}>
-          <Link href="/claim">Distribution</Link>
+          <Link href="/profile">Claim</Link>
         </Box>
         <Box px="2" border="1px" bg={router.asPath === "/profile" ? "yellow" : ""}>
           <Link href="/profile">

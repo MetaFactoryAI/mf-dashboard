@@ -31,7 +31,7 @@ const MobileNavigation: React.FC = () => {
     <Box>
       <Flex as="nav" align="center" justify="space-between" wrap="wrap" fontSize="18px">
         <Box>
-          <a href="https://www.metafactory.ai/">
+          <a href="https://www.metafactory.ai/" target="_blank" rel="noopener noreferrer">
             <Image
               src="/header-logo-mf.svg"
               alt=""
@@ -80,16 +80,16 @@ const MobileNavigation: React.FC = () => {
         <VStack alignItems="start" width="100%" mt="90px">
           <MobileItem
             currentPath={router.asPath}
-            redirectPath="https://www.metafactory.ai/project"
+            redirectPath="https://www.metafactory.ai"
             handleRedirect={handleRedirect}
-            label="Project"
+            label="Home"
           />
-          <MobileItem
+          {/* <MobileItem
             currentPath={router.asPath}
             redirectPath="https://www.metafactory.ai/robots"
             handleRedirect={handleRedirect}
             label="$Robot"
-          />
+          /> */}
           <Flex px="2" bg={router.asPath === "/shop" ? "yellow" : ""} width="100%">
             <Center pr="1">
               <Image src="/arrow.svg" alt="" width="10px" height="10px" />
@@ -111,9 +111,9 @@ const MobileNavigation: React.FC = () => {
           />
           <MobileItem
             currentPath={router.asPath}
-            redirectPath="/claim"
+            redirectPath="/profile"
             handleRedirect={handleRedirect}
-            label="Distribution"
+            label="Claim"
           />
           <MobileItem
             currentPath={router.asPath}

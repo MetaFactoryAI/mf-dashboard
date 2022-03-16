@@ -15,6 +15,10 @@ const customTheme = extendTheme({
       900: "#1a202c",
     },
   },
+  config: {
+    initialColorMode: "light",
+    useSystemColorMode: false,
+  },
 });
 
 export default customTheme;

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { Flex, Spacer, Box } from "@chakra-ui/react";
+import { Flex, Spacer, Box, Button } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { formatAddress } from "@/utils/presentationHelper";
@@ -9,7 +9,13 @@ import { LOGO_HEIGHT } from "@/utils/constants";
 
 const DesktopNavigation: React.FC = () => {
   const router = useRouter();
-  const { account, loading, errors } = useWeb3Context();
+  const { account, connectWeb3, loading, errors } = useWeb3Context();
+
+  const handleConnect = () => {
+    if (!account) {
+      connectWeb3();
+    }
+  };
 
   return (
     <Flex
@@ -58,11 +64,24 @@ const DesktopNavigation: React.FC = () => {
         <Box px="2" bg={router.asPath === "/claim" ? "yellow" : ""}>
           <Link href="/profile">Claim</Link>
         </Box>
-        <Box px="2" border="1px" bg={router.asPath === "/profile" ? "yellow" : ""}>
-          <Link href="/profile">
-            {!loading && !errors && !!account ? formatAddress(account) : "Connect"}
-          </Link>
-        </Box>
+        {account ? (
+          <Box px="2" border="1px" bg={router.asPath === "/profile" ? "yellow" : ""}>
+            <Link href="/profile">
+              {!loading && !errors && !!account ? formatAddress(account) : "Connect"}
+            </Link>
+          </Box>
+        ) : (
+          <Button
+            onClick={handleConnect}
+            backgroundColor="yellow"
+            border="1px"
+            rounded="false"
+            _hover={{ bg: "transparent" }}
+          >
+            Connect
+          </Button>
+        )}
+
         <Box width={`${LOGO_HEIGHT}px`} />
       </Flex>
     </Flex>

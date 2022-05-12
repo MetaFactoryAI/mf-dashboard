@@ -109,12 +109,12 @@ const MobileNavigation: React.FC = () => {
             handleRedirect={handleRedirect}
             label="Exchange"
           />
-          <MobileItem
+          {/* <MobileItem
             currentPath={router.asPath}
-            redirectPath="/profile"
+            redirectPath="/claim"
             handleRedirect={handleRedirect}
             label="Claim"
-          />
+          /> */}
           <MobileItem
             currentPath={router.asPath}
             redirectPath="/profile"

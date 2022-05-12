@@ -61,12 +61,12 @@ const DesktopNavigation: React.FC = () => {
         <Box px="2" bg={router.asPath === "/exchange" ? "yellow" : ""}>
           <Link href="/exchange">Exchange</Link>
         </Box>
-        <Box px="2" bg={router.asPath === "/claim" ? "yellow" : ""}>
-          <Link href="/profile">Claim</Link>
-        </Box>
+        {/* <Box px="2" bg={router.asPath === "/claim" ? "yellow" : ""}>
+          <Link href="/claim">Claim</Link>
+        </Box> */}
         {account ? (
-          <Box px="2" border="1px" bg={router.asPath === "/profile" ? "yellow" : ""}>
-            <Link href="/profile">
+          <Box px="2" border="1px" bg={router.asPath === "/" ? "yellow" : ""}>
+            <Link href="/">
               {!loading && !errors && !!account ? formatAddress(account) : "Connect"}
             </Link>
           </Box>

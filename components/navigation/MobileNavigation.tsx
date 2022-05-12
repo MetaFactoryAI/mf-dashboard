@@ -44,8 +44,8 @@ const MobileNavigation: React.FC = () => {
         <Flex>
           {!isOpen && (
             <>
-              <Box px="2" border="1px" bg={router.asPath.indexOf("/profile") >= 0 ? "yellow" : ""}>
-                <Link href="/profile">
+              <Box px="2" border="1px" bg={router.asPath.indexOf("/") >= 0 ? "yellow" : ""}>
+                <Link href="/">
                   {!loading && !errors && !!account ? formatAddress(account) : "Connect"}
                 </Link>
               </Box>
@@ -109,15 +109,15 @@ const MobileNavigation: React.FC = () => {
             handleRedirect={handleRedirect}
             label="Exchange"
           />
-          <MobileItem
+          {/* <MobileItem
             currentPath={router.asPath}
-            redirectPath="/profile"
+            redirectPath="/claim"
             handleRedirect={handleRedirect}
             label="Claim"
-          />
+          /> */}
           <MobileItem
             currentPath={router.asPath}
-            redirectPath="/profile"
+            redirectPath="/"
             handleRedirect={handleRedirect}
             label={!loading && !errors && !!account ? formatAddress(account) : "Connect"}
             border="1px"

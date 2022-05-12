@@ -11,8 +11,8 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const toast = useToast();
   const router = useRouter();
   useEffect(() => {
-    if (!loading && !account && router.pathname !== "/profile") {
-      router.push("/profile");
+    if (!loading && !account && router.pathname !== "/") {
+      router.push("/");
     }
 
     if (!loading && account && chainId !== CHAIN_ID) {

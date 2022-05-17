@@ -117,6 +117,12 @@ const MobileNavigation: React.FC = () => {
           /> */}
           <MobileItem
             currentPath={router.asPath}
+            redirectPath="/closet"
+            handleRedirect={handleRedirect}
+            label="Closet"
+          />
+          <MobileItem
+            currentPath={router.asPath}
             redirectPath="/"
             handleRedirect={handleRedirect}
             label={!loading && !errors && !!account ? formatAddress(account) : "Connect"}

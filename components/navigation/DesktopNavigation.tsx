@@ -64,6 +64,9 @@ const DesktopNavigation: React.FC = () => {
         {/* <Box px="2" bg={router.asPath === "/claim" ? "yellow" : ""}>
           <Link href="/claim">Claim</Link>
         </Box> */}
+        <Box px="2" bg={router.asPath === "/closet" ? "yellow" : ""}>
+          <Link href="/closet">Closet</Link>
+        </Box>
         {account ? (
           <Box px="2" border="1px" bg={router.asPath === "/" ? "yellow" : ""}>
             <Link href="/">

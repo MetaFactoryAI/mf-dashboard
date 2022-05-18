@@ -10,7 +10,7 @@ const Wearables: NextPage = () => {
     <VStack spacing="0px">
       <Flex flex="1" flexDirection="row" width="100%" pl="10px" pr="10px">
         <Text fontFamily="body" fontSize="10px" textAlign="start">
-          METADREAMER's closet
+          METADREAMER&apos;s closet
         </Text>
         <Spacer />
 

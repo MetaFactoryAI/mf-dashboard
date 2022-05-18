@@ -27,10 +27,10 @@ const ListItem: React.FC<{
           {...props}
         />
       </Box>
-      <Text fontFamily="body_regular" fontWeight="400" fontSize="11px">
+      <Text fontFamily="body_regular" fontWeight="400" fontSize="9px">
         {title1}
       </Text>
-      <Text fontFamily="body_regular" fontWeight="400" fontSize="8px">
+      <Text fontFamily="body_regular" fontWeight="400" fontSize="6px">
         {title2}
       </Text>
     </VStack>

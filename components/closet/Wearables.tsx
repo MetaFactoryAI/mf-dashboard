@@ -29,7 +29,7 @@ const Wearables: NextPage = () => {
             title1="COLLEGIATE ARC HOODIE"
             title2="METAFACTORY"
             assetUrl={`/test_assets/list_items/${item}.png`}
-            redirectPath={`/closet/item_detail/${item}`}
+            redirectPath={`/closet_wearable_detail/${item}`}
           />
         </GridItem>
         )}

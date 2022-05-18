@@ -1,12 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Spacer, Center, VStack, Flex, Button, Text } from "@chakra-ui/react";
+import { Spacer, Center, VStack, Flex, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Image from "next/image";
 
-const ClaimWearables: NextPage = () => {
-  const items = ["1", "2", "3", "4", "5", "6", "7", "8", "11", "12", "13", "14"]
-
-  return (
+const ClaimWearables: NextPage = () => (
     <Flex flex="1" flexDirection="row">
     <Spacer />
     <Center>
@@ -31,6 +28,5 @@ const ClaimWearables: NextPage = () => {
     <Spacer />
     </Flex>
     );
-};
 
 export default ClaimWearables;

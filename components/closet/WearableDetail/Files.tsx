@@ -23,7 +23,11 @@ const Files: NextPage = () => {
       </VStack>
       <Spacer />
       <Box p="5px" pr="10px">
-        <Image src="/arrow_down.svg" alt="" width="39px" height="39px" onClick={handleDownload}/>
+        <Box onClick={handleDownload} border="1px solid #000000" boxShadow="0px 1px 4px 1px rgba(0, 0, 0, 0.6)" py="5px" px="11px">
+          <Text fontFamily="body_regular" fontWeight="400" fontSize="9px">
+            DOWNLOAD ALL
+          </Text>
+        </Box>
       </Box>
     </Flex>
   )

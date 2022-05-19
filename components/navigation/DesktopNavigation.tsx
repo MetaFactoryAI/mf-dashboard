@@ -8,7 +8,7 @@ import { formatAddress } from "@/utils/presentationHelper";
 import { LOGO_HEIGHT } from "@/utils/constants";
 import { isSelected } from "@/utils/navigation";
 
-// menu items naming need to fit with beggining of route names
+// menu items naming need to fit with beginning of route names
 const DesktopNavigation: React.FC = () => {
   const router = useRouter();
   const { account, connectWeb3, loading, errors } = useWeb3Context();

@@ -22,14 +22,16 @@ const ClaimWearables: NextPage = () => {
             onClick={handleClick}
             _focus={{ boxShadow: "none" }}
             variant="unstyled"
+            boxShadow="inset 2px -2px 0px rgba(0, 0, 0, 0.25), inset -2px 2px 0px rgba(255, 255, 255, 0.25)" py="5px" px="11px"
+            background="#424242"
             alignSelf="center"
             width="100%"
             borderRadius="0px"
             mt="16px"
             mb="15px"
           >
-            <Text color="##8B2CFF" fontFamily="body_bold" fontWeight="800" fontSize="17px">
-              Claim
+            <Text color="#C8E400" textShadow="0px 0px 3px rgba(223, 255, 0, 0.5)" fontFamily="body_regular" fontWeight="400" fontSize="12px">
+              CLAIM NOW
             </Text>
           </Button>
         </Flex>

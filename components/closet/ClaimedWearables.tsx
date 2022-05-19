@@ -3,11 +3,11 @@ import { Grid, GridItem, VStack, Spacer, Flex, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import ListItem from "./shared/ListItem";
 
-const Wearables: NextPage = () => {
-  const items = ["1", "2", "3", "4", "5", "6", "7", "8", "11", "12", "13", "14"]
+const ClaimedWearables: NextPage = () => {
+  const items = ["1", "2", "3", "4", "5", "6"] // , "7", "8", "11", "12", "13", "14"]
 
   return (
-    <VStack spacing="0px">
+    <VStack spacing="0px" backgroundImage='url("/closet_bckg.png")' backgroundSize="cover">
       <Flex flex="1" flexDirection="row" width="100%" pl="10px" pr="10px">
         <Text fontFamily="body" fontSize="10px" textAlign="start">
           METADREAMER&apos;s closet
@@ -38,4 +38,4 @@ const Wearables: NextPage = () => {
     );
 };
 
-export default Wearables;
+export default ClaimedWearables;

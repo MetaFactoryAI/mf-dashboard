@@ -1,3 +1,3 @@
-import Wearables from "@/components/closet/Wearables";
+import Wearables from "@/components/closet/ClaimedWearables";
 
 export default Wearables;

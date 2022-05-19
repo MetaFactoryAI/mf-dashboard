@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Flex, VStack, Spacer, Text, Box } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import Image from "next/image";
 
 const Files: NextPage = () => {
   const handleDownload = () => {

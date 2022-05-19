@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Button, Text } from "@chakra-ui/react";
+import { isSelected } from "@/utils/navigation";
 
 const MobileItem: React.FC<{
   currentPath: string;
@@ -9,7 +10,7 @@ const MobileItem: React.FC<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
 }> = ({ currentPath, redirectPath, handleRedirect, label, ...props }) => (
-  <Box px="2" bg={currentPath === redirectPath ? "yellow" : ""} width="100%">
+  <Box px="2" bg={isSelected(redirectPath, currentPath) ? "yellow" : ""} width="100%">
     <Button
       _focus={{ boxShadow: "none" }}
       onClick={() => handleRedirect(redirectPath)}

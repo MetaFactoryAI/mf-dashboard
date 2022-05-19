@@ -6,7 +6,9 @@ import { useRouter } from "next/router";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { formatAddress } from "@/utils/presentationHelper";
 import { LOGO_HEIGHT } from "@/utils/constants";
+import { isSelected } from "@/utils/navigation";
 
+// menu items naming need to fit with beggining of route names
 const DesktopNavigation: React.FC = () => {
   const router = useRouter();
   const { account, connectWeb3, loading, errors } = useWeb3Context();
@@ -37,17 +39,17 @@ const DesktopNavigation: React.FC = () => {
         </a>
       </Box>
       <Flex p="4">
-        <Box px="2" bg={router.asPath === "/project" ? "yellow" : ""}>
+        <Box px="2" bg={isSelected("/project", router.asPath) ? "yellow" : ""}>
           <a target="_blank" href="https://www.metafactory.ai" rel="noopener noreferrer">
             Home
           </a>
         </Box>
-        {/* <Box px="2" bg={router.asPath === "/robot" ? "yellow" : ""}>
+        {/* <Box px="2" bg={isSelected("/robot", router.asPath) ? "yellow" : ""}>
           <a target="_blank" href="https://www.metafactory.ai/robots" rel="noopener noreferrer">
             $Robot
           </a>
         </Box> */}
-        <Flex px="2" bg={router.asPath === "/shop" ? "yellow" : ""}>
+        <Flex px="2" bg={isSelected("/shop", router.asPath) ? "yellow" : ""}>
           <Box pr="1">
             <Image src="/arrow.svg" alt="" width="10px" height="10px" />
           </Box>
@@ -58,17 +60,17 @@ const DesktopNavigation: React.FC = () => {
       </Flex>
       <Spacer />
       <Flex>
-        <Box px="2" bg={router.asPath === "/exchange" ? "yellow" : ""}>
+        <Box px="2" bg={isSelected("/exchange", router.asPath) ? "yellow" : ""}>
           <Link href="/exchange">Exchange</Link>
         </Box>
-        {/* <Box px="2" bg={router.asPath === "/claim" ? "yellow" : ""}>
+        {/* <Box px="2" bg={isSelected("/claim", router.asPath) ? "yellow" : ""}>
           <Link href="/claim">Claim</Link>
         </Box> */}
-        <Box px="2" bg={router.asPath === "/closet" ? "yellow" : ""}>
+        <Box px="2" bg={isSelected("/closet", router.asPath) ? "yellow" : ""}>
           <Link href="/closet">Closet</Link>
         </Box>
         {account ? (
-          <Box px="2" border="1px" bg={router.asPath === "/" ? "yellow" : ""}>
+          <Box px="2" border="1px" bg={isSelected("/", router.asPath) ? "yellow" : ""}>
             <Link href="/">
               {!loading && !errors && !!account ? formatAddress(account) : "Connect"}
             </Link>

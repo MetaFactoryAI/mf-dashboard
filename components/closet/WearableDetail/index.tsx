@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Table, Tbody, Td, Tr, VStack, Box, Flex, Text, Spacer } from "@chakra-ui/react";
+import { Table, Tbody, Td, Tr, VStack, Box, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import type { NextPage } from "next";

@@ -7,7 +7,9 @@ import type { NextPage } from "next";
 const Wearables: NextPage = () => {
   const router = useRouter();
   const { id } = router.query
-
+  const handleDownload = () => {
+    // TODO: needs backend func - https://stackoverflow.com/questions/50694881/how-to-download-file-in-react-js
+  };
 
   return (
     <VStack spacing="0px">
@@ -133,7 +135,7 @@ const Wearables: NextPage = () => {
           </VStack>
           <Spacer />
           <Box p="5px" pr="10px">
-            <Image src="/arrow_down.svg" alt="" width="39px" height="39px"/>
+            <Image src="/arrow_down.svg" alt="" width="39px" height="39px" onClick={handleDownload}/>
           </Box>
         </Flex>
       </Box>

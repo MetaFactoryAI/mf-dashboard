@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { VStack, Spacer, HStack, Text } from "@chakra-ui/react";
+import { VStack, HStack, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import ListItems from "./shared/ListItems";
 

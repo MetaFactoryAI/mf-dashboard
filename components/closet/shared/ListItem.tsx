@@ -16,8 +16,8 @@ const ListItem: React.FC<{
   };
 
   return (
-    <VStack  spacing="0px" m="5px">
-      <Box border="1px" p="1px">
+    <VStack  spacing="0px">
+      <Box p="1px" textAlign="center">
         <Image
           src={assetUrl}
           alt=""
@@ -26,13 +26,13 @@ const ListItem: React.FC<{
           onClick={handleClick}
           {...props}
         />
+        <Text fontFamily="body_regular" fontWeight="400" fontSize="9px">
+          {title1}
+        </Text>
+        <Text fontFamily="body_regular" fontWeight="400" fontSize="6px">
+          {title2}
+        </Text>
       </Box>
-      <Text fontFamily="body_regular" fontWeight="400" fontSize="9px">
-        {title1}
-      </Text>
-      <Text fontFamily="body_regular" fontWeight="400" fontSize="6px">
-        {title2}
-      </Text>
     </VStack>
   );
 }

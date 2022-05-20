@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Grid, GridItem, VStack, Text } from "@chakra-ui/react";
+import { VStack, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import ListItem from "./shared/ListItem";
 import Button from "@/components/atoms/Button"
+import ListItems from "./shared/ListItems";
 
 const ClaimWearables: NextPage = () => {
   const items = ["1", "2", "3", "4", "5", "6", "7", "8", "11", "12", "13", "14"]
@@ -31,22 +31,7 @@ const ClaimWearables: NextPage = () => {
           </Text>
         </Button>
       </VStack>
-      <Grid templateColumns="repeat(12, 1fr)">
-        { items.map((item) =>
-        <GridItem
-          mb="7px"
-          key={item}
-          colSpan={{ base: 6, sm: 6, md: 2, lg: 2 }}
-        >
-          <ListItem
-            title1="COLLEGIATE ARC HOODIE"
-            title2="METAFACTORY"
-            assetUrl={`/test_assets/list_items/${item}.png`}
-            redirectPath={`/closet_wearable_detail/${item}`}
-          />
-        </GridItem>
-        )}
-      </Grid>
+      <ListItems items={items}/>
     </VStack>
     );
 };

@@ -25,14 +25,14 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   }, [account, chainId, loading, router, toast]);
 
   return (
-    <Flex flexDirection="column" height="100vh">
+    <Flex flexDirection="column" height="100vh" background="background">
       <Navigation />
       <Flex
         flex="1"
         flexDirection="column"
         mx={{ base: "0px", sm: "0px", md: `${LOGO_HEIGHT}px`, lg: `${LOGO_HEIGHT}px` }}
         border={{ base: "0px", sm: "0px", md: "2px", lg: "2px" }}
-        marginBlockEnd="20px"
+        background="background"
       >
         {children}
       </Flex>

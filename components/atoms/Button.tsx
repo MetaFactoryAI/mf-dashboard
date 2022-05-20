@@ -17,7 +17,7 @@ const Button: React.FC<{
     px="11px"
     height={height}
     width={width}
-    background="#8E8F8A"
+    background="background"
     borderRadius="0px"
     {...props}
   >

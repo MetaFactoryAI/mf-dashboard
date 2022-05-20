@@ -10,6 +10,7 @@ const customTheme = extendTheme({
     body_regular: "'188 Sans-Regular'",
   },
   colors: {
+    background: "#8E8F8A",
     brand: {
       100: "blue",
       900: "#1a202c",

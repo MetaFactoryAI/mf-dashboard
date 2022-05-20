@@ -5,3 +5,4 @@ export { default as Loading } from "./Loading";
 export { default as UnclaimedTokens } from "./UnclaimedTokens";
 export { default as PageTitle } from "./PageTitle";
 export { default as Alert } from "./Alert";
+export { default as Button } from "./Button";

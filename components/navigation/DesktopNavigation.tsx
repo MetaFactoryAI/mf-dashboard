@@ -12,6 +12,7 @@ import { isSelected } from "@/utils/navigation";
 const DesktopNavigation: React.FC = () => {
   const router = useRouter();
   const { account, connectWeb3, loading, errors } = useWeb3Context();
+  const LOGO_MARGIN = 7;
 
   const handleConnect = () => {
     if (!account) {
@@ -28,13 +29,13 @@ const DesktopNavigation: React.FC = () => {
       height={`${LOGO_HEIGHT}px`}
       fontSize="18px"
     >
-      <Box>
+      <Box ml={`${LOGO_MARGIN}px`} mt={`${LOGO_MARGIN}px`}>
         <a href="https://www.metafactory.ai/" target="_blank" rel="noopener noreferrer">
           <Image
-            src="/header-logo-mf.svg"
+            src="/header-logo-short.svg"
             alt=""
-            width={`${LOGO_HEIGHT}px`}
-            height={`${LOGO_HEIGHT}px`}
+            width={`${LOGO_HEIGHT - LOGO_MARGIN * 2}px`}
+            height={`${LOGO_HEIGHT - LOGO_MARGIN * 2}px`}
           />
         </a>
       </Box>

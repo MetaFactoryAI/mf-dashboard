@@ -13,7 +13,7 @@ const Index: NextPage = () => {
   return (
     <VStack spacing="0px">
       <Box pl="10px" pr="10px" alignSelf="start" pb="10px">
-        <Text fontFamily="body" fontSize="12px" textAlign="start">
+        <Text fontFamily="caption" fontSize="12px" textAlign="start" fontWeight="400px">
           METADREAMER&apos;s CLOSET ➤ V2 MUTANT TEE
         </Text>
       </Box>
@@ -26,8 +26,8 @@ const Index: NextPage = () => {
         />
       </Box>
       <Box pl="10px" pr="10px" alignSelf="center" pb="10px">
-        <Text fontFamily="body" fontSize="10px">
-          you own <b>2</b> of this item
+        <Text fontFamily="caption" fontSize="12px" fontWeight="400px">
+          you own 2 of this item
         </Text>
       </Box>
 
@@ -42,7 +42,7 @@ const Index: NextPage = () => {
         <Tbody>
           <Tr>
             <Td border="1px solid black" padding="5px" sx={{ writingMode: "vertical-rl" }}>
-              <Text fontFamily="body_bold" fontWeight="400" fontSize="18px" alignSelf="start" pt="14px" pb="14px">
+              <Text fontFamily="heading" fontWeight="700" fontSize="18px" alignSelf="start" pt="14px" pb="14px">
                 METADATA
               </Text>
             </Td>
@@ -52,7 +52,7 @@ const Index: NextPage = () => {
           </Tr>
           <Tr>
             <Td border="1px solid black" padding="5px" sx={{ writingMode: "vertical-rl" }}>
-              <Text fontFamily="body_bold" fontWeight="400" fontSize="18px" alignSelf="start" pt="14px" pb="14px">
+              <Text fontFamily="heading" fontWeight="700" fontSize="18px" alignSelf="start" pt="14px" pb="14px">
                 FILES
               </Text>
             </Td>

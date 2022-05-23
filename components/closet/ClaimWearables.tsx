@@ -14,22 +14,20 @@ const ClaimWearables: NextPage = () => {
 
   return (
     <VStack spacing="0px">
-      <VStack mb="34px" mt="26px">
-        <Text fontFamily="body_bold" fontSize="15px">
+      <VStack mb="34px" mt="26px" lineHeight="16px">
+        <Text fontFamily="accent" fontSize="17px" fontWeight="400">
           Welcome metadreamer.eth
         </Text>
-        <Text fontFamily="body" fontSize="15px">
+        <Text fontFamily="caption" fontSize="12px" fontWeight="400" pb="10px">
           You have {items.length} items available to claim
         </Text>
         <Button
           handleClickCallback={handleClick}
-          height="43px"
-          width="105px"
-        >
-          <Text fontFamily="body_regular" fontWeight="400" fontSize="12px">
-            CLAIM
-          </Text>
-        </Button>
+          height="40px"
+          width="141px"
+          backgroundColor="yellow"
+          title="CLAIM"
+        />
       </VStack>
       <ListItems items={items}/>
     </VStack>

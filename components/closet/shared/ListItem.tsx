@@ -26,10 +26,10 @@ const ListItem: React.FC<{
           onClick={handleClick}
           {...props}
         />
-        <Text fontFamily="body_regular" fontWeight="400" fontSize="9px">
+        <Text fontFamily="heading" fontWeight="700" fontSize="12px">
           {title1}
         </Text>
-        <Text fontFamily="body_regular" fontWeight="400" fontSize="6px">
+        <Text fontFamily="caption" fontWeight="400" fontSize="10px">
           {title2}
         </Text>
       </Box>

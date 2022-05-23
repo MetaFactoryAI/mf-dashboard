@@ -45,6 +45,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="preload" href="/fonts/188 Sans-Pixel 100.otf" as="font" crossOrigin="" />
         <link rel="preload" href="/fonts/188 Sans-Regular.otf" as="font" crossOrigin="" />
         <link rel="preload" href="/fonts/188 Sans-Thin Condensed.otf" as="font" crossOrigin="" />
+        <link rel="preload" href="/fonts/Inter-Bold.ttf" as="font" crossOrigin="" />
+        <link rel="preload" href="/fonts/Inter-Regular.ttf" as="font" crossOrigin="" />
+        <link rel="preload" href="/fonts/CoFo_Rax_V0.1.otf" as="font" crossOrigin="" />
+        <link rel="preload" href="/fonts/RuneScape-UF.woff2" as="font" crossOrigin="" />
+        <link rel="preload" href="/fonts/RuneScape-UF.woff" as="font" crossOrigin="" />
       </Head>
       <Web3ContextProvider>
         <Layout>

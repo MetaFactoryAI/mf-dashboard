@@ -27,3 +27,28 @@
   font-family: '188 Sans-Thin Condensed';
   src: url('/fonts/188 Sans-Thin Condensed.otf');
 }
+
+@font-face {
+  font-family: 'Inter-Bold';
+  src: url('/fonts/Inter-Bold.ttf');
+}
+
+@font-face {
+  font-family: 'Inter-Regular';
+  src: url('/fonts/Inter-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'CoFo_Rax_V0.1';
+  src: url('/fonts/CoFo_Rax_V0.1.otf');
+}
+
+@font-face {
+  font-family: 'RuneScape UF';
+  src: url('/fonts/RuneScape-UF.woff2') format('woff2'),
+      url('/fonts/RuneScape-UF.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+

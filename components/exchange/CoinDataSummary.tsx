@@ -1,9 +1,9 @@
 import React from "react";
 import { Box, Table, Tbody, Td, Tr } from "@chakra-ui/react";
-import SummaryField2 from "./shared/SummaryField2";
 import { formatAddress } from "@/utils/presentationHelper";
 import type { CoinRow } from "@/hooks/useCoinData";
 import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
+import SummaryField2 from "./shared/SummaryField2";
 
 const CoinDataSummary: React.FC<{
   coinData: CoinRow[][];

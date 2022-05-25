@@ -9,9 +9,9 @@ import { localPoint } from "@visx/event";
 import useResize from "hooks/useResize";
 import { AxisBottom } from "@visx/axis";
 import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
+import { formatNumber } from "@/utils/presentationHelper";
 import SelectButtons from "./chart/SelectButtons";
 import type { ChartTab } from "./chart/SelectButtons";
-import { formatNumber } from "@/utils/presentationHelper";
 
 export type ChartData = {
   key: string;

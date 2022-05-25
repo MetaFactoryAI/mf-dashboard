@@ -7,12 +7,12 @@ import { TimeRangeGraphChart, Loading, PageTitle } from "@/components/atoms";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { usePoolGearData } from "@/hooks/usePoolGearData";
 import { useCoinData } from "@/hooks/useCoinData";
-import { SwapPoolPanel, SwapPoolPanelTabs } from "./swapPoolPanel";
 import { getHistoryRangeTimestamps, HistoryRange } from "@/utils/time";
-import SummaryField from "./shared/SummaryField";
 import type { ChartTab } from "@/components/atoms/chart/SelectButtons";
-import CoinDataSummary from "./CoinDataSummary";
 import { formatNumber } from "@/utils/presentationHelper";
+import { SwapPoolPanel, SwapPoolPanelTabs } from "./swapPoolPanel";
+import SummaryField from "./shared/SummaryField";
+import CoinDataSummary from "./CoinDataSummary";
 
 const COIN_ID = "robot";
 

@@ -5,11 +5,11 @@ import React, { useState, useCallback } from "react";
 import { Text, VStack, Button, Flex, Box, Center, useToast } from "@chakra-ui/react";
 import Image from "next/image";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
-import SwapTokenField from "./shared/SwapTokenField";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { Alert } from "@/components/atoms";
 import { getQuote, swapTokens, Quote0xApi } from "@/utils/swap";
 import { BALANCER_POOL_ID } from "@/utils/constants";
+import SwapTokenField from "./shared/SwapTokenField";
 
 export interface SwapToken extends TokenBalance {
   address: string;

@@ -10,13 +10,16 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { loading, account, chainId } = useWeb3Context();
   const toast = useToast();
   const router = useRouter();
+  const selectEthToastId = "select_eth_toast_id";
+
   useEffect(() => {
     if (!loading && !account && router.pathname !== "/") {
       router.push("/");
     }
 
-    if (!loading && account && chainId !== CHAIN_ID) {
+    if (!loading && account && chainId !== CHAIN_ID && !toast.isActive(selectEthToastId)) {
       toast({
+        id: selectEthToastId,
         title: "Please select Ethereum mainnet network",
         status: "error",
         isClosable: true,

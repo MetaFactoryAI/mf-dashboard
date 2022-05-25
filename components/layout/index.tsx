@@ -1,31 +1,20 @@
 import React, { ReactNode, useEffect } from "react";
-import { Flex, useToast } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import { LOGO_HEIGHT, CHAIN_ID } from "@/utils/constants";
+import { LOGO_HEIGHT } from "@/utils/constants";
 import { useWeb3Context } from "@/contexts/Web3Context";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { loading, account, chainId } = useWeb3Context();
-  const toast = useToast();
+  const { loading, account, isValidChain } = useWeb3Context();
   const router = useRouter();
-  const selectEthToastId = "select_eth_toast_id";
 
   useEffect(() => {
-    if (!loading && !account && router.pathname !== "/") {
+    if (!loading && (!account || !isValidChain()) && router.pathname !== "/") {
       router.push("/");
     }
-
-    if (!loading && account && chainId !== CHAIN_ID && !toast.isActive(selectEthToastId)) {
-      toast({
-        id: selectEthToastId,
-        title: "Please select Ethereum mainnet network",
-        status: "error",
-        isClosable: true,
-      });
-    }
-  }, [account, chainId, loading, router, toast]);
+  }, [account, isValidChain, loading, router]);
 
   return (
     <Flex flexDirection="column" height="100vh" background="background">

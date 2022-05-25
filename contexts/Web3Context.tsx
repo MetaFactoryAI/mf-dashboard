@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Cookies from "js-cookie";
 import createToken from "@/utils/auth/web3JWT";
-import { APP_NAME } from "@/utils/constants";
+import { APP_NAME, CHAIN_ID } from "@/utils/constants";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const EthDater = require("ethereum-block-by-date");
@@ -39,7 +39,9 @@ const web3Modal =
     providerOptions,
   });
 
-const Web3Context = createContext<Web3ContextType & { loading: boolean; connectWeb3: () => void }>({
+const Web3Context = createContext<
+  Web3ContextType & { loading: boolean; connectWeb3: () => void; isValidChain: () => boolean }
+>({
   errors: null,
   account: null,
   accountAuthBearer: null,
@@ -47,6 +49,7 @@ const Web3Context = createContext<Web3ContextType & { loading: boolean; connectW
   chainId: null,
   dater: null,
   loading: true,
+  isValidChain: () => false,
   connectWeb3: () => null,
 });
 
@@ -69,6 +72,8 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
 
     return token;
   };
+
+  const isValidChain = useCallback(() => chainId === CHAIN_ID, [chainId]);
 
   const connectWeb3 = useCallback(async () => {
     try {
@@ -141,6 +146,7 @@ export const Web3ContextProvider: React.FC = ({ children }) => {
         chainId,
         dater,
         loading,
+        isValidChain,
         connectWeb3,
       }}
     >

@@ -3,12 +3,16 @@ import { Table, Tbody, Td, Tr, VStack, Box, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import type { NextPage } from "next";
-import Metadata from "./Metadata"
-import Files from "./Files"
+import { Canvas } from "@react-three/fiber";
+import { Suspense } from "react";
+import Metadata from "./Metadata";
+import Files from "./Files";
+
+import Model from "./Model";
 
 const Index: NextPage = () => {
   const router = useRouter();
-  const { id } = router.query
+  const { id } = router.query;
 
   return (
     <VStack spacing="0px">
@@ -24,6 +28,11 @@ const Index: NextPage = () => {
           width="322px"
           height="322px"
         />
+      <Canvas>
+        <Suspense fallback={null}>
+          <Model />
+        </Suspense>
+      </Canvas>
       </Box>
       <Box pl="10px" pr="10px" alignSelf="center" pb="10px">
         <Text fontFamily="caption" fontSize="12px" fontWeight="400px">

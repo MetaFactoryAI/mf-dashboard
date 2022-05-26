@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { VStack, HStack, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import ListItems from "./shared/ListItems";
+import ListItems from "./ListItems";
 import ClaimWearables from "./ClaimWearables";
 
 

@@ -12,7 +12,12 @@ const Index: NextPage = () => {
 
   return (
     <VStack spacing="0px">
-      <Box pl="10px" pr="10px" alignSelf="start" pb="10px">
+      <Box
+        pl="10px"
+        pr="10px"
+        alignSelf={{ base: "start", sm: "start", md: "start", lg: "center" }}
+        pb="10px"
+      >
         <Text fontFamily="caption" fontSize="12px" textAlign="start" fontWeight="400px">
           METADREAMER&apos;s CLOSET ➤ V2 MUTANT TEE
         </Text>
@@ -37,6 +42,7 @@ const Index: NextPage = () => {
         cellPadding="0"
         border="1px solid black"
         width="100%"
+        maxWidth="1000px"
         variant="unstyled"
       >
         <Tbody>

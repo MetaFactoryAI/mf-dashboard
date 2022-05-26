@@ -14,6 +14,7 @@ export default function Model() {
       <mesh
         castShadow
         receiveShadow
+        // @ts-ignore
         geometry={nodes.tshirt_apose.geometry}
         material={materials.thsirt}
         position={[0, 0.34, 0]}

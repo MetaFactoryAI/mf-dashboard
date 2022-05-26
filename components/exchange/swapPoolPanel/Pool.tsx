@@ -27,7 +27,7 @@ const Pool: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBalances }) 
             border="2px"
             key={`pool-panel-token-balance-${token.symbol}`}
           >
-            <HStack width="50%" spacing="0px" backgroundColor="white">
+            <HStack width="50%" spacing="0px" backgroundColor="background">
               <Token tokenSymbol={token.symbol} />
             </HStack>
             <Box width="50%" backgroundColor="black">

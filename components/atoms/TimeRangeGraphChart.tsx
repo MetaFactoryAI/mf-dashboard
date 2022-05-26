@@ -244,7 +244,7 @@ const TimeRangeGraphChart: FC<{
             left={tooltipLeft}
             style={{ position: "absolute", pointerEvents: "none" }}
           >
-            <Box background="white" border="4px" borderColor="#00ECFF" p="10px" zIndex="9999">
+            <Box background="background" border="4px" borderColor="#00ECFF" p="10px" zIndex="9999">
               <Text fontFamily="body_bold" fontWeight="800" fontSize="24px" color="black">
                 ${formatNumber((tooltipData as ChartData).value)}
               </Text>

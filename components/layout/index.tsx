@@ -17,7 +17,7 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   }, [account, isValidChain, loading, router]);
 
   return (
-    <Flex flexDirection="column" height="100vh" background="background">
+    <Flex flexDirection="column" minHeight="100vh" height="100%" background="background">
       <Navigation />
       <Flex
         flex="1"

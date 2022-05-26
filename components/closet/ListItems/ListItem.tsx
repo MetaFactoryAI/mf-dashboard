@@ -16,7 +16,7 @@ const ListItem: React.FC<{
   };
 
   return (
-    <VStack  spacing="0px">
+    <VStack  spacing="0px" cursor="pointer">
       <Box p="1px" textAlign="center">
         <Image
           src={assetUrl}

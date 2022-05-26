@@ -1,6 +1,5 @@
 import CustomButton from "@/components/atoms/Button";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import {
   Flex,

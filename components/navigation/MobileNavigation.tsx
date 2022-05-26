@@ -1,3 +1,4 @@
+import CustomButton from "@/components/atoms/Button";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -47,11 +48,13 @@ const MobileNavigation: React.FC = () => {
         <Flex>
           {!isOpen && (
             <>
-              <Box px="2" border="1px" bg={router.asPath.indexOf("/") >= 0 ? "yellow" : ""}>
-                <Link href="/">
-                  {!loading && !errors && !!account ? formatAddress(account) : "Connect"}
-                </Link>
-              </Box>
+              <CustomButton
+                handleClickCallback={() => handleRedirect("/")}
+                height="100%"
+                width="80px"
+                backgroundColor={router.asPath.indexOf("/") >= 0 ? "yellow" : ""}
+                title={!loading && !errors && !!account ? formatAddress(account) : "Connect"}
+              />
               <IconButton
                 icon={<HamburgerIcon />}
                 aria-label="Open Sidebar Menu"

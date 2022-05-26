@@ -3,7 +3,6 @@ import { VStack, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import Button from "@/components/atoms/Button"
-import ListItems from "./shared/ListItems";
 
 const ClaimWearables: NextPage = () => {
   const items = ["1", "2", "3", "4", "5", "6", "7", "8", "11", "12", "13", "14"]
@@ -29,7 +28,6 @@ const ClaimWearables: NextPage = () => {
           title="CLAIM"
         />
       </VStack>
-      <ListItems items={items}/>
     </VStack>
     );
 };

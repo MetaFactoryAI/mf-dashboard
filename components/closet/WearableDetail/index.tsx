@@ -1,14 +1,16 @@
 /* eslint-disable prettier/prettier */
 import { Table, Tbody, Td, Tr, VStack, Box, Text } from "@chakra-ui/react";
-import Image from "next/image";
-import { useRouter } from "next/router";
 import type { NextPage } from "next";
-import Metadata from "./Metadata"
+import React, { Suspense, useRef } from 'react'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Stage } from '@react-three/drei'
 import Files from "./Files"
+import Metadata from "./Metadata"
+import Model from './Model'
+
 
 const Index: NextPage = () => {
-  const router = useRouter();
-  const { id } = router.query
+  const ref = useRef();
 
   return (
     <VStack spacing="0px">
@@ -23,12 +25,14 @@ const Index: NextPage = () => {
         </Text>
       </Box>
       <Box border="0px" p="1px">
-        <Image
-          src={`/test_assets/list_items/${id}.png`}
-          alt=""
-          width="322px"
-          height="322px"
-        />
+        <Canvas shadows dpr={[1, 2]} camera={{ fov: 50 }}>
+          <Suspense fallback={null}>
+            <Stage controls={ref} preset="rembrandt" intensity={1}  environment="city">
+              <Model />
+            </Stage>
+          </Suspense>
+          <OrbitControls ref={ref} autoRotate />
+        </Canvas>
       </Box>
       <Box pl="10px" pr="10px" alignSelf="center" pb="10px">
         <Text fontFamily="caption" fontSize="12px" fontWeight="400px">

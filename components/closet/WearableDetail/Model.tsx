@@ -7,21 +7,21 @@ import { useGLTF } from "@react-three/drei";
 
 export default function Model() {
   const group = useRef();
-  const { nodes, materials } = useGLTF("/longsleeve_apose.glb");
+  const { nodes } = useGLTF("/hoodie_apose.glb");
+
   return (
     <group ref={group} dispose={null}>
-      {console.log(nodes)}
-      {console.log(materials)}
       <mesh
         castShadow
         receiveShadow
         // @ts-ignore
-        geometry={nodes.longsleeve.geometry}
-        material={materials.longsleeve}
+        geometry={nodes.Scene.children[0].geometry}
+        // @ts-ignore
+        material={nodes.Scene.children[0].material}
         position={[0, 0, 0]}
       />
     </group>
   );
 }
 
-useGLTF.preload("/longsleeve_apose.glb");
+useGLTF.preload("/hoodie_apose.glb");

@@ -24,7 +24,7 @@ const Index: NextPage = () => {
           METADREAMER&apos;s CLOSET ➤ V2 MUTANT TEE
         </Text>
       </Box>
-      <Box border="0px" p="1px">
+      <Box border="0px" p="1px" height="300px">
         <Canvas shadows dpr={[1, 2]} camera={{ fov: 50 }}>
           <Suspense fallback={null}>
             {/* @ts-ignore */}

@@ -11,7 +11,7 @@ const Profile: NextPage = () => {
   const toast = useToast();
 
   useEffect(() => {
-    if (!loading && !isValidChain() && !toast.isActive(selectEthToastId)) {
+    if (!loading && !!account && !isValidChain() && !toast.isActive(selectEthToastId)) {
       toast({
         id: selectEthToastId,
         title: "Please select Ethereum mainnet network",
@@ -19,7 +19,7 @@ const Profile: NextPage = () => {
         isClosable: true,
       });
     }
-  }, [isValidChain, toast, loading]);
+  }, [isValidChain, toast, loading, account]);
 
   return (
     <>

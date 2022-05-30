@@ -175,7 +175,14 @@ const Swap: React.FC = () => {
         onClick={handleBalancerRedirect}
         cursor="pointer"
       >
-        <Text color="black" fontFamily="body" fontWeight="400" fontSize="18px" pr="5px">
+        <Text
+          color="black"
+          fontFamily="body"
+          letterSpacing="-0.02em"
+          fontWeight="400"
+          fontSize="18px"
+          pr="5px"
+        >
           Trade on Balancer
         </Text>
         <Image src="/arrow.svg" alt="" width="15px" height="15px" />

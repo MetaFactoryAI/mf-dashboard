@@ -218,7 +218,7 @@ const YearlyBarChart: FC<{
               <Text fontFamily="body_regular" fontSize="18px">
                 {formatNumber((tooltipData as ChartData).value)}
               </Text>
-              <Text fontFamily="body" fontSize="14px">
+              <Text fontFamily="body" letterSpacing="-0.02em" fontSize="14px">
                 {format(new Date((tooltipData as ChartData).date))}
               </Text>
             </Box>

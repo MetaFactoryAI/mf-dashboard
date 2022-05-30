@@ -54,7 +54,7 @@ const Index: NextPage = () => {
         <Tbody>
           <Tr>
             <Td border="1px solid black" padding="5px" sx={{ writingMode: "vertical-rl" }}>
-              <Text fontFamily="heading" fontWeight="700" fontSize="18px" alignSelf="start" pt="14px" pb="14px">
+              <Text fontFamily="heading" letterSpacing="-0.02em" lineHeight="22px" fontWeight="700" fontSize="18px" alignSelf="start" pt="14px" pb="14px">
                 METADATA
               </Text>
             </Td>
@@ -64,7 +64,7 @@ const Index: NextPage = () => {
           </Tr>
           <Tr>
             <Td border="1px solid black" padding="5px" sx={{ writingMode: "vertical-rl" }}>
-              <Text fontFamily="heading" fontWeight="700" fontSize="18px" alignSelf="start" pt="14px" pb="14px">
+              <Text fontFamily="heading" letterSpacing="-0.02em" lineHeight="22px" fontWeight="700" fontSize="18px" alignSelf="start" pt="14px" pb="14px">
                 FILES
               </Text>
             </Td>

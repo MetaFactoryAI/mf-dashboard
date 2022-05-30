@@ -15,7 +15,7 @@ const Wearables: NextPage = () => {
       {isClaimable && <ClaimWearables />}
       {!isClaimable && (
         <HStack spacing="0px" alignSelf="start"  mb="15px" alignItems="baseline" >
-          <Text fontFamily="heading" fontWeight="700" fontSize="29px" mx="15px" paddingBottom="0px">
+          <Text fontFamily="heading" letterSpacing="-0.02em" lineHeight="35px" fontWeight="700" fontSize="29px" mx="15px" paddingBottom="0px">
             Closet
           </Text>
           <Text fontFamily="caption" fontSize="14px" fontWeight="400" textAlign="end">

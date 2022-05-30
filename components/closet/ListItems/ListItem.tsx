@@ -26,7 +26,7 @@ const ListItem: React.FC<{
           onClick={handleClick}
           {...props}
         />
-        <Text fontFamily="heading" fontWeight="700" fontSize="12px">
+        <Text fontFamily="heading" letterSpacing="-0.02em" lineHeight="15px" fontWeight="700" fontSize="12px">
           {title1}
         </Text>
         <Text fontFamily="caption" fontWeight="400" fontSize="10px">

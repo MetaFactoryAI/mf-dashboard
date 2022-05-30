@@ -27,6 +27,8 @@ const Connected: NextPage = () => {
         style: {
           fontSize: "12px",
           fontFamily: "heading",
+          lineHeight: "15px",
+          letterSpacing: "-0.02em",
           fontWeight: "700",
           width: { md: "40%", lg: "40%" },
           minWidth: { md: "210px", lg: "210px" },
@@ -63,6 +65,8 @@ const Connected: NextPage = () => {
         style: {
           fontSize: "12px",
           fontFamily: "heading",
+          lineHeight: "15px",
+          letterSpacing: "-0.02em",
           fontWeight: "700",
           width: { md: "40%", lg: "40%" },
           minWidth: { md: "210px", lg: "210px" },

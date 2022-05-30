@@ -33,6 +33,7 @@ const Pool: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBalances }) 
             <Box width="50%" backgroundColor="black">
               <Text
                 fontFamily="body"
+                letterSpacing="-0.02em"
                 textAlign="end"
                 fontWeight="400"
                 fontSize="18px"

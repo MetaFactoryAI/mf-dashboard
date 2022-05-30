@@ -117,6 +117,7 @@ const TimeRangeGraphChart: FC<{
             p="18px"
             pb="0px"
             fontFamily="body"
+            letterSpacing="-0.02em"
             fontWeight="400"
             fontSize="24px"
             zIndex="8888"
@@ -251,7 +252,7 @@ const TimeRangeGraphChart: FC<{
               <Text fontFamily="body_regular" fontSize="18px">
                 {(tooltipData as ChartData).toolBarTitle}
               </Text>
-              <Text fontFamily="body" fontSize="14px">
+              <Text fontFamily="body" letterSpacing="-0.02em" fontSize="14px">
                 {(tooltipData as ChartData).toolBarTitle2}
               </Text>
             </Box>

@@ -19,7 +19,7 @@ const Connect: NextPage = () => {
         <Image src="/w95_misc.png" alt="" width="108" height="82" />
       </Box>
       <Box maxWidth="266px" pb="40px">
-        <Text fontFamily="heading" fontWeight="700" fontSize="29px" mx="15px" paddingBottom="0px" textAlign="center">
+        <Text fontFamily="heading" letterSpacing="-0.02em" lineHeight="35px" fontWeight="700" fontSize="29px" mx="15px" paddingBottom="0px" textAlign="center">
           MetaFactory Wearables OS
         </Text>
       </Box>

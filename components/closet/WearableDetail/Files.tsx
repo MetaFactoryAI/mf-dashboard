@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Flex, VStack, Spacer, Text, Box } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import Button from "@/components/atoms/Button"
+// import Button from "@/components/atoms/Button"
 
 const Files: NextPage = () => {
   const handleDownload = () => {
@@ -22,14 +22,14 @@ const Files: NextPage = () => {
         </Text>
       </VStack>
       <Spacer />
-      <Box p="5px" pr="10px">
+      {/* <Box p="5px" pr="10px">
         <Button
           handleClickCallback={handleDownload}
           height="35px"
           width="121px"
           title="DOWNLOAD ALL"
         />
-      </Box>
+      </Box> */}
     </Flex>
   )
 };

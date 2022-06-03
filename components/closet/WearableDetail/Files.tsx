@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Flex, VStack, Spacer, Text, Box } from "@chakra-ui/react";
+import { Flex, VStack, Spacer, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 // import Button from "@/components/atoms/Button"
 

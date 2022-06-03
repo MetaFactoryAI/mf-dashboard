@@ -2,16 +2,11 @@
 import { VStack, Text, Box } from "@chakra-ui/react";
 import Button from "@/components/atoms/Button";
 import type { NextPage } from "next";
-import { useWeb3Context } from "@/contexts/Web3Context";
 import Image from "next/image";
+import { useConnect } from "wagmi";
 
 const Connect: NextPage = () => {
-  const { account, connectWeb3 } = useWeb3Context();
-  const handleConnect = () => {
-    if (!account) {
-      connectWeb3();
-    }
-  };
+  const { connect, connectors } = useConnect();
 
   return (
     <VStack p="4">
@@ -25,7 +20,7 @@ const Connect: NextPage = () => {
       </Box>
       <Box width="100%" maxWidth="330px" pb="40px">
         <Button
-          handleClickCallback={handleConnect}
+          handleClickCallback={() => connect(connectors[0])}
           height="40px"
           width="100%"
           backgroundColor="yellow"

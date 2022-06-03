@@ -5,7 +5,7 @@ import React, { useState, useCallback } from "react";
 import { Text, VStack, Button, Flex, Box, Center, useToast } from "@chakra-ui/react";
 import Image from "next/image";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
-import { useWeb3Context } from "@/contexts/Web3Context";
+import { useAccount, useSigner } from "wagmi";
 import { Alert } from "@/components/atoms";
 import { getQuote, swapTokens, Quote0xApi } from "@/utils/swap";
 import { BALANCER_POOL_ID } from "@/utils/constants";
@@ -28,7 +28,8 @@ const Swap: React.FC = () => {
   const [swapAlertMsg, setSwapAlertMsg] = React.useState<string>("");
   const [swapQuote, setSwapQuote] = React.useState<Quote0xApi>();
   const [isAlertOpen, setIsAlertOpen] = React.useState<boolean>(false);
-  const { loading, account, provider } = useWeb3Context();
+  const { data: account, isLoading: loading } = useAccount();
+  const { data: signer } = useSigner();
   const [sellToken, setSellToken] = useState<SwapToken>({
     ...NON_METAFACTORY_TOKEN_SYMBOLS[0],
   });
@@ -53,7 +54,7 @@ const Swap: React.FC = () => {
   };
 
   const handleSwap = useCallback(async () => {
-    if (provider && account) {
+    if (account) {
       const response = await getQuote(sellToken, buyToken);
 
       if (response.ok) {
@@ -73,10 +74,10 @@ const Swap: React.FC = () => {
         });
       }
     }
-  }, [account, buyToken, provider, sellToken, toast]);
+  }, [account, buyToken, sellToken, toast]);
 
   const executeSwap = useCallback(async () => {
-    if (provider && account && swapQuote) {
+    if (signer && account?.address && swapQuote) {
       const swapSuccessful = () => {
         toast({
           title: "SWAP processed and send to the blockchain",
@@ -94,9 +95,9 @@ const Swap: React.FC = () => {
           isClosable: true,
         });
       };
-      swapTokens(account, provider, swapQuote, swapSuccessful, swapFailed);
+      swapTokens(account.address, signer, swapQuote, swapSuccessful, swapFailed);
     }
-  }, [account, buyToken, provider, sellToken, swapQuote, toast]);
+  }, [account, buyToken, signer, sellToken, swapQuote, toast]);
 
   if (loading || !account) return null;
 

@@ -5,16 +5,26 @@ import Head from "next/head";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import useClaims from "@/hooks/useClaims";
 import useMetafactoryData from "@/hooks/useMetafactoryData";
-import { useWeb3Context } from "@/contexts/Web3Context";
 import { Loading, PieChart, UnclaimedTokens, PageTitle } from "@/components/atoms";
 import Table from "@/components/table";
 import type { DesignerReward, BuyerReward } from "@/hooks/useMetafactoryData";
+import { useAccount, useSignMessage, useConnect } from "wagmi";
+import generateSignMessage from "@/utils/auth/helper";
+import Cookies from "js-cookie";
+import { Base64 } from "js-base64";
 import Tab from "./Tab";
 
 const Connected: NextPage = () => {
+  const AUTH_TOKEN_KEY = "authToken";
   const { designerRewards, buyerRewards, loading, fetchDesignerRewards, fetchBuyerRewards } =
     useMetafactoryData();
-  const { loading: loadingWeb3, accountAuthBearer, account } = useWeb3Context();
+
+  const [authBearer, setAuthBearer] = React.useState(Cookies.get(AUTH_TOKEN_KEY));
+  const [signInMessage, setSignInMessage] = React.useState("");
+  const { data, isIdle, signMessage } = useSignMessage();
+  const { isConnected } = useConnect();
+  const { data: account, isLoading: loadingWeb3 } = useAccount();
+
   const { unclaimedTotal, claimedTotal, handleClaim } = useClaims();
   const [selectedTableTab, setSelectedTableTab] = useState<string>("buyer");
   const [tableRows, setTableRows] = useState<DesignerReward[] | BuyerReward[]>([]);
@@ -173,12 +183,42 @@ const Connected: NextPage = () => {
     [TABLE_TABS],
   );
 
+  // sign auth bearer logic
+  // ///////////////////////
   useEffect(() => {
-    if (accountAuthBearer && account) {
-      fetchDesignerRewards(account, accountAuthBearer);
-      fetchBuyerRewards(account, accountAuthBearer);
+    if (!authBearer && isConnected && isIdle && account?.address) {
+      const message = generateSignMessage(account.address);
+      signMessage({
+        message,
+      });
+      setSignInMessage(message);
     }
-  }, [fetchDesignerRewards, accountAuthBearer, account, fetchBuyerRewards]);
+  }, [
+    fetchDesignerRewards,
+    account,
+    fetchBuyerRewards,
+    signMessage,
+    isIdle,
+    authBearer,
+    isConnected,
+  ]);
+
+  useEffect(() => {
+    if (data && data?.length > 0) {
+      const token = Base64.encode(JSON.stringify([data, signInMessage]));
+      setAuthBearer(token);
+      Cookies.set(AUTH_TOKEN_KEY, token);
+    }
+  }, [data, signInMessage]);
+
+  useEffect(() => {
+    if (authBearer && authBearer?.length > 0 && account?.address) {
+      fetchDesignerRewards(account.address, authBearer);
+      fetchBuyerRewards(account.address, authBearer);
+    }
+  }, [account, authBearer, fetchBuyerRewards, fetchDesignerRewards]);
+  // ///////////////////////
+  // sign auth bearer logic
 
   useEffect(() => {
     if (!loading && isZeroBuyerRewards) {

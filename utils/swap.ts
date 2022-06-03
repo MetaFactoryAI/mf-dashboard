@@ -1,6 +1,7 @@
 import qs from "qs";
 import { BigNumber } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
+// eslint-disable-next-line camelcase
 import { IERC20__factory } from "types/ethers-contracts";
 import type { SwapToken } from "@/components/exchange/swapPoolPanel/Swap";
 
@@ -35,14 +36,12 @@ export const getQuote = async (sellToken: SwapToken, buyToken: SwapToken) => {
 
 export const swapTokens = async (
   from: string,
-  provider: ethers.providers.Web3Provider,
+  signer: ethers.Signer,
   swapQuote: Quote0xApi,
   successCallback: () => void,
   // @ts-ignore
   failCallback: (error) => void,
 ) => {
-  const signer = provider.getSigner();
-
   // grant allowance for all but the ETH token
   if (swapQuote.allowanceTarget !== "0x0000000000000000000000000000000000000000") {
     const erc20Contract = IERC20__factory.connect(swapQuote.sellTokenAddress, signer);

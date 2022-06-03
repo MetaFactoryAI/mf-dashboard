@@ -4,7 +4,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import Head from "next/head";
 import { format } from "d3-format";
 import { TimeRangeGraphChart, Loading, PageTitle } from "@/components/atoms";
-import { useWeb3Context } from "@/contexts/Web3Context";
+import { useAccount } from "wagmi";
 import { usePoolGearData } from "@/hooks/usePoolGearData";
 import { useCoinData } from "@/hooks/useCoinData";
 import { getHistoryRangeTimestamps, HistoryRange } from "@/utils/time";
@@ -17,6 +17,7 @@ import CoinDataSummary from "./CoinDataSummary";
 const COIN_ID = "robot";
 
 const Exchange: NextPage = () => {
+  const { data: account } = useAccount();
   const TIME_TABS: ChartTab[] = useMemo(
     () => [
       {
@@ -34,7 +35,6 @@ const Exchange: NextPage = () => {
     ],
     [],
   );
-  const { account } = useWeb3Context();
   const {
     fetchBalances,
     tokensBalances,
@@ -62,8 +62,8 @@ const Exchange: NextPage = () => {
   }, [fetchCoinData, fetchCoinHistory, fetchPoolData, fetchPoolHistory, selectedTimeRange]);
 
   useEffect(() => {
-    if (account) {
-      fetchBalances(account);
+    if (account?.address) {
+      fetchBalances(account.address);
     }
   }, [account, fetchBalances]);
 

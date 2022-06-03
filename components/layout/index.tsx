@@ -1,20 +1,27 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode, useCallback } from "react";
 import { Flex } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import { LOGO_HEIGHT } from "@/utils/constants";
-import { useWeb3Context } from "@/contexts/Web3Context";
+import { LOGO_HEIGHT, CHAIN_ID } from "@/utils/constants";
+import { useNetwork, useAccount } from "wagmi";
+import Connect from "@/components/profile/Connect";
+import InvalidChain from "@/components/profile/InvalidChain";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { loading, account, isValidChain } = useWeb3Context();
-  const router = useRouter();
+  const { activeChain, isSuccess } = useNetwork();
+  const { data: account } = useAccount();
 
-  useEffect(() => {
-    if (!loading && (!account || !isValidChain()) && router.pathname !== "/") {
-      router.push("/");
+  const renderResult = useCallback(() => {
+    const isValidChain = activeChain?.id === CHAIN_ID;
+
+    if (isSuccess && !isValidChain) {
+      return <InvalidChain />;
     }
-  }, [account, isValidChain, loading, router]);
+    if (!account) {
+      return <Connect />;
+    }
+    return children;
+  }, [account, activeChain?.id, children, isSuccess]);
 
   return (
     <Flex flexDirection="column" minHeight="100vh" height="100%" background="background">
@@ -26,7 +33,7 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
         border={{ base: "0px", sm: "0px", md: "2px", lg: "2px" }}
         background="background"
       >
-        {children}
+        {renderResult()}
       </Flex>
       <Footer />
     </Flex>

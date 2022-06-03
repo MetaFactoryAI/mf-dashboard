@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { Flex, Spacer, Box, Button } from "@chakra-ui/react";
+import { Flex, Spacer, Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useWeb3Context } from "@/contexts/Web3Context";
+import { useAccount } from "wagmi";
 import { formatAddress } from "@/utils/presentationHelper";
 import { LOGO_HEIGHT } from "@/utils/constants";
 import { isSelected } from "@/utils/navigation";
@@ -11,14 +11,8 @@ import { isSelected } from "@/utils/navigation";
 // menu items naming need to fit with beginning of route names
 const DesktopNavigation: React.FC = () => {
   const router = useRouter();
-  const { account, connectWeb3, loading, errors } = useWeb3Context();
+  const { data: account } = useAccount();
   const LOGO_MARGIN = 7;
-
-  const handleConnect = () => {
-    if (!account) {
-      connectWeb3();
-    }
-  };
 
   return (
     <Flex
@@ -70,24 +64,9 @@ const DesktopNavigation: React.FC = () => {
         <Box px="2" bg={isSelected("/closet", router.asPath) ? "yellow" : ""}>
           <Link href="/closet">Closet</Link>
         </Box>
-        {account ? (
-          <Box px="2" border="1px" bg={isSelected("/", router.asPath) ? "yellow" : ""}>
-            <Link href="/">
-              {!loading && !errors && !!account ? formatAddress(account) : "Connect"}
-            </Link>
-          </Box>
-        ) : (
-          <Button
-            onClick={handleConnect}
-            backgroundColor="yellow"
-            border="1px"
-            rounded="false"
-            _hover={{ bg: "transparent" }}
-          >
-            Connect
-          </Button>
-        )}
-
+        <Box px="2" border="1px" bg={isSelected("/", router.asPath) ? "yellow" : ""}>
+          <Link href="/">{account?.address ? formatAddress(account.address) : "Connect"}</Link>
+        </Box>
         <Box width={`${LOGO_HEIGHT}px`} />
       </Flex>
     </Flex>

@@ -1,3 +1,3 @@
-import Profile from "@/components/profile";
+import Connected from "@/components/profile/Connected";
 
-export default Profile;
+export default Connected;

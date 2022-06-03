@@ -3,16 +3,39 @@ import Head from "next/head";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-
 import { useRouter } from "next/router";
 import customTheme from "@/styles/theme";
 import Layout from "@/components/layout";
-import { Web3ContextProvider } from "@/contexts/Web3Context";
 import { Loading } from "@/components/atoms";
+import { WagmiConfig, createClient, defaultChains, configureChains } from "wagmi";
+import { alchemyProvider } from "wagmi/providers/alchemy";
+import { InjectedConnector } from "wagmi/connectors/injected";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [routerIsLoading, setRouterIsLoading] = useState(false);
+
+  // Configure chains & providers with the Alchemy provider.
+  // Two popular providers are Alchemy (alchemy.com) and Infura (infura.io)
+  const { chains, provider, webSocketProvider } = configureChains(defaultChains, [
+    alchemyProvider({ alchemyId: "tKl4iTNalnRA_fmULL4487sHZsFVIWDw" }),
+  ]);
+
+  // Set up client
+  const client = createClient({
+    autoConnect: true,
+    connectors: [
+      new InjectedConnector({
+        chains,
+        options: {
+          name: "Injected",
+          shimDisconnect: true,
+        },
+      }),
+    ],
+    provider,
+    webSocketProvider,
+  });
 
   useEffect(() => {
     const handleStart = (url: string) => {
@@ -51,12 +74,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="preload" href="/fonts/RuneScape-UF.woff2" as="font" crossOrigin="" />
         <link rel="preload" href="/fonts/RuneScape-UF.woff" as="font" crossOrigin="" />
       </Head>
-      <Web3ContextProvider>
+      <WagmiConfig client={client}>
         <Layout>
           {routerIsLoading && <Loading />}
           {!routerIsLoading && <Component {...pageProps} />}
         </Layout>
-      </Web3ContextProvider>
+      </WagmiConfig>
     </ChakraProvider>
   );
 }

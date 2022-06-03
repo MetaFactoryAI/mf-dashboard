@@ -8,20 +8,20 @@ import Connect from "@/components/profile/Connect";
 import InvalidChain from "@/components/profile/InvalidChain";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { activeChain, isSuccess } = useNetwork();
-  const { data: account } = useAccount();
+  const { activeChain, isLoading: isNetworkLoading } = useNetwork();
+  const { data: account, isLoading } = useAccount();
 
   const renderResult = useCallback(() => {
     const isValidChain = activeChain?.id === CHAIN_ID;
 
-    if (isSuccess && !isValidChain) {
+    if (account?.address && !isNetworkLoading && !isValidChain) {
       return <InvalidChain />;
     }
-    if (!account) {
+    if (!isLoading && !account) {
       return <Connect />;
     }
     return children;
-  }, [account, activeChain?.id, children, isSuccess]);
+  }, [account, activeChain, children, isLoading, isNetworkLoading]);
 
   return (
     <Flex flexDirection="column" minHeight="100vh" height="100%" background="background">

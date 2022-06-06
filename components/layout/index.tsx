@@ -6,6 +6,7 @@ import { LOGO_HEIGHT, CHAIN_ID } from "@/utils/constants";
 import { useNetwork, useAccount } from "wagmi";
 import Connect from "@/components/profile/Connect";
 import InvalidChain from "@/components/profile/InvalidChain";
+import { Loading } from "@/components/atoms";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { activeChain, isLoading: isNetworkLoading } = useNetwork();
@@ -14,12 +15,16 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const renderResult = useCallback(() => {
     const isValidChain = activeChain?.id === CHAIN_ID;
 
-    if (account?.address && !isNetworkLoading && !isValidChain) {
-      return <InvalidChain />;
-    }
+    if (isLoading || isNetworkLoading) return <Loading />;
+
     if (!isLoading && !account) {
       return <Connect />;
     }
+
+    if (!isValidChain) {
+      return <InvalidChain />;
+    }
+
     return children;
   }, [account, activeChain, children, isLoading, isNetworkLoading]);
 

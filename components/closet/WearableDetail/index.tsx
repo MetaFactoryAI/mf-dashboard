@@ -1,9 +1,10 @@
 /* eslint-disable prettier/prettier */
 import { Table, Tbody, Td, Tr, VStack, Box, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import React, { Suspense, useRef } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Stage } from '@react-three/drei'
+import React, { Suspense, useRef } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Stage } from '@react-three/drei';
+import useUserName from "@/hooks/useUserName";
 import Files from "./Files"
 import Metadata from "./Metadata"
 import Model from './Model'
@@ -11,6 +12,7 @@ import Model from './Model'
 
 const Index: NextPage = () => {
   const ref = useRef();
+  const userName = useUserName();
 
   return (
     <VStack spacing="0px">
@@ -21,7 +23,7 @@ const Index: NextPage = () => {
         pb="10px"
       >
         <Text fontFamily="caption" fontSize="12px" textAlign="start" fontWeight="400px">
-          METADREAMER&apos;s CLOSET ➤ V2 MUTANT TEE
+        {userName}&apos;s CLOSET ➤ V2 MUTANT TEE
         </Text>
       </Box>
       <Box

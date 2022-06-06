@@ -3,15 +3,14 @@ import Link from "next/link";
 import React from "react";
 import { Flex, Spacer, Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useAccount } from "wagmi";
-import { formatAddress } from "@/utils/presentationHelper";
+import useUserName from "@/hooks/useUserName";
 import { LOGO_HEIGHT } from "@/utils/constants";
 import { isSelected } from "@/utils/navigation";
 
 // menu items naming need to fit with beginning of route names
 const DesktopNavigation: React.FC = () => {
   const router = useRouter();
-  const { data: account } = useAccount();
+  const userName = useUserName();
   const LOGO_MARGIN = 7;
 
   return (
@@ -65,7 +64,7 @@ const DesktopNavigation: React.FC = () => {
           <Link href="/closet">Closet</Link>
         </Box>
         <Box px="2" border="1px" bg={isSelected("/", router.asPath) ? "yellow" : ""}>
-          <Link href="/">{account?.address ? formatAddress(account.address) : "Connect"}</Link>
+          <Link href="/">{userName || "Connect"}</Link>
         </Box>
         <Box width={`${LOGO_HEIGHT}px`} />
       </Flex>

@@ -13,15 +13,13 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { useAccount } from "wagmi";
-
-import { formatAddress } from "@/utils/presentationHelper";
+import useUserName from "@/hooks/useUserName";
 import MobileItem from "./MobileItem";
 
 const MobileNavigation: React.FC = () => {
+  const userName = useUserName();
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data: account } = useAccount();
   const MOBILE_LOGO_HEIGHT = 23;
   const MOBILE_LOGO_WIDTH = 139;
   const handleRedirect = (url: string) => {
@@ -53,7 +51,7 @@ const MobileNavigation: React.FC = () => {
                 height="100%"
                 width="80px"
                 backgroundColor={router.asPath.indexOf("/") >= 0 ? "yellow" : ""}
-                title={account?.address ? formatAddress(account.address) : "Connect"}
+                title={userName || "Connect"}
               />
               <IconButton
                 icon={<HamburgerIcon />}
@@ -132,7 +130,7 @@ const MobileNavigation: React.FC = () => {
             currentPath={router.asPath}
             redirectPath="/"
             handleRedirect={handleRedirect}
-            label={account?.address ? formatAddress(account.address) : "Connect"}
+            label={userName || "Connect"}
             border="1px"
             borderRadius="0px"
           />

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 // eslint-disable-next-line camelcase
-import { MerkleRedeem__factory } from "types/ethers-contracts";
+import { Merkle_redeem__factory } from "types/ethers-contracts/factories";
 import type { ClaimStruct } from "types/ethers-contracts/MerkleRedeem";
 import { MERKLE_REDEEM_CONTRACT } from "@/utils/constants";
 import {
@@ -46,9 +46,9 @@ const useClaims = () => {
       const claimWeeks: Record<number, ClaimWeek> = await getClaimWeeks();
 
       if (Object.keys(claimWeeks).length < 1) return;
-      if (loading || !signer || !account?.address) return;
+      if (loading || !signer || !signer.getAddress || !account?.address) return;
 
-      const redeem = MerkleRedeem__factory.connect(MERKLE_REDEEM_CONTRACT, signer);
+      const redeem = Merkle_redeem__factory.connect(MERKLE_REDEEM_CONTRACT, signer);
       const unclaimedWeeks = await getUnclaimedWeeksForAddress(redeem, claimWeeks, account.address);
       const unclaimedWeeksValues = getUnclaimedWeeksValues(
         claimWeeks,
@@ -77,7 +77,7 @@ const useClaims = () => {
     (claimsYear) => {
       const fetchClaimHistory = async () => {
         if (signer && claimsYear) {
-          const redeem = MerkleRedeem__factory.connect(MERKLE_REDEEM_CONTRACT, signer);
+          const redeem = Merkle_redeem__factory.connect(MERKLE_REDEEM_CONTRACT, signer);
           // @ts-ignore
           const { block: startBlock } = await getDater().getDate(
             `${claimsYear}-01-01T00:00:00Z`,
@@ -111,7 +111,7 @@ const useClaims = () => {
       if (claimWeeksProofs.length < 1) return;
       if (loading || !signer || !account?.address) return;
 
-      const redeem = MerkleRedeem__factory.connect(MERKLE_REDEEM_CONTRACT, signer);
+      const redeem = Merkle_redeem__factory.connect(MERKLE_REDEEM_CONTRACT, signer);
       // const result = await redeem.verifyClaim(
       //   account,
       //   claimWeeksProofs[0].week,

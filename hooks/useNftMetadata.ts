@@ -29,7 +29,7 @@ const useNftMetadata = () => {
 const parseIds = (data: NftItem[]) => {
   if (!data) return [];
 
-  return data?.map((nft) => nft.nft_token_id);
+  return data.map((nft) => nft.nft_token_id);
 };
 
 export default useNftMetadata;

@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { useState, useCallback } from "react";
 
-export type DesignerReward = { robot_reward: number; product: { id: string; title: string } };
+export type NftItem = { nft_token_id: number };
 
 const useNftMetadata = () => {
   const [nftIds, setnftIds] = useState<number[]>([]);
@@ -26,7 +26,7 @@ const useNftMetadata = () => {
   };
 };
 
-const parseIds = (data) => {
+const parseIds = (data: NftItem[]) => {
   if (!data) return [];
 
   return data?.map((nft) => nft.nft_token_id);

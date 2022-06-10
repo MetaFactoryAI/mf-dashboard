@@ -6,23 +6,38 @@ export type NftItem = { nft_token_id: number };
 const useNftMetadata = () => {
   const [nftIds, setnftIds] = useState<number[]>([]);
   const [loadingIds, setLoadingIds] = useState(true);
+  const [nftData, setNftData] = useState(null);
+  const [loadingNftData, setLoadingNftData] = useState(true);
 
-  const fetchNft = () => {
+  const fetchNfts = () => {
     setLoadingIds(true);
 
-    fetch("api/nft_metadata")
+    fetch("api/nfts")
       .then((res) => res.json())
       .then((data) => {
         const parsedIds = parseIds(data);
         setnftIds(parsedIds);
-        setLoadingIds(false);
-      });
+      })
+      .finally(() => setLoadingIds(false));
+  };
+
+  const fetchNft = (id: number) => {
+    setLoadingNftData(true);
+
+    fetch(`/api/nfts/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setNftData(data);
+      })
+      .finally(() => setLoadingNftData(false));
   };
 
   return {
     nftIds,
+    nftData,
     fetchNft: useCallback(fetchNft, []),
-    loading: loadingIds,
+    fetchNfts: useCallback(fetchNfts, []),
+    loading: loadingIds && loadingNftData,
   };
 };
 

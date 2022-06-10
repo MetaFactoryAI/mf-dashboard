@@ -15,8 +15,10 @@ const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
 };
 
 const useMetafactoryData = () => {
+  const [nftClaims, setNftClaims] = useState();
   const [designerRewards, setDesignerRewards] = useState<DesignerRewards>();
   const [buyerRewards, setBuyerRewards] = useState<BuyerRewards>();
+  const [loadingNftClaims, setLoadingNftClaims] = useState(true);
   const [loadingDesigner, setLoadingDesigner] = useState(true);
   const [loadingBuyer, setLoadingBuyer] = useState(true);
   const [errors, setErrors] = useState({});
@@ -80,12 +82,34 @@ const useMetafactoryData = () => {
     );
   };
 
+  const fetchNftClaims = (accountAuthToken: string) => {
+    setLoadingNftClaims(true);
+
+    const NFT_CLAIMS_QUERY = `
+      query GetClaimForAddress {
+        robot_merkle_claims {
+          claim_json
+          merkle_root_hash
+        }
+      }
+    `;
+    return (
+      fetchGraph(SUBGRAPH_ENDPOINTS.metafactory, NFT_CLAIMS_QUERY, null, accountAuthToken)
+        // @ts-ignore
+        .then(({ data }) => setNftClaims(data))
+        .catch((error) => setErrors({ error }))
+        .finally(() => setLoadingNftClaims(false))
+    );
+  };
+
   return {
     designerRewards,
     buyerRewards,
+    nftClaims,
     fetchDesignerRewards: useCallback(fetchDesignerRewards, []),
     fetchBuyerRewards: useCallback(fetchBuyerRewards, []),
-    loading: loadingBuyer || loadingDesigner,
+    fetchNftClaims: useCallback(fetchNftClaims, []),
+    loading: loadingBuyer || loadingDesigner || loadingNftClaims,
     errors,
   };
 };

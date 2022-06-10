@@ -18,7 +18,7 @@ import {
   formatMonthlyClaimsEventData,
 } from "@/utils/presentationHelper";
 import type { ChartData } from "@/components/atoms/YearlyBarChart";
-import { useAccount, useSigner } from "wagmi";
+import { useAccount, useSigner, useConnect } from "wagmi";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const EthDater = require("ethereum-block-by-date");
@@ -29,6 +29,7 @@ const useClaims = () => {
   const [claimedTotal, setClaimedTotal] = useState("0");
   const { data: account, isLoading: loading } = useAccount();
   const { data: signer } = useSigner();
+  const { isConnected } = useConnect();
 
   const [claimEventsLoading, setClaimEventsLoading] = useState<boolean>(false);
   const [claims, setClaims] = useState<{ address: string; amount: string }[]>([]);
@@ -46,7 +47,7 @@ const useClaims = () => {
       const claimWeeks: Record<number, ClaimWeek> = await getClaimWeeks();
 
       if (Object.keys(claimWeeks).length < 1) return;
-      if (loading || !signer || !signer.getAddress || !account?.address) return;
+      if (loading || !isConnected || !signer || !account?.address) return;
 
       const redeem = Merkle_redeem__factory.connect(MERKLE_REDEEM_CONTRACT, signer);
       const unclaimedWeeks = await getUnclaimedWeeksForAddress(redeem, claimWeeks, account.address);
@@ -70,7 +71,7 @@ const useClaims = () => {
     };
 
     getClaimsMetadata();
-  }, [account, loading, signer]);
+  }, [account, isConnected, loading, signer]);
 
   // fetches (from the blockchain) historical claims
   const fetchHistoricalClaims = useCallback(

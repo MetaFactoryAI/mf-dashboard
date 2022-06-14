@@ -16,7 +16,7 @@ import ListItems from "./ListItems";
 
 const Wearables: NextPage = () => {
   const { getNftIds, nfts, fetchNfts, loading } = useNftMetadata();
-  const [isClaimable, _setIsClaimable] = useState<boolean>(true);
+  const [isClaimable, setIsClaimable] = useState<boolean>(true);
   const [items, setItems] = useState<NftItem[]>([]);
   const { data: signer, isLoading } = useSigner();
   const { data: account } = useAccount();
@@ -41,7 +41,7 @@ const Wearables: NextPage = () => {
 
       if(isConnected && signer && account?.address && nftIds.length > 0 && nfts) {
         const sdk = getRinkebySdk(signer);
-        const addressess = Array(nftIds.length).fill('0x8F942ECED007bD3976927B7958B50Df126FEeCb5')
+        const addressess = Array(nftIds.length).fill(account?.address)
         const nftBalances = await sdk.nft_wearables.balanceOfBatch(addressess, nftIds);
         const parsedBalances = nftBalances.map((balance) => ethers.utils.formatUnits(balance, 0))
 
@@ -74,7 +74,7 @@ const Wearables: NextPage = () => {
 
   return (
     <VStack spacing="0px">
-      {isClaimable && <ClaimWearables />}
+      {isClaimable && nftClaims && <ClaimWearables nftClaims={nftClaims} />}
       {!isClaimable && (
         <HStack spacing="0px" alignSelf="start"  mb="15px" alignItems="baseline" >
           <Text fontFamily="heading" letterSpacing="-0.02em" lineHeight="35px" fontWeight="700" fontSize="29px" mx="15px" paddingBottom="0px">

@@ -98,7 +98,7 @@ const Swap: React.FC = () => {
       };
       swapTokens(account.address, signer, swapQuote, swapSuccessful, swapFailed);
     }
-  }, [isConnected, signer, account.address, swapQuote, toast, buyToken, sellToken]);
+  }, [isConnected, signer, account, swapQuote, toast, buyToken, sellToken]);
 
   if (loading || !account) return null;
 
@@ -149,7 +149,7 @@ const Swap: React.FC = () => {
             mb="20px"
             disabled={sellToken.balance === 0 && buyToken.balance === 0}
           >
-            <Flex spacing="0px" justifyContent="center">
+            <Flex justifyContent="center">
               <Text
                 color="##8B2CFF"
                 fontFamily="body_bold"
@@ -170,13 +170,7 @@ const Swap: React.FC = () => {
           confirmCallback={executeSwap}
         />
       </VStack>
-      <Flex
-        spacing="0px"
-        justifyContent="center"
-        pt="30px"
-        onClick={handleBalancerRedirect}
-        cursor="pointer"
-      >
+      <Flex justifyContent="center" pt="30px" onClick={handleBalancerRedirect} cursor="pointer">
         <Text
           color="black"
           fontFamily="body"

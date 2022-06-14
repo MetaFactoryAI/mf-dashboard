@@ -1,50 +1,74 @@
 /* eslint-disable camelcase */
 import { useState, useCallback } from "react";
 
-export type NftItem = { nft_token_id: number };
+export type NftItem = {
+  nft_token_id: number;
+  id: number;
+  nft_metadata: {
+    name: string;
+    properties: {
+      brand: string;
+      images: string[];
+    };
+  };
+};
+
+export type NftData = {
+  name: string;
+  properties: {
+    brand: string;
+    images: string[];
+  };
+};
 
 const useNftMetadata = () => {
-  const [nftIds, setnftIds] = useState<number[]>([]);
-  const [loadingIds, setLoadingIds] = useState(true);
-  const [nftData, setNftData] = useState(null);
-  const [loadingNftData, setLoadingNftData] = useState(true);
+  const [nfts, setNfts] = useState<{ [key: string]: NftItem }>();
+  const [loading, setLoading] = useState(true);
+  const [nftData, setNftData] = useState<NftData>();
 
   const fetchNfts = () => {
-    setLoadingIds(true);
+    setLoading(true);
 
     fetch("api/nfts")
       .then((res) => res.json())
       .then((data) => {
-        const parsedIds = parseIds(data);
-        setnftIds(parsedIds);
+        const normalisedData = data.reduce((result: Record<string, NftItem>, nft: NftItem) => {
+          const key = nft.nft_token_id;
+          const newResult = result;
+          newResult[key] = nft;
+
+          return newResult;
+        }, {});
+        setNfts(normalisedData);
       })
-      .finally(() => setLoadingIds(false));
+      .finally(() => setLoading(false));
   };
 
-  const fetchNft = (id: number) => {
-    setLoadingNftData(true);
+  const fetchNft = (id: string | string[]) => {
+    setLoading(true);
 
     fetch(`/api/nfts/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setNftData(data);
       })
-      .finally(() => setLoadingNftData(false));
+      .finally(() => setLoading(false));
+  };
+
+  const parseIds = () => {
+    if (!nfts) return [];
+
+    return Object.keys(nfts).map((key: string) => nfts[key].nft_token_id);
   };
 
   return {
-    nftIds,
+    nfts,
     nftData,
     fetchNft: useCallback(fetchNft, []),
     fetchNfts: useCallback(fetchNfts, []),
-    loading: loadingIds && loadingNftData,
+    getNftIds: useCallback(parseIds, [nfts]),
+    loading,
   };
-};
-
-const parseIds = (data: NftItem[]) => {
-  if (!data) return [];
-
-  return data.map((nft) => nft.nft_token_id);
 };
 
 export default useNftMetadata;

@@ -1,14 +1,76 @@
 /* eslint-disable prettier/prettier */
-import { useState } from "react";
+import Cookies from "js-cookie";
+import { useState, useEffect } from "react";
 import { VStack, HStack, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import ListItems from "./ListItems";
+import { useSigner, useAccount, useConnect } from 'wagmi';
+import { getRinkebySdk } from '@dethcrypto/eth-sdk-client';
+import { ethers } from "ethers";
+import { Loading } from "@/components/atoms";
+import useNftMetadata, { NftItem } from "@/hooks/useNftMetadata";
+import { AUTH_TOKEN_KEY } from "@/utils/constants";
+import useMetafactoryData from "@/hooks/useMetafactoryData";
 import ClaimWearables from "./ClaimWearables";
+import ListItems from "./ListItems";
 
 
 const Wearables: NextPage = () => {
-  const items = ["1", "2", "3", "4", "5", "6", "7", "8", "11", "12", "13", "14"]
+  const { getNftIds, nfts, fetchNfts, loading } = useNftMetadata();
   const [isClaimable, _setIsClaimable] = useState<boolean>(true);
+  const [items, setItems] = useState<NftItem[]>([]);
+  const { data: signer, isLoading } = useSigner();
+  const { data: account } = useAccount();
+  const { isConnected } = useConnect();
+  const {
+    loadingNftClaims,
+    nftClaims,
+    fetchNftClaims,
+  } = useMetafactoryData();
+
+  const authBearer = Cookies.get(AUTH_TOKEN_KEY);
+
+  useEffect(() => {
+    if (authBearer) {
+      fetchNftClaims(authBearer);
+    }
+  }, [authBearer, fetchNftClaims]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const nftIds = getNftIds();
+
+      if(isConnected && signer && account?.address && nftIds.length > 0 && nfts) {
+        const sdk = getRinkebySdk(signer);
+        const addressess = Array(nftIds.length).fill('0x8F942ECED007bD3976927B7958B50Df126FEeCb5')
+        const nftBalances = await sdk.nft_wearables.balanceOfBatch(addressess, nftIds);
+        const parsedBalances = nftBalances.map((balance) => ethers.utils.formatUnits(balance, 0))
+
+        // reduce to nft items only with non-zero balance
+        const nonZeroItems = parsedBalances.reduce(
+          (sum: NftItem[], currentValue, currentIndex) => {
+            if(currentValue === '0') return sum;
+
+            const nftId = nftIds[currentIndex];
+            const currentItem = nfts[nftId];
+            sum.push(currentItem);
+
+            return sum;
+          },
+          []
+        );
+
+        setItems(nonZeroItems)
+      };
+    }
+
+    fetch();
+  }, [signer, account, isLoading, isConnected, getNftIds, nfts]);
+
+  useEffect(() => {
+    fetchNfts();
+  }, [fetchNfts]);
+
+  if (loading || isLoading || loadingNftClaims) return <Loading />;
 
   return (
     <VStack spacing="0px">

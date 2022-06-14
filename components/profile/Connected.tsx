@@ -1,5 +1,6 @@
 // eslint-disable-next-line camelcase
 import { Box, Grid, GridItem, Text, Flex, Stack, Center } from "@chakra-ui/react";
+import { AUTH_TOKEN_KEY } from "@/utils/constants";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
@@ -15,8 +16,7 @@ import { Base64 } from "js-base64";
 import Tab from "./Tab";
 
 const Connected: NextPage = () => {
-  const AUTH_TOKEN_KEY = "authToken";
-  const { designerRewards, buyerRewards, loading, fetchDesignerRewards, fetchBuyerRewards } =
+  const { designerRewards, buyerRewards, loadingRewards, fetchDesignerRewards, fetchBuyerRewards } =
     useMetafactoryData();
 
   const [authBearer, setAuthBearer] = React.useState(Cookies.get(AUTH_TOKEN_KEY));
@@ -212,7 +212,7 @@ const Connected: NextPage = () => {
   }, [data, signInMessage]);
 
   useEffect(() => {
-    if (authBearer && authBearer?.length > 0 && account?.address) {
+    if (authBearer && account?.address) {
       fetchDesignerRewards(account.address, authBearer);
       fetchBuyerRewards(account.address, authBearer);
     }
@@ -221,10 +221,10 @@ const Connected: NextPage = () => {
   // sign auth bearer logic
 
   useEffect(() => {
-    if (!loading && isZeroBuyerRewards) {
+    if (!loadingRewards && isZeroBuyerRewards) {
       handleTabClick("designer");
     }
-  }, [handleTabClick, isZeroBuyerRewards, loading]);
+  }, [handleTabClick, isZeroBuyerRewards, loadingRewards]);
 
   useEffect(() => {
     // @ts-ignore
@@ -232,7 +232,7 @@ const Connected: NextPage = () => {
     setTableRows(TABLE_TABS.buyer.tabRows);
   }, [TABLE_TABS]);
 
-  if (loading || loadingWeb3) return <Loading />;
+  if (loadingRewards || loadingWeb3) return <Loading />;
 
   return (
     <Box>

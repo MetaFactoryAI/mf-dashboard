@@ -109,7 +109,8 @@ const useMetafactoryData = () => {
     fetchDesignerRewards: useCallback(fetchDesignerRewards, []),
     fetchBuyerRewards: useCallback(fetchBuyerRewards, []),
     fetchNftClaims: useCallback(fetchNftClaims, []),
-    loading: loadingBuyer || loadingDesigner || loadingNftClaims,
+    loadingRewards: loadingBuyer || loadingDesigner,
+    loadingNftClaims,
     errors,
   };
 };

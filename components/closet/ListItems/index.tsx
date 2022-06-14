@@ -1,28 +1,28 @@
 /* eslint-disable prettier/prettier */
 import React, { useCallback } from "react";
 import { Grid, GridItem } from "@chakra-ui/react";
+import { NftItem } from "@/hooks/useNftMetadata";
 import ListItem from "./ListItem";
-import { Item } from './types';
 
 const ListItems: React.FC<{
-  items: Item[];
+  items: NftItem[];
 }> = ({ items }) => {
-  const calculateMobileBorder = useCallback((index: number) => index % 2 ? "1px" : "0px", []);
+  const calculateMobileBorder = useCallback((index: number) => index % 2 ? "0px" : "1px", []);
 
   return (
     <Grid templateColumns="repeat(12, 1fr)" width="100%" borderTop="1px">
       { items.map((item, index) =>
       <GridItem
-        key={item}
+        key={item.nft_token_id}
         colSpan={{ base: 6, sm: 6, md: 2, lg: 2 }}
-        borderLeft={{ base: calculateMobileBorder(index), sm: calculateMobileBorder(index), md: "1px", lg: "1px" }}
+        borderRight={{ base: calculateMobileBorder(index), sm: calculateMobileBorder(index), md: "1px", lg: "1px" }}
         borderBottom="1px"
       >
         <ListItem
-          title1="COLLEGIATE ARC HOODIE"
-          title2="METAFACTORY"
-          assetUrl={`/test_assets/list_items/${item}.png`}
-          redirectPath={`/closet_wearable_detail/${item}`}
+          title1={item.nft_metadata.name}
+          title2={item.nft_metadata.properties.brand}
+          assetUrl={`/test_assets/list_items/${1}.png`}
+          redirectPath={`/closet_wearable_detail/${item.nft_token_id}`}
         />
       </GridItem>
       )}

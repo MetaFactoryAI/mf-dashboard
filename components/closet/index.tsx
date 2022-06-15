@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
 import { VStack, HStack, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import { useSigner, useAccount, useConnect } from 'wagmi';
+import { useSigner, useAccount, useConnect, useProvider } from 'wagmi';
 import { getRinkebySdk } from '@dethcrypto/eth-sdk-client';
 import { ethers } from "ethers";
 import { Loading } from "@/components/atoms";
@@ -16,31 +16,43 @@ import ListItems from "./ListItems";
 
 const Wearables: NextPage = () => {
   const { getNftIds, nfts, fetchNfts, loading } = useNftMetadata();
-  const [isClaimable, setIsClaimable] = useState<boolean>(true);
   const [items, setItems] = useState<NftItem[]>([]);
-  const { data: signer, isLoading } = useSigner();
+  const [isClaimed, setIsClaimed] = useState<boolean>(false);
   const { data: account } = useAccount();
-  const { isConnected } = useConnect();
+  const authBearer = Cookies.get(AUTH_TOKEN_KEY);
+  const provider = useProvider();
+
   const {
     loadingNftClaims,
     nftClaims,
     fetchNftClaims,
   } = useMetafactoryData();
 
-  const authBearer = Cookies.get(AUTH_TOKEN_KEY);
+  useEffect(() => {
+    const checkClaimable = async (currentProvider, address: string, rootHash: string) => {
+      const sdk = getRinkebySdk(currentProvider);
+      const claimedStatuses = await sdk.nft_giveaway.getClaimedStatus(address, [rootHash]);
+
+      setIsClaimed(claimedStatuses[0]);
+    };
+
+    if(provider && account?.address && nftClaims) {
+      checkClaimable(provider, account?.address, nftClaims.merkle_root_hash);
+    }
+  }, [account?.address, nftClaims, provider]);
 
   useEffect(() => {
-    if (authBearer) {
+    if (authBearer && account?.address) {
       fetchNftClaims(authBearer);
     }
-  }, [authBearer, fetchNftClaims]);
+  }, [account?.address, authBearer, fetchNftClaims]);
 
   useEffect(() => {
     const fetch = async () => {
       const nftIds = getNftIds();
 
-      if(isConnected && signer && account?.address && nftIds.length > 0 && nfts) {
-        const sdk = getRinkebySdk(signer);
+      if(provider && account?.address && nftIds.length > 0 && nfts) {
+        const sdk = getRinkebySdk(provider);
         const addressess = Array(nftIds.length).fill(account?.address)
         const nftBalances = await sdk.nft_wearables.balanceOfBatch(addressess, nftIds);
         const parsedBalances = nftBalances.map((balance) => ethers.utils.formatUnits(balance, 0))
@@ -64,18 +76,17 @@ const Wearables: NextPage = () => {
     }
 
     fetch();
-  }, [signer, account, isLoading, isConnected, getNftIds, nfts]);
+  }, [provider, account, getNftIds, nfts]);
 
   useEffect(() => {
     fetchNfts();
   }, [fetchNfts]);
 
-  if (loading || isLoading || loadingNftClaims) return <Loading />;
+  if (loading || loadingNftClaims) return <Loading />;
 
   return (
     <VStack spacing="0px">
-      {isClaimable && nftClaims && <ClaimWearables nftClaims={nftClaims} />}
-      {!isClaimable && (
+      {nftClaims && !isClaimed && <ClaimWearables nftClaims={nftClaims} />}
         <HStack spacing="0px" alignSelf="start"  mb="15px" alignItems="baseline" >
           <Text fontFamily="heading" letterSpacing="-0.02em" lineHeight="35px" fontWeight="700" fontSize="29px" mx="15px" paddingBottom="0px">
             Closet
@@ -84,7 +95,6 @@ const Wearables: NextPage = () => {
             {items.length} ITEMS
           </Text>
         </HStack>
-      )}
       <ListItems items={items}/>
     </VStack>
     );

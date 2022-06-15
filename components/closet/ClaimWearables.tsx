@@ -25,16 +25,16 @@ const ClaimWearables: React.FC<{nftClaims: NftClaim}> = ({ nftClaims }) => {
     if(signer) {
       const sdk = getRinkebySdk(signer);
       const claim = {
-        to: nftClaims.to,
-        erc1155: nftClaims.erc1155,
-        erc721: nftClaims.erc721,
-        erc20: nftClaims.erc20,
-        salt: nftClaims.salt
+        to: nftClaims.claim_json.to,
+        erc1155: nftClaims.claim_json.erc1155,
+        erc721: nftClaims.claim_json.erc721,
+        erc20: nftClaims.claim_json.erc20,
+        salt: nftClaims.claim_json.salt
       }
       sdk.nft_giveaway.claimMultipleTokens(
-        '0xf44766e498151e51130c5b6eb2dd3736efaccea0517e02befea776dab8dac14d',
+        nftClaims.merkle_root_hash,
         claim,
-        nftClaims.proof
+        nftClaims.claim_json.proof
       ).then(() => {
         router.push('/closet_claim_success');
       })
@@ -47,8 +47,6 @@ const ClaimWearables: React.FC<{nftClaims: NftClaim}> = ({ nftClaims }) => {
       );
     }
   };
-
-  if (!isConnected || isLoading || !signer || !account?.address) return <Loading />;
 
   return (
     <VStack spacing="0px">
@@ -64,7 +62,7 @@ const ClaimWearables: React.FC<{nftClaims: NftClaim}> = ({ nftClaims }) => {
           Welcome {userName}
         </Text>
         <Text fontFamily="caption" fontSize="12px" fontWeight="400" pb="10px">
-          You have {nftClaims.erc1155[0].ids.length} items available to claim
+          You have {nftClaims.claim_json.claim_count} items available to claim
         </Text>
         <Button
           handleClickCallback={handleClick}

@@ -8,19 +8,23 @@ import { METAFACTORY_GQL_URL } from "@/utils/constants";
 export type DesignerReward = { robot_reward: number; product: { id: string; title: string } };
 export type BuyerReward = { buyer_reward: number; date: string; order_number: string };
 export type NftClaim = {
-  to: string;
-  erc1155: {
-    contractAddress: string;
-    ids: string[];
-    values: number[];
-  }[];
-  erc721: never[];
-  erc20: {
-    contractAddresses: never[];
-    amounts: never[];
+  claim_json: {
+    to: string;
+    erc1155: {
+      contractAddress: string;
+      ids: string[];
+      values: number[];
+    }[];
+    erc721: never[];
+    erc20: {
+      contractAddresses: never[];
+      amounts: never[];
+    };
+    salt: string;
+    proof: string[];
+    claim_count: number;
   };
-  salt: string;
-  proof: string[];
+  merkle_root_hash: string;
 };
 
 type DesignerRewards = { total: number; items: DesignerReward[] };
@@ -100,10 +104,10 @@ const useMetafactoryData = () => {
 
   const fetchNftClaims = (accountAuthToken: string) => {
     setLoadingNftClaims(true);
-
+    const root = "robot_merkle_claims";
     const NFT_CLAIMS_QUERY = `
       query GetClaimForAddress {
-        robot_merkle_claims {
+        ${root} {
           claim_json
           merkle_root_hash
         }
@@ -112,28 +116,11 @@ const useMetafactoryData = () => {
     return (
       fetchGraph(SUBGRAPH_ENDPOINTS.metafactory, NFT_CLAIMS_QUERY, null, accountAuthToken)
         // @ts-ignore
-        .then(({ data }) => {
-          // TODO: replace with actual data
-          const tempData = {
-            to: "0x4ee05f9DEDF5DC0d71490f39EBe6a85E202E1cB3",
-            erc1155: [
-              {
-                contractAddress: "0xf9a28b227bDaC129eB85Ca3F27F55d1dD9ecFD94",
-                ids: ["1", "16", "3", "18"],
-                values: [1, 1, 1, 1],
-              },
-            ],
-            erc721: [],
-            erc20: { contractAddresses: [], amounts: [] },
-            salt: "0xc3e34b08d1eb479f8eaa5cd048f0501540eec7921fd33c7eaad0f6862fbefb73",
-            proof: [
-              "0xdd38d42be5fe5231c4212355d869f4988fc7113fcfef008b7c38eeae93cf689b",
-              "0xb370615c3a8c621d814d5c8f406e0276c06237a80e4109dbf72248fac745172e",
-              "0x043d7a38247aba33f8be0615bcdbd3077c8b43cccc82dd368a6eac807e9f13cd",
-              "0x4c08378e545357ecec83ab7273882d72713d53fadb557a5d28c77307f8c4482f",
-            ],
-          };
-          setNftClaims(tempData);
+        .then(({ data: { [root]: nftClaimArray } }) => {
+          const nftClaim = { ...nftClaimArray[0] };
+          const claim_count = nftClaim.claim_json.erc1155[0].ids.length;
+          nftClaim.claim_json = { ...nftClaim.claim_json, claim_count };
+          setNftClaims(nftClaim);
         })
         .catch((error) => {
           setErrors({ error });

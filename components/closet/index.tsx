@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
 import { VStack, HStack, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import { useSigner, useAccount, useConnect, useProvider } from 'wagmi';
+import { useAccount, useProvider } from 'wagmi';
 import { getRinkebySdk } from '@dethcrypto/eth-sdk-client';
 import { ethers } from "ethers";
 import { Loading } from "@/components/atoms";
@@ -29,7 +29,7 @@ const Wearables: NextPage = () => {
   } = useMetafactoryData();
 
   useEffect(() => {
-    const checkClaimable = async (currentProvider, address: string, rootHash: string) => {
+    const checkClaimable = async (currentProvider: ethers.providers.Provider, address: string, rootHash: string) => {
       const sdk = getRinkebySdk(currentProvider);
       const claimedStatuses = await sdk.nft_giveaway.getClaimedStatus(address, [rootHash]);
 

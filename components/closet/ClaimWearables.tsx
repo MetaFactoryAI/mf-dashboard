@@ -5,9 +5,9 @@ import { useRouter } from "next/router";
 import Button from "@/components/atoms/Button"
 import useUserName from "@/hooks/useUserName";
 import { NftClaim } from "@/hooks/useMetafactoryData";
-import { Alert, Loading } from "@/components/atoms";
+import { Alert } from "@/components/atoms";
 import { getRinkebySdk } from '@dethcrypto/eth-sdk-client';
-import { useSigner, useAccount, useConnect } from 'wagmi';
+import { useSigner } from 'wagmi';
 
 
 const ClaimWearables: React.FC<{nftClaims: NftClaim}> = ({ nftClaims }) => {
@@ -15,9 +15,7 @@ const ClaimWearables: React.FC<{nftClaims: NftClaim}> = ({ nftClaims }) => {
   const toast = useToast();
   const [isAlertOpen, setIsAlertOpen] = React.useState<boolean>(false);
   const userName = useUserName();
-  const { data: signer, isLoading } = useSigner();
-  const { data: account } = useAccount();
-  const { isConnected } = useConnect();
+  const { data: signer } = useSigner();
   const handleClick = () => {
     setIsAlertOpen(true);
   };

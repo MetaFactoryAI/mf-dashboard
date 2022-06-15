@@ -4,9 +4,16 @@ import Button from "@/components/atoms/Button";
 import type { NextPage } from "next";
 import Image from "next/image";
 import { useConnect } from "wagmi";
+import { useEffect } from "react";
+import { AUTH_TOKEN_KEY } from "@/utils/constants";
+import Cookies from "js-cookie";
 
 const Connect: NextPage = () => {
   const { connect, connectors } = useConnect();
+
+  useEffect(() => {
+    Cookies.remove(AUTH_TOKEN_KEY);
+  }, []);
 
   return (
     <VStack p="4">

@@ -17,7 +17,7 @@ const MobileItem: React.FC<{
 
   return (
     <Box
-      backgroundColor={selectOption === currentSelection ? selectColor : "white"}
+      backgroundColor={selectOption === currentSelection ? selectColor : "background"}
       borderRight="2px"
       borderTop="2px"
     >

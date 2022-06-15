@@ -5,7 +5,7 @@ import React, { useState, useCallback } from "react";
 import { Text, VStack, Button, Flex, Box, Center, useToast } from "@chakra-ui/react";
 import Image from "next/image";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
-import { useAccount, useSigner } from "wagmi";
+import { useAccount, useSigner, useConnect } from "wagmi";
 import { Alert } from "@/components/atoms";
 import { getQuote, swapTokens, Quote0xApi } from "@/utils/swap";
 import { BALANCER_POOL_ID } from "@/utils/constants";
@@ -30,6 +30,7 @@ const Swap: React.FC = () => {
   const [isAlertOpen, setIsAlertOpen] = React.useState<boolean>(false);
   const { data: account, isLoading: loading } = useAccount();
   const { data: signer } = useSigner();
+  const { isConnected } = useConnect();
   const [sellToken, setSellToken] = useState<SwapToken>({
     ...NON_METAFACTORY_TOKEN_SYMBOLS[0],
   });
@@ -77,7 +78,7 @@ const Swap: React.FC = () => {
   }, [account, buyToken, sellToken, toast]);
 
   const executeSwap = useCallback(async () => {
-    if (signer && account?.address && swapQuote) {
+    if (isConnected && signer && account?.address && swapQuote) {
       const swapSuccessful = () => {
         toast({
           title: "SWAP processed and send to the blockchain",
@@ -97,7 +98,7 @@ const Swap: React.FC = () => {
       };
       swapTokens(account.address, signer, swapQuote, swapSuccessful, swapFailed);
     }
-  }, [account, buyToken, signer, sellToken, swapQuote, toast]);
+  }, [isConnected, signer, account, swapQuote, toast, buyToken, sellToken]);
 
   if (loading || !account) return null;
 
@@ -148,7 +149,7 @@ const Swap: React.FC = () => {
             mb="20px"
             disabled={sellToken.balance === 0 && buyToken.balance === 0}
           >
-            <Flex spacing="0px" justifyContent="center">
+            <Flex justifyContent="center">
               <Text
                 color="##8B2CFF"
                 fontFamily="body_bold"
@@ -169,13 +170,7 @@ const Swap: React.FC = () => {
           confirmCallback={executeSwap}
         />
       </VStack>
-      <Flex
-        spacing="0px"
-        justifyContent="center"
-        pt="30px"
-        onClick={handleBalancerRedirect}
-        cursor="pointer"
-      >
+      <Flex justifyContent="center" pt="30px" onClick={handleBalancerRedirect} cursor="pointer">
         <Text
           color="black"
           fontFamily="body"

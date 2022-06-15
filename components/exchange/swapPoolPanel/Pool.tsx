@@ -63,7 +63,7 @@ const Pool: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBalances }) 
           mt="16px"
           mb="20px"
         >
-          <Flex spacing="0px" justifyContent="center">
+          <Flex justifyContent="center">
             <Text color="##8B2CFF" fontFamily="body_bold" fontWeight="800" fontSize="24px" m="5px">
               Invest
             </Text>

@@ -11,3 +11,4 @@ export const BALANCER_POOL_ADDR = "0xccf5575570fac94cec733a58ff91bb3d073085c7";
 export const BALANCER_GQL_URL = "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2";
 export const METAFACTORY_GQL_URL = "https://metafactory.hasura.app/v1/graphql";
 export const CHAIN_ID = 1;
+export const AUTH_TOKEN_KEY = "authToken";

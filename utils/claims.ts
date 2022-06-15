@@ -1,5 +1,6 @@
+/* eslint-disable camelcase */
 import { ethers } from "ethers";
-import { MerkleRedeem } from "types/ethers-contracts";
+import { Merkle_redeem } from "types/ethers-contracts";
 import { IPFS_CLAIMS_SNAPSHOT_URL } from "@/utils/constants";
 import { get } from "@/utils/ipfsClient";
 import { loadTree } from "@/utils/merkle/merkleTree";
@@ -24,7 +25,7 @@ export const getClaimWeeks = async () => {
 };
 
 export const getUnclaimedWeeksForAddress = async (
-  redeemContract: MerkleRedeem,
+  redeemContract: Merkle_redeem,
   claimWeeks: Record<number, ClaimWeek>,
   address: string,
 ) => {

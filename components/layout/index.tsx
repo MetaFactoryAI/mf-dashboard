@@ -29,7 +29,7 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
 
     return children;
-  }, [account, activeChain?.id, children, isConnecting, isLoading, isNetworkLoading]);
+  }, [account, activeChain?.id, children, isConnected, isConnecting, isLoading, isNetworkLoading]);
 
   return (
     <Flex flexDirection="column" minHeight="100vh" height="100%" background="background">

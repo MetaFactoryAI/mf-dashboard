@@ -18,7 +18,7 @@ import {
   formatMonthlyClaimsEventData,
 } from "@/utils/presentationHelper";
 import type { ChartData } from "@/components/atoms/YearlyBarChart";
-import { useAccount, useSigner, useConnect } from "wagmi";
+import { useAccount, useSigner, useProvider } from "wagmi";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const EthDater = require("ethereum-block-by-date");
@@ -29,16 +29,16 @@ const useClaims = () => {
   const [claimedTotal, setClaimedTotal] = useState("0");
   const { data: account, isLoading: loading } = useAccount();
   const { data: signer } = useSigner();
-  const { isConnected } = useConnect();
+  const provider = useProvider();
 
   const [claimEventsLoading, setClaimEventsLoading] = useState<boolean>(false);
   const [claims, setClaims] = useState<{ address: string; amount: string }[]>([]);
   const [monthlyClaims, setMonthlyClaims] = useState<ChartData[]>([]);
 
   const getDater = useCallback(() => {
-    const dater = new EthDater(signer);
+    const dater = new EthDater(provider);
     return dater;
-  }, [signer]);
+  }, [provider]);
 
   // fetches claim info (from IPFS) and calculates total claimed/unclaimed
   // ROBOT, as well calculates all necessary merkle proofs to claim it from the contrat
@@ -47,9 +47,9 @@ const useClaims = () => {
       const claimWeeks: Record<number, ClaimWeek> = await getClaimWeeks();
 
       if (Object.keys(claimWeeks).length < 1) return;
-      if (loading || !isConnected || !signer || !account?.address) return;
+      if (loading || !provider || !account?.address) return;
 
-      const redeem = Merkle_redeem__factory.connect(MERKLE_REDEEM_CONTRACT, signer);
+      const redeem = Merkle_redeem__factory.connect(MERKLE_REDEEM_CONTRACT, provider);
       const unclaimedWeeks = await getUnclaimedWeeksForAddress(redeem, claimWeeks, account.address);
       const unclaimedWeeksValues = getUnclaimedWeeksValues(
         claimWeeks,
@@ -71,14 +71,14 @@ const useClaims = () => {
     };
 
     getClaimsMetadata();
-  }, [account, isConnected, loading, signer]);
+  }, [account, loading, provider, signer]);
 
   // fetches (from the blockchain) historical claims
   const fetchHistoricalClaims = useCallback(
     (claimsYear) => {
       const fetchClaimHistory = async () => {
-        if (signer && claimsYear) {
-          const redeem = Merkle_redeem__factory.connect(MERKLE_REDEEM_CONTRACT, signer);
+        if (provider && claimsYear) {
+          const redeem = Merkle_redeem__factory.connect(MERKLE_REDEEM_CONTRACT, provider);
           // @ts-ignore
           const { block: startBlock } = await getDater().getDate(
             `${claimsYear}-01-01T00:00:00Z`,
@@ -104,7 +104,7 @@ const useClaims = () => {
       setClaimEventsLoading(true);
       fetchClaimHistory();
     },
-    [getDater, signer],
+    [getDater, provider],
   );
 
   const handleClaim = useCallback(() => {

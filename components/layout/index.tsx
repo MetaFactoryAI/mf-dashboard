@@ -11,12 +11,12 @@ import { Loading } from "@/components/atoms";
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { activeChain, isLoading: isNetworkLoading } = useNetwork();
   const { data: account, isLoading } = useAccount();
-  const { isConnecting } = useConnect();
+  const { isConnecting, isConnected } = useConnect();
 
   const renderResult = useCallback(() => {
     const isValidChain = activeChain?.id === CHAIN_ID;
 
-    if (isLoading || isNetworkLoading || isConnecting) {
+    if (isLoading || isNetworkLoading || isConnecting || !isConnected) {
       return <Loading />;
     }
 

@@ -49,7 +49,7 @@ const Index: NextPage = () => {
           <Suspense fallback={null}>
             {/* @ts-ignore */}
             <Stage controls={ref} preset="rembrandt" intensity={1}  environment="city">
-              <Model />
+              { nftData?.glbFile && <Model glbFile={nftData?.glbFile}/> }
             </Stage>
           </Suspense>
           {/* @ts-ignore */}

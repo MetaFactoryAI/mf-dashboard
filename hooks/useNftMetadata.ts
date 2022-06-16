@@ -15,6 +15,8 @@ export type NftItem = {
 
 export type NftData = {
   name: string;
+  glbFile: string | undefined;
+  files: { uri: string, mimeType: string }[];
   properties: {
     brand: string;
     images: string[];
@@ -49,8 +51,13 @@ const useNftMetadata = () => {
 
     fetch(`/api/nfts/${id}`)
       .then((res) => res.json())
-      .then((data) => {
-        setNftData(data);
+      .then((data: NftData) => {
+
+        const currentData = { ...data };
+        const glbFile = data.files.find((file) => file.mimeType === "model/gltf-binary");
+        currentData.glbFile = glbFile?.uri;
+
+        setNftData(currentData);
       })
       .finally(() => setLoading(false));
   };

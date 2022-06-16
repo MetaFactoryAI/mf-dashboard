@@ -16,7 +16,7 @@ export type NftItem = {
 export type NftData = {
   name: string;
   glbFile: string | undefined;
-  files: { uri: string, mimeType: string }[];
+  files: { uri: string; mimeType: string }[];
   properties: {
     brand: string;
     images: string[];

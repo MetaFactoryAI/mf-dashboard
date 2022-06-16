@@ -52,7 +52,6 @@ const useNftMetadata = () => {
     fetch(`/api/nfts/${id}`)
       .then((res) => res.json())
       .then((data: NftData) => {
-
         const currentData = { ...data };
         const glbFile = data.files.find((file) => file.mimeType === "model/gltf-binary");
         currentData.glbFile = glbFile?.uri;

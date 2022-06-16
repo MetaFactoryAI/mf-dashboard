@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 import { ethers } from "ethers";
 import { Merkle_redeem } from "types/ethers-contracts";
-import { IPFS_CLAIMS_SNAPSHOT_URL } from "@/utils/constants";
 import { get } from "@/utils/ipfsClient";
 import { loadTree } from "@/utils/merkle/merkleTree";
 
@@ -41,7 +40,7 @@ export const getUnclaimedWeeksForAddress = async (
 };
 
 export const getIpfsSnapshot = () => {
-  const url = `https://${IPFS_CLAIMS_SNAPSHOT_URL}`;
+  const url = `https://${process.env.NEXT_PUBLIC_IPFS_CLAIMS_SNAPSHOT_URL}`;
 
   return fetch(url).then((res) => res.json());
 };

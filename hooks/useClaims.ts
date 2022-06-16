@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 // eslint-disable-next-line camelcase
 import { Merkle_redeem__factory } from "types/ethers-contracts/factories";
 import type { ClaimStruct } from "types/ethers-contracts/MerkleRedeem";
-import { MERKLE_REDEEM_CONTRACT } from "@/utils/constants";
 import {
   getClaimWeeks,
   getUnclaimedWeeksForAddress,
@@ -49,7 +48,10 @@ const useClaims = () => {
       if (Object.keys(claimWeeks).length < 1) return;
       if (loading || !provider || !account?.address) return;
 
-      const redeem = Merkle_redeem__factory.connect(MERKLE_REDEEM_CONTRACT, provider);
+      const redeem = Merkle_redeem__factory.connect(
+        process.env.NEXT_PUBLIC_MERKLE_REDEEM_CONTRACT || "",
+        provider,
+      );
       const unclaimedWeeks = await getUnclaimedWeeksForAddress(redeem, claimWeeks, account.address);
       const unclaimedWeeksValues = getUnclaimedWeeksValues(
         claimWeeks,
@@ -78,7 +80,10 @@ const useClaims = () => {
     (claimsYear) => {
       const fetchClaimHistory = async () => {
         if (provider && claimsYear) {
-          const redeem = Merkle_redeem__factory.connect(MERKLE_REDEEM_CONTRACT, provider);
+          const redeem = Merkle_redeem__factory.connect(
+            process.env.NEXT_PUBLIC_MERKLE_REDEEM_CONTRACT || "",
+            provider,
+          );
           // @ts-ignore
           const { block: startBlock } = await getDater().getDate(
             `${claimsYear}-01-01T00:00:00Z`,
@@ -112,7 +117,10 @@ const useClaims = () => {
       if (claimWeeksProofs.length < 1) return;
       if (loading || !signer || !account?.address) return;
 
-      const redeem = Merkle_redeem__factory.connect(MERKLE_REDEEM_CONTRACT, signer);
+      const redeem = Merkle_redeem__factory.connect(
+        process.env.NEXT_PUBLIC_MERKLE_REDEEM_CONTRACT || "",
+        signer,
+      );
       // const result = await redeem.verifyClaim(
       //   account,
       //   claimWeeksProofs[0].week,

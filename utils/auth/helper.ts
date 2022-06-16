@@ -1,5 +1,4 @@
 import { nanoid } from "nanoid";
-import { APP_NAME } from "@/utils/constants";
 
 type Claim = {
   iat: number;
@@ -18,7 +17,7 @@ const generateSignInMessage = (address: string): string => {
     iat,
     exp: iat + tokenDuration,
     iss: address,
-    aud: APP_NAME,
+    aud: process.env.NEXT_PUBLIC_APP_NAME || "",
     tid: nanoid(),
   };
 

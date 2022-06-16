@@ -1,6 +1,5 @@
 // eslint-disable-next-line camelcase
 import { Box, Grid, GridItem, Text, Flex, Stack, Center } from "@chakra-ui/react";
-import { AUTH_TOKEN_KEY } from "@/utils/constants";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
@@ -19,7 +18,9 @@ const Connected: NextPage = () => {
   const { designerRewards, buyerRewards, loadingRewards, fetchDesignerRewards, fetchBuyerRewards } =
     useMetafactoryData();
 
-  const [authBearer, setAuthBearer] = React.useState(Cookies.get(AUTH_TOKEN_KEY));
+  const [authBearer, setAuthBearer] = React.useState(
+    Cookies.get(process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || ""),
+  );
   const [signInMessage, setSignInMessage] = React.useState("");
   const { data, isIdle, signMessage } = useSignMessage();
   const { isConnected } = useConnect();
@@ -207,7 +208,7 @@ const Connected: NextPage = () => {
     if (data && data?.length > 0) {
       const token = Base64.encode(JSON.stringify([data, signInMessage]));
       setAuthBearer(token);
-      Cookies.set(AUTH_TOKEN_KEY, token);
+      Cookies.set(process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || "", token);
     }
   }, [data, signInMessage]);
 

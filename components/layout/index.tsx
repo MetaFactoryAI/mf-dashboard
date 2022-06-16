@@ -2,7 +2,6 @@ import React, { ReactNode, useCallback } from "react";
 import { Flex } from "@chakra-ui/react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import { LOGO_HEIGHT, CHAIN_ID } from "@/utils/constants";
 import { useNetwork, useAccount, useConnect } from "wagmi";
 import Connect from "@/components/profile/Connect";
 import InvalidChain from "@/components/profile/InvalidChain";
@@ -14,7 +13,7 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { isConnecting, isConnected } = useConnect();
 
   const renderResult = useCallback(() => {
-    const isValidChain = activeChain?.id === CHAIN_ID;
+    const isValidChain = activeChain?.id === Number(process.env.NEXT_PUBLIC_CHAIN_ID);
 
     if (isLoading || isNetworkLoading || isConnecting || !isConnected) {
       return <Loading />;
@@ -37,7 +36,12 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
       <Flex
         flex="1"
         flexDirection="column"
-        mx={{ base: "0px", sm: "0px", md: `${LOGO_HEIGHT}px`, lg: `${LOGO_HEIGHT}px` }}
+        mx={{
+          base: "0px",
+          sm: "0px",
+          md: `${process.env.NEXT_PUBLIC_LOGO_HEIGHT}px`,
+          lg: `${process.env.NEXT_PUBLIC_LOGO_HEIGHT}px`,
+        }}
         border={{ base: "0px", sm: "0px", md: "2px", lg: "2px" }}
         background="background"
       >

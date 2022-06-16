@@ -3,7 +3,6 @@ import dayjs from "dayjs";
 import { useState, useCallback } from "react";
 import fetchGraph from "@/utils/graph/fetchGraph";
 import { formatNumber } from "@/utils/presentationHelper";
-import { METAFACTORY_GQL_URL } from "@/utils/constants";
 
 export type DesignerReward = { robot_reward: number; product: { id: string; title: string } };
 export type BuyerReward = { buyer_reward: number; date: string; order_number: string };
@@ -31,7 +30,7 @@ type DesignerRewards = { total: number; items: DesignerReward[] };
 type BuyerRewards = { total: number; items: BuyerReward[] };
 
 const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
-  metafactory: METAFACTORY_GQL_URL,
+  metafactory: process.env.NEXT_PUBLIC_METAFACTORY_GQL_URL || "",
 };
 
 const useMetafactoryData = () => {

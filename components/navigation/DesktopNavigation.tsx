@@ -4,7 +4,6 @@ import React from "react";
 import { Flex, Spacer, Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import useUserName from "@/hooks/useUserName";
-import { LOGO_HEIGHT } from "@/utils/constants";
 import { isSelected } from "@/utils/navigation";
 
 // menu items naming need to fit with beginning of route names
@@ -19,7 +18,7 @@ const DesktopNavigation: React.FC = () => {
       align="center"
       justify="space-between"
       wrap="wrap"
-      height={`${LOGO_HEIGHT}px`}
+      height={`${process.env.NEXT_PUBLIC_LOGO_HEIGHT}px`}
       fontSize="18px"
     >
       <Box ml={`${LOGO_MARGIN}px`} mt={`${LOGO_MARGIN}px`}>
@@ -27,8 +26,8 @@ const DesktopNavigation: React.FC = () => {
           <Image
             src="/header-logo-short.svg"
             alt=""
-            width={`${LOGO_HEIGHT - LOGO_MARGIN * 2}px`}
-            height={`${LOGO_HEIGHT - LOGO_MARGIN * 2}px`}
+            width={`${Number(process.env.NEXT_PUBLIC_LOGO_HEIGHT) - LOGO_MARGIN * 2}px`}
+            height={`${Number(process.env.NEXT_PUBLIC_LOGO_HEIGHT) - LOGO_MARGIN * 2}px`}
           />
         </a>
       </Box>
@@ -66,7 +65,7 @@ const DesktopNavigation: React.FC = () => {
         <Box px="2" border="1px" bg={isSelected("/", router.asPath) ? "yellow" : ""}>
           <Link href="/">{userName || "Connect"}</Link>
         </Box>
-        <Box width={`${LOGO_HEIGHT}px`} />
+        <Box width={`${process.env.NEXT_PUBLIC_LOGO_HEIGHT}px`} />
       </Flex>
     </Flex>
   );

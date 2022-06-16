@@ -1,14 +1,15 @@
 import React from "react";
 import { Text, VStack, Button, Flex, Box, HStack } from "@chakra-ui/react";
 import Image from "next/image";
-import { BALANCER_POOL_ID } from "@/utils/constants";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
 import { formatNumber } from "@/utils/presentationHelper";
 import Token from "./shared/Token";
 
 const Pool: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBalances }) => {
   const handleLiquidityRedirect = () => {
-    window.location.assign(`https://app.balancer.fi/#/pool/${BALANCER_POOL_ID}`);
+    window.location.assign(
+      `https://app.balancer.fi/#/pool/${process.env.NEXT_PUBLIC_BALANCER_POOL_ID}`,
+    );
   };
 
   return (

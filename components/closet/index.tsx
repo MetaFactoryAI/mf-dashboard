@@ -8,7 +8,6 @@ import { getRinkebySdk } from '@dethcrypto/eth-sdk-client';
 import { ethers } from "ethers";
 import { Loading } from "@/components/atoms";
 import useNftMetadata, { NftItem } from "@/hooks/useNftMetadata";
-import { AUTH_TOKEN_KEY } from "@/utils/constants";
 import useMetafactoryData from "@/hooks/useMetafactoryData";
 import ClaimWearables from "./ClaimWearables";
 import ListItems from "./ListItems";
@@ -19,7 +18,7 @@ const Wearables: NextPage = () => {
   const [items, setItems] = useState<NftItem[]>([]);
   const [isClaimed, setIsClaimed] = useState<boolean>(false);
   const { data: account } = useAccount();
-  const authBearer = Cookies.get(AUTH_TOKEN_KEY);
+  const authBearer = Cookies.get(process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || "");
   const provider = useProvider();
 
   const {

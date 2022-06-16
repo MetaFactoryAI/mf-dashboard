@@ -4,7 +4,6 @@ import { useState, useCallback } from "react";
 import type { ChartData } from "@/components/atoms/TimeRangeGraphChart";
 import { HistoryRange } from "@/utils/time";
 import { formatNumber } from "@/utils/presentationHelper";
-import { BALANCER_POOL_ADDR } from "@/utils/constants";
 
 type CoinSnapshots = {
   market_caps: number[][];
@@ -67,7 +66,7 @@ export const useCoinData = () => {
         ],
         [
           { title: "Contract Address:", value: contract_address },
-          { title: "Pool Address:", value: BALANCER_POOL_ADDR },
+          { title: "Pool Address:", value: process.env.NEXT_PUBLIC_BALANCER_POOL_ADDR },
         ],
       ],
     };

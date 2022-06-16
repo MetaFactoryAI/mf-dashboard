@@ -8,7 +8,6 @@ import type { TokenBalance } from "@/hooks/usePoolGearData";
 import { useAccount, useSigner, useConnect } from "wagmi";
 import { Alert } from "@/components/atoms";
 import { getQuote, swapTokens, Quote0xApi } from "@/utils/swap";
-import { BALANCER_POOL_ID } from "@/utils/constants";
 import SwapTokenField from "./shared/SwapTokenField";
 
 export interface SwapToken extends TokenBalance {
@@ -51,7 +50,9 @@ const Swap: React.FC = () => {
   };
 
   const handleBalancerRedirect = () => {
-    window.location.assign(`https://app.balancer.fi/#/pool/${BALANCER_POOL_ID}`);
+    window.location.assign(
+      `https://app.balancer.fi/#/pool/${process.env.NEXT_PUBLIC_BALANCER_POOL_ID}`,
+    );
   };
 
   const handleSwap = useCallback(async () => {

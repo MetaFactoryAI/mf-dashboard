@@ -20,6 +20,15 @@ export type NftData = {
   properties: {
     brand: string;
     images: string[];
+    creators: {
+      name: string;
+      role: string;
+    }[];
+    style: string;
+    releaseDate: { name: string; value: string };
+    madeIn: { name: string; value: string };
+    designer: string;
+    technician: string;
   };
 };
 
@@ -54,7 +63,14 @@ const useNftMetadata = () => {
       .then((data: NftData) => {
         const currentData = { ...data };
         const glbFile = data.files.find((file) => file.mimeType === "model/gltf-binary");
+        const designer =
+          data.properties.creators.find((creator) => creator.role.toLowerCase() === "designer")
+            ?.name || "N/A";
+        const technician =
+          data.properties.creators.find((creator) => creator.role.toLowerCase() === "technician")
+            ?.name || "N/A";
         currentData.glbFile = glbFile?.uri;
+        currentData.properties = { ...currentData.properties, designer, technician };
 
         setNftData(currentData);
       })

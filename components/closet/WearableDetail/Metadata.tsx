@@ -1,8 +1,10 @@
 /* eslint-disable prettier/prettier */
+import React from "react";
+import { NftData } from "@/hooks/useNftMetadata";
 import { Table, Tbody, Td, Tr, Text } from "@chakra-ui/react";
-import type { NextPage } from "next";
+import dayjs from "dayjs";
 
-const Metadata: NextPage = () => (
+const Metadata: React.FC<{nftData: NftData}> = ({ nftData }) => (
     <Table
       cellSpacing="0"
       cellPadding="0"
@@ -17,15 +19,15 @@ const Metadata: NextPage = () => (
               BRAND:
             </Text>
             <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
-              APESTHETICS
+              {nftData.properties.brand}
             </Text>
           </Td>
           <Td border="0px" width="50%" padding="5px">
             <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
-              MANUFACTURER:
+              STYLE:
             </Text>
             <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
-              DECODE MFG
+              {nftData.properties.style}
             </Text>
           </Td>
         </Tr>
@@ -35,7 +37,7 @@ const Metadata: NextPage = () => (
               RELEASE DATE:
             </Text>
             <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
-              03.12.22
+              {dayjs(nftData.properties.releaseDate.value, "YYYY-MM-DD").format("MM/DD/YYYY")}
             </Text>
           </Td>
           <Td border="0px" width="50%" padding="5px">
@@ -43,11 +45,29 @@ const Metadata: NextPage = () => (
               MADE IN:
             </Text>
             <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
-              BROOKLYN, NY
+              {nftData.properties.madeIn.value}
             </Text>
           </Td>
         </Tr>
         <Tr>
+          <Td border="0px" width="50%" padding="5px">
+            <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
+              DESIGNER:
+            </Text>
+            <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
+              {nftData.properties.designer}
+            </Text>
+          </Td>
+          <Td border="0px" width="50%" padding="5px">
+            <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
+              PRODUCTION TECH(S):
+            </Text>
+            <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
+              {nftData.properties.technician}
+            </Text>
+          </Td>
+        </Tr>
+        {/* <Tr>
           <Td border="0px" width="50%" padding="5px">
             <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
               TOTAL SUPPLY:
@@ -58,31 +78,13 @@ const Metadata: NextPage = () => (
           </Td>
           <Td border="0px" width="50%" padding="5px">
             <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
-              PRODUCTION TECH(S):
-            </Text>
-            <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
-              DAOFREN, MILFDAD
-            </Text>
-          </Td>
-        </Tr>
-        <Tr>
-          <Td border="0px" width="50%" padding="5px">
-            <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
-              DESIGNER:
-            </Text>
-            <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
-              ANONYMOUS
-            </Text>
-          </Td>
-          <Td border="0px" width="50%" padding="5px">
-            <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
               RENDERED BY:
             </Text>
             <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
               FRAEMWORK
             </Text>
           </Td>
-        </Tr>
+        </Tr> */}
       </Tbody>
     </Table>
   );

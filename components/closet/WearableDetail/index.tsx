@@ -61,8 +61,6 @@ const Index: NextPage = () => {
           you own 2 of this item
         </Text>
       </Box>
-
-
       <Table
         cellSpacing="0"
         cellPadding="0"
@@ -79,7 +77,7 @@ const Index: NextPage = () => {
               </Text>
             </Td>
             <Td border="1px solid black" padding="5px">
-              <Metadata />
+              { nftData && <Metadata nftData={ nftData } /> }
             </Td>
           </Tr>
           <Tr>
@@ -89,7 +87,7 @@ const Index: NextPage = () => {
               </Text>
             </Td>
             <Td border="1px solid black" padding="5px">
-              <Files />
+            { nftData && <Files nftData={nftData}/> }
             </Td>
           </Tr>
           </Tbody>

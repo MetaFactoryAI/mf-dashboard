@@ -25,8 +25,8 @@ export type NftData = {
       role: string;
     }[];
     style: string;
-    releaseDate: { name: string; value: string };
-    madeIn: { name: string; value: string };
+    releaseDate: { name: string; value: string } | undefined;
+    madeIn: { name: string; value: string } | undefined;
     designer: string;
     technician: string;
   };

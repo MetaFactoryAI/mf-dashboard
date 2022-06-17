@@ -37,7 +37,7 @@ const Metadata: React.FC<{nftData: NftData}> = ({ nftData }) => (
               RELEASE DATE:
             </Text>
             <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
-              {dayjs(nftData.properties.releaseDate.value, "YYYY-MM-DD").format("MM/DD/YYYY")}
+              {nftData.properties.releaseDate ? dayjs(nftData.properties.releaseDate.value, "YYYY-MM-DD").format("MM/DD/YYYY") : 'N/A'}
             </Text>
           </Td>
           <Td border="0px" width="50%" padding="5px">
@@ -45,7 +45,7 @@ const Metadata: React.FC<{nftData: NftData}> = ({ nftData }) => (
               MADE IN:
             </Text>
             <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px">
-              {nftData.properties.madeIn.value}
+              {nftData.properties.madeIn ? nftData.properties.madeIn.value : 'N/A'}
             </Text>
           </Td>
         </Tr>

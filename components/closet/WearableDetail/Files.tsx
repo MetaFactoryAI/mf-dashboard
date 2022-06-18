@@ -13,7 +13,7 @@ const Files: React.FC<{nftData: NftData}> = ({ nftData }) => {
     <Flex flex="1" flexDirection="row" border="0px" padding="5px" pb="47px">
       <VStack p="5px" alignItems="start">
         { nftData.files.map((file) => (
-          <Text fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px" textDecoration="underline">
+          <Text key={file.uri} fontFamily="caption" fontSize="12px" fontWeight="400px" lineHeight="15px" textDecoration="underline">
             <a href={file.uri}>{file.mimeType}</a>
           </Text>
         ))}

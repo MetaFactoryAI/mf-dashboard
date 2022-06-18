@@ -45,16 +45,18 @@ const Index: NextPage = () => {
         width="100%"
         height={{ base: "400px", sm: "400px", md: "500px", lg: "500px" }}
       >
-        <Canvas shadows dpr={[1, 2]} camera={{ fov: 50 }}>
-          <Suspense fallback={null}>
+        {nftData?.glbFile && (
+          <Canvas shadows dpr={[1, 2]} camera={{ fov: 50 }}>
+            <Suspense fallback={null}>
+              {/* @ts-ignore */}
+              <Stage controls={ref} preset="rembrandt" intensity={1}  environment="city">
+                <Model glbFile={nftData?.glbFile}/>
+              </Stage>
+            </Suspense>
             {/* @ts-ignore */}
-            <Stage controls={ref} preset="rembrandt" intensity={1}  environment="city">
-              { nftData?.glbFile && <Model glbFile={nftData?.glbFile}/> }
-            </Stage>
-          </Suspense>
-          {/* @ts-ignore */}
-          <OrbitControls ref={ref} autoRotate />
-        </Canvas>
+            <OrbitControls ref={ref} autoRotate />
+          </Canvas>
+        )}
       </Box>
       <Box pl="10px" pr="10px" alignSelf="center" pb="10px">
         <Text fontFamily="caption" fontSize="12px" fontWeight="400px">

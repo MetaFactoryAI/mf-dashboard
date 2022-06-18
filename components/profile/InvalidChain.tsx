@@ -11,7 +11,7 @@ const Profile: NextPage = () => {
     if (!toast.isActive(selectEthToastId)) {
       toast({
         id: selectEthToastId,
-        title: "Please select Ethereum mainnet network",
+        title: `Please select ${process.env.NEXT_PUBLIC_CHAIN_ID === '4' ? 'Rinkeby' : 'Ethereum mainnet'} network`,
         status: "error",
         isClosable: true,
       });

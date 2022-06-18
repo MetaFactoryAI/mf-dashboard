@@ -15,7 +15,7 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const renderResult = useCallback(() => {
     const isValidChain = activeChain?.id === Number(process.env.NEXT_PUBLIC_CHAIN_ID);
 
-    if (isLoading || isNetworkLoading || isConnecting || !isConnected) {
+    if (isLoading || isNetworkLoading || isConnecting) {
       return <Loading />;
     }
 
@@ -28,7 +28,7 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
 
     return children;
-  }, [account, activeChain?.id, children, isConnected, isConnecting, isLoading, isNetworkLoading]);
+  }, [account, activeChain?.id, children, isConnecting, isLoading, isNetworkLoading]);
 
   return (
     <Flex flexDirection="column" minHeight="100vh" height="100%" background="background">

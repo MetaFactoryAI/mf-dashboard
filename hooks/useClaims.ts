@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 // eslint-disable-next-line camelcase
 import { Merkle_redeem__factory } from "types/ethers-contracts/factories";
-import type { ClaimStruct } from "types/ethers-contracts/MerkleRedeem";
+import type { MerkleRedeem } from "types/ethers-contracts/Merkle_redeem";
 import {
   getClaimWeeks,
   getUnclaimedWeeksForAddress,
@@ -23,7 +23,7 @@ import { useAccount, useSigner, useProvider } from "wagmi";
 const EthDater = require("ethereum-block-by-date");
 
 const useClaims = () => {
-  const [claimWeeksProofs, setClaimWeeksProofs] = useState<ClaimStruct[]>([]);
+  const [claimWeeksProofs, setClaimWeeksProofs] = useState<MerkleRedeem.ClaimStruct[]>([]);
   const [unclaimedTotal, setUnclaimedTotal] = useState("0");
   const [claimedTotal, setClaimedTotal] = useState("0");
   const { data: account, isLoading: loading } = useAccount();
@@ -59,7 +59,7 @@ const useClaims = () => {
         account.address,
       );
       const claimedWeeksValues = getClaimedWeeksValues(claimWeeks, unclaimedWeeks, account.address);
-      const calculatedClaimWeeksProofs: ClaimStruct[] = getClaimsWeeksProofs(
+      const calculatedClaimWeeksProofs: MerkleRedeem.ClaimStruct[] = getClaimsWeeksProofs(
         claimWeeks,
         unclaimedWeeksValues,
         account?.address,

@@ -6,6 +6,8 @@ export type NftItem = {
   id: number;
   nft_metadata: {
     name: string;
+    image: string;
+    files: { uri: string; mimeType: string }[];
     properties: {
       brand: string;
       images: string[];

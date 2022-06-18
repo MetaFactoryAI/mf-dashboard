@@ -21,7 +21,7 @@ const ListItems: React.FC<{
         <ListItem
           title1={item.nft_metadata.name}
           title2={item.nft_metadata.properties.brand}
-          assetUrl={`/test_assets/list_items/${(item.nft_token_id % 14) + 1}.png`}
+          assetUrl={item.nft_metadata.image ? item.nft_metadata.image : `/test_assets/list_items/${(item.nft_token_id % 14) + 1}.png`}
           redirectPath={`/closet_wearable_detail/${item.nft_token_id}`}
         />
       </GridItem>

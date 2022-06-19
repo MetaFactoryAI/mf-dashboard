@@ -37,7 +37,7 @@ export type NftData = {
 const useNftMetadata = () => {
   const [nfts, setNfts] = useState<{ [key: string]: NftItem }>();
   const [loading, setLoading] = useState(true);
-  const [nftData, setNftData] = useState<NftData>();
+  const [nftData, setNftData] = useState<NftData | null>(null);
 
   const fetchNfts = () => {
     setLoading(true);

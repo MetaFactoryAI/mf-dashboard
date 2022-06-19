@@ -45,12 +45,12 @@ const Index: NextPage = () => {
         width="100%"
         height={{ base: "400px", sm: "400px", md: "500px", lg: "500px" }}
       >
-        {nftData?.glbFile && (
+        {nftData && (
           <Canvas shadows dpr={[1, 2]} camera={{ fov: 50 }}>
             <Suspense fallback={null}>
               {/* @ts-ignore */}
               <Stage controls={ref} preset="rembrandt" intensity={1}  environment="city">
-                <Model glbFile={nftData?.glbFile}/>
+                <Model glbFile={nftData.glbFile}/>
               </Stage>
             </Suspense>
             {/* @ts-ignore */}

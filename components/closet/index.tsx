@@ -54,11 +54,11 @@ const Wearables: NextPage = () => {
         const sdk = getRinkebySdk(provider);
         const addressess = Array(nftIds.length).fill(account?.address)
         const nftBalances = await sdk.nft_wearables.balanceOfBatch(addressess, nftIds);
-        const parsedBalances = nftBalances.map((balance) => ethers.utils.formatUnits(balance, 0))
+        const parsedBalances = nftBalances.map((balance: ethers.BigNumberish) => ethers.utils.formatUnits(balance, 0))
 
         // reduce to nft items only with non-zero balance
         const nonZeroItems = parsedBalances.reduce(
-          (sum: NftItem[], currentValue, currentIndex) => {
+          (sum: NftItem[], currentValue: string, currentIndex: number) => {
             if(currentValue === '0') return sum;
 
             const nftId = nftIds[currentIndex];

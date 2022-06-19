@@ -29,16 +29,18 @@ const Index: NextPage = () => {
 
   return (
     <VStack spacing="0px">
-      <Box
-        pl="10px"
-        pr="10px"
-        alignSelf={{ base: "start", sm: "start", md: "start", lg: "center" }}
-        pb="10px"
-      >
-        <Text fontFamily="caption" fontSize="12px" textAlign="start" fontWeight="400px">
-        {userName}&apos;s CLOSET ➤ {nftData?.name}
-        </Text>
-      </Box>
+      {userName && (
+        <Box
+          pl="10px"
+          pr="10px"
+          alignSelf={{ base: "start", sm: "start", md: "start", lg: "center" }}
+          pb="10px"
+        >
+          <Text fontFamily="caption" fontSize="12px" textAlign="start" fontWeight="400px">
+          {userName}&apos;s CLOSET ➤ {nftData?.name}
+          </Text>
+        </Box>
+      )}
       <Box
         border="0px"
         p="1px"

@@ -6,15 +6,19 @@ import { useNetwork, useAccount, useConnect } from "wagmi";
 import Connect from "@/components/profile/Connect";
 import InvalidChain from "@/components/profile/InvalidChain";
 import { Loading } from "@/components/atoms";
+import { useRouter } from "next/router";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { activeChain, isLoading: isNetworkLoading } = useNetwork();
   const { data: account, isLoading } = useAccount();
-  const { isConnecting, isConnected } = useConnect();
+  const { isConnecting } = useConnect();
+  const { pathname } = useRouter();
 
   const renderResult = useCallback(() => {
     const isValidChain = activeChain?.id === Number(process.env.NEXT_PUBLIC_CHAIN_ID);
-
+    if (pathname === "/closet_wearable_detail/[id]") {
+      return children;
+    }
     if (isLoading || isNetworkLoading || isConnecting) {
       return <Loading />;
     }
@@ -28,7 +32,7 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
 
     return children;
-  }, [account, activeChain?.id, children, isConnecting, isLoading, isNetworkLoading]);
+  }, [account, activeChain?.id, children, isConnecting, isLoading, isNetworkLoading, pathname]);
 
   return (
     <Flex flexDirection="column" minHeight="100vh" height="100%" background="background">

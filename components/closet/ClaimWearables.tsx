@@ -17,7 +17,7 @@ const ClaimWearables: React.FC<{nftClaims: NftClaim}> = ({ nftClaims }) => {
   const userName = useUserName();
   const { data: signer } = useSigner();
   const handleClick = () => {
-    //setIsAlertOpen(true);
+    // setIsAlertOpen(true);
     executeClaim();
   };
   const executeClaim = async () => {

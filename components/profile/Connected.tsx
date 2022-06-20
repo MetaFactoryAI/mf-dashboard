@@ -8,10 +8,8 @@ import useMetafactoryData from "@/hooks/useMetafactoryData";
 import { Loading, PieChart, UnclaimedTokens, PageTitle } from "@/components/atoms";
 import Table from "@/components/table";
 import type { DesignerReward, BuyerReward } from "@/hooks/useMetafactoryData";
-import { useAccount, useSignMessage, useConnect } from "wagmi";
-import generateSignMessage from "@/utils/auth/helper";
+import { useAccount } from "wagmi";
 import Cookies from "js-cookie";
-import { Base64 } from "js-base64";
 import Tab from "./Tab";
 
 const Connected: NextPage = () => {

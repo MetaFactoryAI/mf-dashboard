@@ -6,8 +6,8 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
-  Button,
 } from "@chakra-ui/react";
+import Button from "./Button";
 
 const Alert: React.FC<{
   isOpen: boolean;
@@ -27,7 +27,7 @@ const Alert: React.FC<{
     // @ts-ignore
     <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
       <AlertDialogOverlay>
-        <AlertDialogContent borderRadius="0px">
+        <AlertDialogContent borderRadius="0px" backgroundColor="background" border="2px">
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
             {title}
           </AlertDialogHeader>
@@ -36,12 +36,21 @@ const Alert: React.FC<{
 
           <AlertDialogFooter>
             {/* @ts-ignore */}
-            <Button ref={cancelRef} onClick={onClose} borderRadius="0px">
-              Cancel
-            </Button>
-            <Button backgroundColor="yellow" onClick={onConfirm} ml={3} borderRadius="0px">
-              Ok
-            </Button>
+            <Button
+              ref={cancelRef}
+              height="35px"
+              width="80px"
+              backgroundColor="background"
+              title="Cancel"
+              handleClickCallback={onClose}
+            />
+            <Button
+              height="35px"
+              width="80px"
+              backgroundColor="background"
+              title="Ok"
+              handleClickCallback={onConfirm}
+            />
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialogOverlay>

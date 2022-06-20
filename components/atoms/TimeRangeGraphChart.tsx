@@ -7,9 +7,9 @@ import { useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
 import useResize from "hooks/useResize";
 import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
+import { formatNumber } from "@/utils/presentationHelper";
 import SelectButtons from "./chart/SelectButtons";
 import type { ChartTab } from "./chart/SelectButtons";
-import { formatNumber } from "@/utils/presentationHelper";
 
 export type ChartData = {
   key: string;
@@ -117,6 +117,7 @@ const TimeRangeGraphChart: FC<{
             p="18px"
             pb="0px"
             fontFamily="body"
+            letterSpacing="-0.02em"
             fontWeight="400"
             fontSize="24px"
             zIndex="8888"
@@ -244,14 +245,14 @@ const TimeRangeGraphChart: FC<{
             left={tooltipLeft}
             style={{ position: "absolute", pointerEvents: "none" }}
           >
-            <Box background="white" border="4px" borderColor="#00ECFF" p="10px" zIndex="9999">
+            <Box background="background" border="4px" borderColor="#00ECFF" p="10px" zIndex="9999">
               <Text fontFamily="body_bold" fontWeight="800" fontSize="24px" color="black">
                 ${formatNumber((tooltipData as ChartData).value)}
               </Text>
               <Text fontFamily="body_regular" fontSize="18px">
                 {(tooltipData as ChartData).toolBarTitle}
               </Text>
-              <Text fontFamily="body" fontSize="14px">
+              <Text fontFamily="body" letterSpacing="-0.02em" fontSize="14px">
                 {(tooltipData as ChartData).toolBarTitle2}
               </Text>
             </Box>

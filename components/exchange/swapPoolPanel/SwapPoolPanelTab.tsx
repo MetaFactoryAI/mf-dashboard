@@ -9,7 +9,6 @@ const SwapPoolPanelTab: React.FC<{
 }> = ({ title, handleClick, selectOption, currentSelection }) => (
   <Box
     width="50%"
-    spacing="0px"
     onClick={() => handleClick(selectOption)}
     cursor="pointer"
     borderTop="2px"

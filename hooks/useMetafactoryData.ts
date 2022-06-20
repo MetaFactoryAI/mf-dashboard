@@ -3,20 +3,41 @@ import dayjs from "dayjs";
 import { useState, useCallback } from "react";
 import fetchGraph from "@/utils/graph/fetchGraph";
 import { formatNumber } from "@/utils/presentationHelper";
-import { METAFACTORY_GQL_URL } from "@/utils/constants";
 
 export type DesignerReward = { robot_reward: number; product: { id: string; title: string } };
 export type BuyerReward = { buyer_reward: number; date: string; order_number: string };
+export type NftClaim = {
+  claim_json: {
+    to: string;
+    erc1155: {
+      contractAddress: string;
+      ids: string[];
+      values: number[];
+    }[];
+    erc721: never[];
+    erc20: {
+      contractAddresses: never[];
+      amounts: never[];
+    };
+    salt: string;
+    proof: string[];
+    claim_count: number;
+  };
+  merkle_root_hash: string;
+};
+
 type DesignerRewards = { total: number; items: DesignerReward[] };
 type BuyerRewards = { total: number; items: BuyerReward[] };
 
 const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
-  metafactory: METAFACTORY_GQL_URL,
+  metafactory: process.env.NEXT_PUBLIC_METAFACTORY_GQL_URL || "",
 };
 
 const useMetafactoryData = () => {
+  const [nftClaims, setNftClaims] = useState<NftClaim>();
   const [designerRewards, setDesignerRewards] = useState<DesignerRewards>();
   const [buyerRewards, setBuyerRewards] = useState<BuyerRewards>();
+  const [loadingNftClaims, setLoadingNftClaims] = useState(true);
   const [loadingDesigner, setLoadingDesigner] = useState(true);
   const [loadingBuyer, setLoadingBuyer] = useState(true);
   const [errors, setErrors] = useState({});
@@ -80,12 +101,42 @@ const useMetafactoryData = () => {
     );
   };
 
+  const fetchNftClaims = (accountAuthToken: string) => {
+    setLoadingNftClaims(true);
+    const root = "robot_merkle_claims";
+    const NFT_CLAIMS_QUERY = `
+      query GetClaimForAddress {
+        ${root} {
+          claim_json
+          merkle_root_hash
+        }
+      }
+    `;
+    return (
+      fetchGraph(SUBGRAPH_ENDPOINTS.metafactory, NFT_CLAIMS_QUERY, null, accountAuthToken)
+        // @ts-ignore
+        .then(({ data: { [root]: nftClaimArray } }) => {
+          const nftClaim = { ...nftClaimArray[0] };
+          const claim_count = nftClaim.claim_json.erc1155[0].ids.length;
+          nftClaim.claim_json = { ...nftClaim.claim_json, claim_count };
+          setNftClaims(nftClaim);
+        })
+        .catch((error) => {
+          setErrors({ error });
+        })
+        .finally(() => setLoadingNftClaims(false))
+    );
+  };
+
   return {
     designerRewards,
     buyerRewards,
+    nftClaims,
     fetchDesignerRewards: useCallback(fetchDesignerRewards, []),
     fetchBuyerRewards: useCallback(fetchBuyerRewards, []),
-    loading: loadingBuyer || loadingDesigner,
+    fetchNftClaims: useCallback(fetchNftClaims, []),
+    loadingRewards: loadingBuyer || loadingDesigner,
+    loadingNftClaims,
     errors,
   };
 };

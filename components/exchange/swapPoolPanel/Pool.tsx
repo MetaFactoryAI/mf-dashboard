@@ -1,14 +1,15 @@
 import React from "react";
 import { Text, VStack, Button, Flex, Box, HStack } from "@chakra-ui/react";
 import Image from "next/image";
-import { BALANCER_POOL_ID } from "@/utils/constants";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
 import { formatNumber } from "@/utils/presentationHelper";
 import Token from "./shared/Token";
 
 const Pool: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBalances }) => {
   const handleLiquidityRedirect = () => {
-    window.location.assign(`https://app.balancer.fi/#/pool/${BALANCER_POOL_ID}`);
+    window.location.assign(
+      `https://app.balancer.fi/#/pool/${process.env.NEXT_PUBLIC_BALANCER_POOL_ID}`,
+    );
   };
 
   return (
@@ -27,12 +28,13 @@ const Pool: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBalances }) 
             border="2px"
             key={`pool-panel-token-balance-${token.symbol}`}
           >
-            <HStack width="50%" spacing="0px" backgroundColor="white">
+            <HStack width="50%" spacing="0px" backgroundColor="background">
               <Token tokenSymbol={token.symbol} />
             </HStack>
             <Box width="50%" backgroundColor="black">
               <Text
                 fontFamily="body"
+                letterSpacing="-0.02em"
                 textAlign="end"
                 fontWeight="400"
                 fontSize="18px"
@@ -62,7 +64,7 @@ const Pool: React.FC<{ tokensBalances: TokenBalance[] }> = ({ tokensBalances }) 
           mt="16px"
           mb="20px"
         >
-          <Flex spacing="0px" justifyContent="center">
+          <Flex justifyContent="center">
             <Text color="##8B2CFF" fontFamily="body_bold" fontWeight="800" fontSize="24px" m="5px">
               Invest
             </Text>

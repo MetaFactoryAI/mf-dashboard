@@ -1,40 +1,55 @@
-import React, { ReactNode, useEffect } from "react";
-import { Flex, useToast } from "@chakra-ui/react";
-import { useRouter } from "next/router";
+import React, { ReactNode, useCallback } from "react";
+import { Flex } from "@chakra-ui/react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import { LOGO_HEIGHT, CHAIN_ID } from "@/utils/constants";
-import { useWeb3Context } from "@/contexts/Web3Context";
+import { useNetwork, useAccount, useConnect } from "wagmi";
+import Connect from "@/components/profile/Connect";
+import InvalidChain from "@/components/profile/InvalidChain";
+import { Loading } from "@/components/atoms";
+import { useRouter } from "next/router";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { loading, account, chainId } = useWeb3Context();
-  const toast = useToast();
-  const router = useRouter();
-  useEffect(() => {
-    if (!loading && !account && router.pathname !== "/") {
-      router.push("/");
+  const { activeChain, isLoading: isNetworkLoading } = useNetwork();
+  const { data: account, isLoading } = useAccount();
+  const { isConnecting } = useConnect();
+  const { pathname } = useRouter();
+
+  const renderResult = useCallback(() => {
+    const isValidChain = activeChain?.id === Number(process.env.NEXT_PUBLIC_CHAIN_ID);
+    if (pathname === "/closet_wearable_detail/[id]") {
+      return children;
+    }
+    if (isLoading || isNetworkLoading || isConnecting) {
+      return <Loading />;
     }
 
-    if (!loading && account && chainId !== CHAIN_ID) {
-      toast({
-        title: "Please select Ethereum mainnet network",
-        status: "error",
-        isClosable: true,
-      });
+    if (!isLoading && !account) {
+      return <Connect />;
     }
-  }, [account, chainId, loading, router, toast]);
+
+    if (!isValidChain) {
+      return <InvalidChain />;
+    }
+
+    return children;
+  }, [account, activeChain?.id, children, isConnecting, isLoading, isNetworkLoading, pathname]);
 
   return (
-    <Flex flexDirection="column" height="100vh">
+    <Flex flexDirection="column" minHeight="100vh" height="100%" background="background">
       <Navigation />
       <Flex
         flex="1"
         flexDirection="column"
-        mx={{ base: "24px", sm: "24px", md: `${LOGO_HEIGHT}px`, lg: `${LOGO_HEIGHT}px` }}
-        border={{ base: "0px", sm: "00px", md: "2px", lg: "2px" }}
-        marginBlockEnd="20px"
+        mx={{
+          base: "0px",
+          sm: "0px",
+          md: `${process.env.NEXT_PUBLIC_LOGO_HEIGHT}px`,
+          lg: `${process.env.NEXT_PUBLIC_LOGO_HEIGHT}px`,
+        }}
+        border={{ base: "0px", sm: "0px", md: "2px", lg: "2px" }}
+        background="background"
       >
-        {children}
+        {renderResult()}
       </Flex>
       <Footer />
     </Flex>

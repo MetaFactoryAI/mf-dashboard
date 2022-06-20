@@ -1,9 +1,9 @@
+import CustomButton from "@/components/atoms/Button";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import {
   Flex,
-  Spacer,
+  HStack,
   Box,
   IconButton,
   useDisclosure,
@@ -13,42 +13,46 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { useWeb3Context } from "@/contexts/Web3Context";
-import { formatAddress } from "@/utils/presentationHelper";
+import useUserName from "@/hooks/useUserName";
 import MobileItem from "./MobileItem";
 
 const MobileNavigation: React.FC = () => {
+  const userName = useUserName();
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { account, loading, errors } = useWeb3Context();
-  const MOBILE_LOGO_HEIGHT = 40;
+  const MOBILE_LOGO_HEIGHT = 23;
+  const MOBILE_LOGO_WIDTH = 139;
   const handleRedirect = (url: string) => {
     onClose();
     router.push(url);
   };
+  const handleLogoRedirect = () => {
+    onClose();
+    router.push("https://www.metafactory.ai/");
+  };
 
   return (
-    <Box>
-      <Flex as="nav" align="center" justify="space-between" wrap="wrap" fontSize="18px">
-        <Box>
-          <a href="https://www.metafactory.ai/" target="_blank" rel="noopener noreferrer">
-            <Image
-              src="/header-logo-mf.svg"
-              alt=""
-              width={`${MOBILE_LOGO_HEIGHT}px`}
-              height={`${MOBILE_LOGO_HEIGHT}px`}
-            />
-          </a>
+    <Box borderBottom="2px">
+      <HStack justify="space-between" fontSize="18px">
+        <Box pb="10px" pt="25px" pl="25px">
+          <Image
+            src="/header-logo-mf.svg"
+            alt=""
+            width={`${MOBILE_LOGO_WIDTH}px`}
+            height={`${MOBILE_LOGO_HEIGHT}px`}
+            onClick={handleLogoRedirect}
+          />
         </Box>
-        <Spacer />
         <Flex>
           {!isOpen && (
             <>
-              <Box px="2" border="1px" bg={router.asPath.indexOf("/") >= 0 ? "yellow" : ""}>
-                <Link href="/">
-                  {!loading && !errors && !!account ? formatAddress(account) : "Connect"}
-                </Link>
-              </Box>
+              <CustomButton
+                handleClickCallback={() => handleRedirect("/")}
+                height="100%"
+                width="80px"
+                backgroundColor={router.asPath.indexOf("/") >= 0 ? "yellow" : ""}
+                title={userName || "Connect"}
+              />
               <IconButton
                 icon={<HamburgerIcon />}
                 aria-label="Open Sidebar Menu"
@@ -58,6 +62,7 @@ const MobileNavigation: React.FC = () => {
                   borderColor: "unset",
                 }}
                 height={`${MOBILE_LOGO_HEIGHT - 5}px`}
+                pt="10px"
               />
             </>
           )}
@@ -74,10 +79,10 @@ const MobileNavigation: React.FC = () => {
             />
           )}
         </Flex>
-      </Flex>
+      </HStack>
 
       {isOpen && (
-        <VStack alignItems="start" width="100%" mt="90px">
+        <VStack alignItems="start" width="100%" mb="20px">
           <MobileItem
             currentPath={router.asPath}
             redirectPath="https://www.metafactory.ai"
@@ -117,9 +122,15 @@ const MobileNavigation: React.FC = () => {
           /> */}
           <MobileItem
             currentPath={router.asPath}
+            redirectPath="/closet"
+            handleRedirect={handleRedirect}
+            label="Closet"
+          />
+          <MobileItem
+            currentPath={router.asPath}
             redirectPath="/"
             handleRedirect={handleRedirect}
-            label={!loading && !errors && !!account ? formatAddress(account) : "Connect"}
+            label={userName || "Connect"}
             border="1px"
             borderRadius="0px"
           />

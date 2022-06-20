@@ -5,11 +5,10 @@ import React, { useState, useCallback } from "react";
 import { Text, VStack, Button, Flex, Box, Center, useToast } from "@chakra-ui/react";
 import Image from "next/image";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
-import SwapTokenField from "./shared/SwapTokenField";
-import { useWeb3Context } from "@/contexts/Web3Context";
+import { useAccount, useSigner, useConnect } from "wagmi";
 import { Alert } from "@/components/atoms";
 import { getQuote, swapTokens, Quote0xApi } from "@/utils/swap";
-import { BALANCER_POOL_ID } from "@/utils/constants";
+import SwapTokenField from "./shared/SwapTokenField";
 
 export interface SwapToken extends TokenBalance {
   address: string;
@@ -28,7 +27,9 @@ const Swap: React.FC = () => {
   const [swapAlertMsg, setSwapAlertMsg] = React.useState<string>("");
   const [swapQuote, setSwapQuote] = React.useState<Quote0xApi>();
   const [isAlertOpen, setIsAlertOpen] = React.useState<boolean>(false);
-  const { loading, account, provider } = useWeb3Context();
+  const { data: account, isLoading: loading } = useAccount();
+  const { data: signer } = useSigner();
+  const { isConnected } = useConnect();
   const [sellToken, setSellToken] = useState<SwapToken>({
     ...NON_METAFACTORY_TOKEN_SYMBOLS[0],
   });
@@ -49,11 +50,13 @@ const Swap: React.FC = () => {
   };
 
   const handleBalancerRedirect = () => {
-    window.location.assign(`https://app.balancer.fi/#/pool/${BALANCER_POOL_ID}`);
+    window.location.assign(
+      `https://app.balancer.fi/#/pool/${process.env.NEXT_PUBLIC_BALANCER_POOL_ID}`,
+    );
   };
 
   const handleSwap = useCallback(async () => {
-    if (provider && account) {
+    if (account) {
       const response = await getQuote(sellToken, buyToken);
 
       if (response.ok) {
@@ -73,10 +76,10 @@ const Swap: React.FC = () => {
         });
       }
     }
-  }, [account, buyToken, provider, sellToken, toast]);
+  }, [account, buyToken, sellToken, toast]);
 
   const executeSwap = useCallback(async () => {
-    if (provider && account && swapQuote) {
+    if (isConnected && signer && account?.address && swapQuote) {
       const swapSuccessful = () => {
         toast({
           title: "SWAP processed and send to the blockchain",
@@ -94,9 +97,9 @@ const Swap: React.FC = () => {
           isClosable: true,
         });
       };
-      swapTokens(account, provider, swapQuote, swapSuccessful, swapFailed);
+      swapTokens(account.address, signer, swapQuote, swapSuccessful, swapFailed);
     }
-  }, [account, buyToken, provider, sellToken, swapQuote, toast]);
+  }, [isConnected, signer, account, swapQuote, toast, buyToken, sellToken]);
 
   if (loading || !account) return null;
 
@@ -147,7 +150,7 @@ const Swap: React.FC = () => {
             mb="20px"
             disabled={sellToken.balance === 0 && buyToken.balance === 0}
           >
-            <Flex spacing="0px" justifyContent="center">
+            <Flex justifyContent="center">
               <Text
                 color="##8B2CFF"
                 fontFamily="body_bold"
@@ -168,14 +171,15 @@ const Swap: React.FC = () => {
           confirmCallback={executeSwap}
         />
       </VStack>
-      <Flex
-        spacing="0px"
-        justifyContent="center"
-        pt="30px"
-        onClick={handleBalancerRedirect}
-        cursor="pointer"
-      >
-        <Text color="black" fontFamily="body" fontWeight="400" fontSize="18px" pr="5px">
+      <Flex justifyContent="center" pt="30px" onClick={handleBalancerRedirect} cursor="pointer">
+        <Text
+          color="black"
+          fontFamily="body"
+          letterSpacing="-0.02em"
+          fontWeight="400"
+          fontSize="18px"
+          pr="5px"
+        >
           Trade on Balancer
         </Text>
         <Image src="/arrow.svg" alt="" width="15px" height="15px" />

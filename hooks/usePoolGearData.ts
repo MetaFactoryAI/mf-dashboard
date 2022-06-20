@@ -2,7 +2,6 @@
 import { useState, useCallback } from "react";
 import dayjs from "dayjs";
 import fetchGraph from "@/utils/graph/fetchGraph";
-import { BALANCER_POOL_ID, BALANCER_GQL_URL } from "@/utils/constants";
 import type { ChartData } from "@/components/atoms/TimeRangeGraphChart";
 import { formatNumber } from "@/utils/presentationHelper";
 
@@ -28,7 +27,7 @@ export type PoolData = {
 };
 
 const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
-  balancerV2Graph: BALANCER_GQL_URL,
+  balancerV2Graph: process.env.NEXT_PUBLIC_BALANCER_GQL_URL || "",
 };
 
 type PoolToken = { balance: string; symbol: string };
@@ -46,7 +45,7 @@ export const usePoolGearData = () => {
 
     const POOL_TOKENS = `
       query PoolTokens {
-        poolTokens(where: {poolId:"${BALANCER_POOL_ID}"}){
+        poolTokens(where: {poolId:"${process.env.NEXT_PUBLIC_BALANCER_POOL_ID}"}){
           symbol
           balance
         }
@@ -55,7 +54,9 @@ export const usePoolGearData = () => {
 
     const USER_POOL_SHARES = `
       query UserPoolShares {
-        poolShares(where: {poolId:"${BALANCER_POOL_ID}", userAddress:"${account.toLowerCase()}"}){
+        poolShares(where: {poolId:"${
+          process.env.NEXT_PUBLIC_BALANCER_POOL_ID
+        }", userAddress:"${account.toLowerCase()}"}){
           balance
         }
       }
@@ -63,7 +64,7 @@ export const usePoolGearData = () => {
 
     const TOTAL_POOL_SHARES = `
       query TotalPoolShares {
-        pool(id: "${BALANCER_POOL_ID}"){
+        pool(id: "${process.env.NEXT_PUBLIC_BALANCER_POOL_ID}"){
           totalShares
         }
       }
@@ -102,7 +103,7 @@ export const usePoolGearData = () => {
 
     const POOL_DATA = `
       query PoolTokens {
-        pool(id: "${BALANCER_POOL_ID}"){
+        pool(id: "${process.env.NEXT_PUBLIC_BALANCER_POOL_ID}"){
           swapFee
           totalSwapVolume
           totalLiquidity
@@ -126,7 +127,7 @@ export const usePoolGearData = () => {
       const POOL_SNAPSHOTS = `
         query PoolSnapshots {
           poolSnapshots(skip: ${skip}, first: ${skipStep}, where:
-            { pool: "${BALANCER_POOL_ID}",
+            { pool: "${process.env.NEXT_PUBLIC_BALANCER_POOL_ID}",
               timestamp_gte: ${startTimestamp},
               timestamp_lt: ${endTimestamp}
             }) {

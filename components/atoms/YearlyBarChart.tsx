@@ -9,9 +9,9 @@ import { localPoint } from "@visx/event";
 import useResize from "hooks/useResize";
 import { AxisBottom } from "@visx/axis";
 import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
+import { formatNumber } from "@/utils/presentationHelper";
 import SelectButtons from "./chart/SelectButtons";
 import type { ChartTab } from "./chart/SelectButtons";
-import { formatNumber } from "@/utils/presentationHelper";
 
 export type ChartData = {
   key: string;
@@ -218,7 +218,7 @@ const YearlyBarChart: FC<{
               <Text fontFamily="body_regular" fontSize="18px">
                 {formatNumber((tooltipData as ChartData).value)}
               </Text>
-              <Text fontFamily="body" fontSize="14px">
+              <Text fontFamily="body" letterSpacing="-0.02em" fontSize="14px">
                 {format(new Date((tooltipData as ChartData).date))}
               </Text>
             </Box>

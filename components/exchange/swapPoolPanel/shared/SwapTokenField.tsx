@@ -22,7 +22,7 @@ const SwapTokenField: React.FC<{
   <HStack
     width="100%"
     spacing="0px"
-    backgroundColor="white"
+    backgroundColor="background"
     border="2px"
     key={`pool-panel-token-balance-${selectedToken.symbol}`}
   >
@@ -31,7 +31,7 @@ const SwapTokenField: React.FC<{
         <HStack
           justifyContent="space-between"
           spacing="0px"
-          backgroundColor="white"
+          backgroundColor="background"
           borderRight="2px"
         >
           <Token tokenSymbol={selectedToken.symbol} />

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Box, HStack } from "@chakra-ui/react";
-import Pool from "./Pool";
 import type { TokenBalance } from "@/hooks/usePoolGearData";
+import Pool from "./Pool";
 import SwapPoolPanelTab from "./SwapPoolPanelTab";
 import Swap from "./Swap";
 

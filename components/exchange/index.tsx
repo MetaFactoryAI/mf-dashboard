@@ -4,19 +4,20 @@ import React, { useEffect, useState, useMemo } from "react";
 import Head from "next/head";
 import { format } from "d3-format";
 import { TimeRangeGraphChart, Loading, PageTitle } from "@/components/atoms";
-import { useWeb3Context } from "@/contexts/Web3Context";
+import { useAccount } from "wagmi";
 import { usePoolGearData } from "@/hooks/usePoolGearData";
 import { useCoinData } from "@/hooks/useCoinData";
-import { SwapPoolPanel, SwapPoolPanelTabs } from "./swapPoolPanel";
 import { getHistoryRangeTimestamps, HistoryRange } from "@/utils/time";
-import SummaryField from "./shared/SummaryField";
 import type { ChartTab } from "@/components/atoms/chart/SelectButtons";
-import CoinDataSummary from "./CoinDataSummary";
 import { formatNumber } from "@/utils/presentationHelper";
+import { SwapPoolPanel, SwapPoolPanelTabs } from "./swapPoolPanel";
+import SummaryField from "./shared/SummaryField";
+import CoinDataSummary from "./CoinDataSummary";
 
 const COIN_ID = "robot";
 
 const Exchange: NextPage = () => {
+  const { data: account } = useAccount();
   const TIME_TABS: ChartTab[] = useMemo(
     () => [
       {
@@ -34,7 +35,6 @@ const Exchange: NextPage = () => {
     ],
     [],
   );
-  const { account } = useWeb3Context();
   const {
     fetchBalances,
     tokensBalances,
@@ -62,8 +62,8 @@ const Exchange: NextPage = () => {
   }, [fetchCoinData, fetchCoinHistory, fetchPoolData, fetchPoolHistory, selectedTimeRange]);
 
   useEffect(() => {
-    if (account) {
-      fetchBalances(account);
+    if (account?.address) {
+      fetchBalances(account.address);
     }
   }, [account, fetchBalances]);
 
@@ -100,11 +100,7 @@ const Exchange: NextPage = () => {
           />
         </GridItem>
         <GridItem colSpan={{ base: 10, sm: 10, md: 7, lg: 7 }}>
-          <Box
-            border="2px"
-            borderLeft={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}
-            spacing="0px"
-          >
+          <Box border="2px" borderLeft={{ base: "2px", sm: "2px", md: "0px", lg: "0px" }}>
             <TimeRangeGraphChart
               chartData={
                 selectedSwapPoolTab === SwapPoolPanelTabs.PoolTab

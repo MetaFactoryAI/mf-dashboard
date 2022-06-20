@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { BigNumber } from "@ethersproject/bignumber";
 import { formatUnits } from "@ethersproject/units";
-import { ClaimedEvent } from "types/ethers-contracts/MerkleRedeem";
+import { ClaimedEvent } from "types/ethers-contracts/Merkle_redeem";
 import { ethers } from "ethers";
 import dayjs from "dayjs";
 import type { ChartData } from "@/components/atoms/YearlyBarChart";

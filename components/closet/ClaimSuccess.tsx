@@ -27,7 +27,7 @@ const ClaimWearables: NextPage = () => {
             Success!
           </Text>
           <Text color="##8B2CFF" fontFamily="caption" fontWeight="400" fontSize="14px" pb="20px" textAlign="center">
-            You have successfully claimed your item(s)!
+            Your claim request was successfully sent to the blockchain!
           </Text>
           <Button
             handleClickCallback={handleClick}

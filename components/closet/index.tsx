@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { VStack, HStack, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useAccount, useProvider } from 'wagmi';
-import { getRinkebySdk } from '@dethcrypto/eth-sdk-client';
+import { getMainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { ethers } from "ethers";
 import { Loading } from "@/components/atoms";
 import useNftMetadata, { NftItem } from "@/hooks/useNftMetadata";
@@ -29,8 +29,8 @@ const Wearables: NextPage = () => {
 
   useEffect(() => {
     const checkClaimable = async (currentProvider: ethers.providers.Provider, address: string, rootHash: string) => {
-      const sdk = getRinkebySdk(currentProvider);
-      const claimedStatuses = await sdk.nft_giveaway.getClaimedStatus(address, [rootHash]);
+      const { ethereum } = getMainnetSdk(provider);
+      const claimedStatuses = await ethereum.nft_giveaway.getClaimedStatus(address, [rootHash]);
 
       setIsClaimed(claimedStatuses[0]);
     };
@@ -51,9 +51,9 @@ const Wearables: NextPage = () => {
       const nftIds = getNftIds();
 
       if(provider && account?.address && nftIds.length > 0 && nfts) {
-        const sdk = getRinkebySdk(provider);
+        const { ethereum } = getMainnetSdk(provider);
         const addressess = Array(nftIds.length).fill(account?.address)
-        const nftBalances = await sdk.nft_wearables.balanceOfBatch(addressess, nftIds);
+        const nftBalances = await ethereum.nft_wearables.balanceOfBatch(addressess, nftIds);
         const parsedBalances = nftBalances.map((balance: ethers.BigNumberish) => ethers.utils.formatUnits(balance, 0))
 
         // reduce to nft items only with non-zero balance

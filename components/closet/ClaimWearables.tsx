@@ -6,7 +6,7 @@ import Button from "@/components/atoms/Button"
 import useUserName from "@/hooks/useUserName";
 import { NftClaim } from "@/hooks/useMetafactoryData";
 import { Alert } from "@/components/atoms";
-import { getRinkebySdk } from '@dethcrypto/eth-sdk-client';
+import { getMainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { useSigner } from 'wagmi';
 
 
@@ -21,7 +21,7 @@ const ClaimWearables: React.FC<{nftClaims: NftClaim}> = ({ nftClaims }) => {
   };
   const executeClaim = async () => {
     if(signer) {
-      const sdk = getRinkebySdk(signer);
+      const { ethereum } = getMainnetSdk(signer);
       const claim = {
         to: nftClaims.claim_json.to,
         erc1155: nftClaims.claim_json.erc1155,
@@ -29,7 +29,7 @@ const ClaimWearables: React.FC<{nftClaims: NftClaim}> = ({ nftClaims }) => {
         erc20: nftClaims.claim_json.erc20,
         salt: nftClaims.claim_json.salt
       }
-      sdk.nft_giveaway.claimMultipleTokens(
+      ethereum.nft_giveaway.claimMultipleTokens(
         nftClaims.merkle_root_hash,
         claim,
         nftClaims.claim_json.proof

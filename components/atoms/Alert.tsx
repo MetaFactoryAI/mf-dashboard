@@ -35,8 +35,8 @@ const Alert: React.FC<{
           <AlertDialogBody fontFamily="body_regular">{message}</AlertDialogBody>
 
           <AlertDialogFooter>
-            {/* @ts-ignore */}
             <Button
+              // @ts-ignore
               ref={cancelRef}
               height="35px"
               width="80px"

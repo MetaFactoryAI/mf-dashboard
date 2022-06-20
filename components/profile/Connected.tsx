@@ -17,13 +17,7 @@ import Tab from "./Tab";
 const Connected: NextPage = () => {
   const { designerRewards, buyerRewards, loadingRewards, fetchDesignerRewards, fetchBuyerRewards } =
     useMetafactoryData();
-
-  const [authBearer, setAuthBearer] = React.useState(
-    Cookies.get(process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || ""),
-  );
-  const [signInMessage, setSignInMessage] = React.useState("");
-  const { data, isIdle, signMessage } = useSignMessage();
-  const { isConnected } = useConnect();
+  const authBearer = Cookies.get(process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || "");
   const { data: account, isLoading: loadingWeb3 } = useAccount();
 
   const { unclaimedTotal, claimedTotal, handleClaim } = useClaims();
@@ -184,42 +178,12 @@ const Connected: NextPage = () => {
     [TABLE_TABS],
   );
 
-  // sign auth bearer logic
-  // ///////////////////////
-  useEffect(() => {
-    if (!authBearer && isConnected && isIdle && account?.address) {
-      const message = generateSignMessage(account.address);
-      signMessage({
-        message,
-      });
-      setSignInMessage(message);
-    }
-  }, [
-    fetchDesignerRewards,
-    account,
-    fetchBuyerRewards,
-    signMessage,
-    isIdle,
-    authBearer,
-    isConnected,
-  ]);
-
-  useEffect(() => {
-    if (data && data?.length > 0) {
-      const token = Base64.encode(JSON.stringify([data, signInMessage]));
-      setAuthBearer(token);
-      Cookies.set(process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || "", token);
-    }
-  }, [data, signInMessage]);
-
   useEffect(() => {
     if (authBearer && account?.address) {
       fetchDesignerRewards(account.address, authBearer);
       fetchBuyerRewards(account.address, authBearer);
     }
   }, [account, authBearer, fetchBuyerRewards, fetchDesignerRewards]);
-  // ///////////////////////
-  // sign auth bearer logic
 
   useEffect(() => {
     if (!loadingRewards && isZeroBuyerRewards) {

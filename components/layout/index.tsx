@@ -1,18 +1,27 @@
-import React, { ReactNode, useCallback } from "react";
+import React, { ReactNode, useCallback, useEffect } from "react";
 import { Flex } from "@chakra-ui/react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
-import { useNetwork, useAccount, useConnect } from "wagmi";
+import { useNetwork, useAccount, useConnect, useSignMessage } from "wagmi";
 import Connect from "@/components/profile/Connect";
 import InvalidChain from "@/components/profile/InvalidChain";
 import { Loading } from "@/components/atoms";
 import { useRouter } from "next/router";
+import generateSignMessage from "@/utils/auth/helper";
+import Cookies from "js-cookie";
+import { Base64 } from "js-base64";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { activeChain, isLoading: isNetworkLoading } = useNetwork();
   const { data: account, isLoading } = useAccount();
   const { isConnecting } = useConnect();
   const { pathname } = useRouter();
+  const [authBearer, setAuthBearer] = React.useState(
+    Cookies.get(process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || ""),
+  );
+  const [signInMessage, setSignInMessage] = React.useState("");
+  const { data, isIdle, signMessage } = useSignMessage();
+  const { isConnected } = useConnect();
 
   const renderResult = useCallback(() => {
     const isValidChain = activeChain?.id === Number(process.env.NEXT_PUBLIC_CHAIN_ID);
@@ -23,7 +32,7 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
       return <Loading />;
     }
 
-    if (!isLoading && !account) {
+    if ((!isLoading && !account) || !authBearer) {
       return <Connect />;
     }
 
@@ -32,7 +41,38 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
 
     return children;
-  }, [account, activeChain?.id, children, isConnecting, isLoading, isNetworkLoading, pathname]);
+  }, [
+    account,
+    activeChain?.id,
+    authBearer,
+    children,
+    isConnecting,
+    isLoading,
+    isNetworkLoading,
+    pathname,
+  ]);
+
+  // sign auth bearer logic
+  // ///////////////////////
+  useEffect(() => {
+    if (!authBearer && isConnected && isIdle && account?.address) {
+      const message = generateSignMessage(account.address);
+      signMessage({
+        message,
+      });
+      setSignInMessage(message);
+    }
+  }, [account, signMessage, isIdle, authBearer, isConnected]);
+
+  useEffect(() => {
+    if (data && data?.length > 0) {
+      const token = Base64.encode(JSON.stringify([data, signInMessage]));
+      setAuthBearer(token);
+      Cookies.set(process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || "", token);
+    }
+  }, [data, signInMessage]);
+  // ///////////////////////
+  // sign auth bearer logic
 
   return (
     <Flex flexDirection="column" minHeight="100vh" height="100%" background="background">

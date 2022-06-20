@@ -59,11 +59,11 @@ const DesktopNavigation: React.FC = () => {
         {/* <Box px="2" bg={isSelected("/claim", router.asPath) ? "yellow" : ""}>
           <Link href="/claim">Claim</Link>
         </Box> */}
-        <Box px="2" bg={isSelected("/closet", router.asPath) ? "yellow" : ""}>
-          <Link href="/closet">Closet</Link>
+        <Box px="2" bg={isSelected("/", router.asPath) ? "yellow" : ""}>
+          <Link href="/">Closet</Link>
         </Box>
-        <Box px="2" border="1px" bg={isSelected("/", router.asPath) ? "yellow" : ""}>
-          <Link href="/">{userName || "Connect"}</Link>
+        <Box px="2" border="1px" bg={isSelected("/profile", router.asPath) ? "yellow" : ""}>
+          <Link href="/profile">{userName || "Connect"}</Link>
         </Box>
         <Box width={`${process.env.NEXT_PUBLIC_LOGO_HEIGHT}px`} />
       </Flex>

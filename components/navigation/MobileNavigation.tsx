@@ -47,10 +47,10 @@ const MobileNavigation: React.FC = () => {
           {!isOpen && (
             <>
               <CustomButton
-                handleClickCallback={() => handleRedirect("/")}
+                handleClickCallback={() => handleRedirect("/profile")}
                 height="100%"
                 width="80px"
-                backgroundColor={router.asPath.indexOf("/") >= 0 ? "yellow" : ""}
+                backgroundColor="yellow"
                 title={userName || "Connect"}
               />
               <IconButton
@@ -122,13 +122,13 @@ const MobileNavigation: React.FC = () => {
           /> */}
           <MobileItem
             currentPath={router.asPath}
-            redirectPath="/closet"
+            redirectPath="/"
             handleRedirect={handleRedirect}
             label="Closet"
           />
           <MobileItem
             currentPath={router.asPath}
-            redirectPath="/"
+            redirectPath="/profile"
             handleRedirect={handleRedirect}
             label={userName || "Connect"}
             border="1px"

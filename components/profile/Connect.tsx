@@ -6,9 +6,11 @@ import Image from "next/image";
 import { useConnect } from "wagmi";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
+import useChakraBreakpoints from "@/hooks/useChakraBreakpoints";
 
 const Connect: NextPage = () => {
   const { connect, connectors } = useConnect();
+  const { isDesktopScreen } = useChakraBreakpoints();
 
   useEffect(() => {
     Cookies.remove(process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || "");
@@ -26,7 +28,10 @@ const Connect: NextPage = () => {
       </Box>
       <Box width="100%" maxWidth="330px" pb="40px">
         <Button
-          handleClickCallback={() => connect(connectors[0])}
+          handleClickCallback={() => {
+            const connector = isDesktopScreen ? connectors[0] : connectors[1]
+            connect(connector)
+          }}
           height="40px"
           width="100%"
           backgroundColor="yellow"

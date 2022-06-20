@@ -10,6 +10,7 @@ import { Loading } from "@/components/atoms";
 import { WagmiConfig, createClient, defaultChains, configureChains } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { InjectedConnector } from "wagmi/connectors/injected";
+import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 
 // Configure chains & providers with the Alchemy provider.
 // Two popular providers are Alchemy (alchemy.com) and Infura (infura.io)
@@ -26,6 +27,12 @@ const client = createClient({
       options: {
         name: "Injected",
         shimDisconnect: true,
+      },
+    }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        qrcode: true,
       },
     }),
   ],

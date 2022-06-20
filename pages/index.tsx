@@ -1,3 +1,3 @@
-import Connected from "@/components/profile/Connected";
+import Closet from "@/components/closet";
 
-export default Connected;
+export default Closet;

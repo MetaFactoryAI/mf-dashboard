@@ -18,7 +18,7 @@ const Connect: NextPage = () => {
 
   return (
     <Flex flex="1" flexDirection="row" alignContent="center" justifyItems="center">
-      <Center>
+      <Center width="100%">
         <VStack px="88px" py="58px">
           <Box mb="8">
             <Image src="/w95_misc.png" alt="" width="108" height="82" />

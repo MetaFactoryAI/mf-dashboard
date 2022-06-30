@@ -13,11 +13,9 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import useUserName from "@/hooks/useUserName";
 import MobileItem from "./MobileItem";
 
 const MobileNavigation: React.FC = () => {
-  const userName = useUserName();
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const MOBILE_LOGO_HEIGHT = 23;
@@ -47,11 +45,11 @@ const MobileNavigation: React.FC = () => {
           {!isOpen && (
             <>
               <CustomButton
-                handleClickCallback={() => handleRedirect("/profile")}
+                handleClickCallback={() => handleRedirect("/disconnect")}
                 height="100%"
                 width="80px"
                 backgroundColor="yellow"
-                title={userName || "Connect"}
+                title={"Disconnect" || "Connect"}
               />
               <IconButton
                 icon={<HamburgerIcon />}
@@ -128,10 +126,9 @@ const MobileNavigation: React.FC = () => {
           />
           <MobileItem
             currentPath={router.asPath}
-            redirectPath="/profile"
+            redirectPath="/rewards"
             handleRedirect={handleRedirect}
-            label={userName || "Connect"}
-            border="1px"
+            label="Rewards"
             borderRadius="0px"
           />
         </VStack>

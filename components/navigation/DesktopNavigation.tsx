@@ -3,13 +3,12 @@ import Link from "next/link";
 import React from "react";
 import { Flex, Spacer, Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import useUserName from "@/hooks/useUserName";
 import { isSelected } from "@/utils/navigation";
+import CustomButton from "@/components/atoms/Button";
 
 // menu items naming need to fit with beginning of route names
 const DesktopNavigation: React.FC = () => {
   const router = useRouter();
-  const userName = useUserName();
   const LOGO_MARGIN = 7;
 
   return (
@@ -62,9 +61,16 @@ const DesktopNavigation: React.FC = () => {
         <Box px="2" bg={isSelected("/", router.asPath) ? "yellow" : ""}>
           <Link href="/">Closet</Link>
         </Box>
-        <Box px="2" border="1px" bg={isSelected("/profile", router.asPath) ? "yellow" : ""}>
-          <Link href="/profile">{userName || "Connect"}</Link>
+        <Box px="2" bg={isSelected("/rewards", router.asPath) ? "yellow" : ""}>
+          <Link href="/rewards">Rewards</Link>
         </Box>
+        <CustomButton
+          handleClickCallback={() => router.push("/disconnect")}
+          height="100%"
+          width="80px"
+          backgroundColor="background"
+          title={"Disconnect" || "Connect"}
+        />
         <Box width={`${process.env.NEXT_PUBLIC_LOGO_HEIGHT}px`} />
       </Flex>
     </Flex>

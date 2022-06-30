@@ -56,6 +56,15 @@ const MobileNavigation: React.FC = () => {
                 aria-label="Open Sidebar Menu"
                 onClick={onOpen}
                 bg="none"
+                userSelect="none"
+                sx={{
+                  WebkitTouchCallout: "none",
+                  WebkitUserSelect: "none",
+                  KhtmlUserSelect: "none",
+                  MozUserSelect: "none",
+                  msUserSelect: "none",
+                  WebkitTapHighlightColor: "transparent",
+                }}
                 height={`${MOBILE_LOGO_HEIGHT - 5}px`}
                 pt="10px"
               />
@@ -67,6 +76,15 @@ const MobileNavigation: React.FC = () => {
               aria-label="Close Sidebar Menu"
               onClick={onClose}
               bg="none"
+              userSelect="none"
+              sx={{
+                WebkitTouchCallout: "none",
+                WebkitUserSelect: "none",
+                KhtmlUserSelect: "none",
+                MozUserSelect: "none",
+                msUserSelect: "none",
+                WebkitTapHighlightColor: "transparent",
+              }}
               height={`${MOBILE_LOGO_HEIGHT - 5}px`}
             />
           )}

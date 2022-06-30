@@ -57,6 +57,9 @@ const MobileNavigation: React.FC = () => {
                 onClick={onOpen}
                 bg="none"
                 userSelect="none"
+                _hover={{
+                  backgroundColor: "background",
+                }}
                 sx={{
                   WebkitTouchCallout: "none",
                   WebkitUserSelect: "none",
@@ -77,6 +80,9 @@ const MobileNavigation: React.FC = () => {
               onClick={onClose}
               bg="none"
               userSelect="none"
+              _hover={{
+                backgroundColor: "background",
+              }}
               sx={{
                 WebkitTouchCallout: "none",
                 WebkitUserSelect: "none",

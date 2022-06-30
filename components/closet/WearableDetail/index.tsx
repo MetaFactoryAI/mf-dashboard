@@ -1,13 +1,16 @@
 /* eslint-disable prettier/prettier */
 import { Table, Tbody, Td, Tr, VStack, Box, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import React, { Suspense, useRef, useEffect } from 'react';
+import React, { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stage } from '@react-three/drei';
 import useUserName from "@/hooks/useUserName";
 import useNftMetadata from "@/hooks/useNftMetadata";
+import { getMainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { useProvider, useAccount } from 'wagmi';
 import { Loading } from "@/components/atoms";
 import { useRouter } from "next/router";
+import { ethers } from "ethers";
 import Files from "./Files"
 import Metadata from "./Metadata"
 import Model from './Model'
@@ -18,6 +21,22 @@ const Index: NextPage = () => {
   const { nftData, fetchNft, loading } = useNftMetadata();
   const router = useRouter();
   const { id } = router.query
+  const provider = useProvider();
+  const { data: account } = useAccount();
+  const [balance, setBalance] = useState<string>('0');
+
+  useEffect(() => {
+    const fetch = async () => {
+      if(provider && account?.address && id) {
+        const { ethereum } = getMainnetSdk(provider);
+        const nftBalances = await ethereum.nft_wearables.balanceOfBatch([account.address], [Number(id)]);
+
+        setBalance(ethers.utils.formatUnits(nftBalances[0], 0))
+      };
+    }
+
+    fetch();
+  }, [provider, account, id]);
 
   useEffect(() => {
     if(id) {
@@ -62,7 +81,7 @@ const Index: NextPage = () => {
       </Box>
       <Box pl="10px" pr="10px" alignSelf="center" pb="10px">
         <Text fontFamily="caption" fontSize="12px" fontWeight="400px">
-          you own 2 of this item
+          you own {balance} of this item
         </Text>
       </Box>
       <Table

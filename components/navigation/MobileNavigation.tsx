@@ -56,9 +56,6 @@ const MobileNavigation: React.FC = () => {
                 aria-label="Open Sidebar Menu"
                 onClick={onOpen}
                 bg="none"
-                _focus={{
-                  borderColor: "unset",
-                }}
                 height={`${MOBILE_LOGO_HEIGHT - 5}px`}
                 pt="10px"
               />
@@ -70,9 +67,6 @@ const MobileNavigation: React.FC = () => {
               aria-label="Close Sidebar Menu"
               onClick={onClose}
               bg="none"
-              _focus={{
-                borderColor: "unset",
-              }}
               height={`${MOBILE_LOGO_HEIGHT - 5}px`}
             />
           )}

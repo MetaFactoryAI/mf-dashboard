@@ -57,19 +57,9 @@ const MobileNavigation: React.FC = () => {
                 onClick={onOpen}
                 bg="none"
                 userSelect="none"
-                _hover={{
-                  backgroundColor: "background",
-                }}
-                sx={{
-                  WebkitTouchCallout: "none",
-                  WebkitUserSelect: "none",
-                  KhtmlUserSelect: "none",
-                  MozUserSelect: "none",
-                  msUserSelect: "none",
-                  WebkitTapHighlightColor: "transparent",
-                }}
-                height={`${MOBILE_LOGO_HEIGHT - 5}px`}
-                pt="10px"
+                variant="unstyled"
+                height="100%"
+                pt="7px"
               />
             </>
           )}
@@ -80,18 +70,8 @@ const MobileNavigation: React.FC = () => {
               onClick={onClose}
               bg="none"
               userSelect="none"
-              _hover={{
-                backgroundColor: "background",
-              }}
-              sx={{
-                WebkitTouchCallout: "none",
-                WebkitUserSelect: "none",
-                KhtmlUserSelect: "none",
-                MozUserSelect: "none",
-                msUserSelect: "none",
-                WebkitTapHighlightColor: "transparent",
-              }}
-              height={`${MOBILE_LOGO_HEIGHT - 5}px`}
+              variant="unstyled"
+              height="100%"
             />
           )}
         </Flex>

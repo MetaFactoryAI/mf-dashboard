@@ -55,7 +55,6 @@ const MobileNavigation: React.FC = () => {
                 icon={<HamburgerIcon />}
                 aria-label="Open Sidebar Menu"
                 onClick={onOpen}
-                bg="none"
                 userSelect="none"
                 variant="unstyled"
                 height="100%"
@@ -68,7 +67,6 @@ const MobileNavigation: React.FC = () => {
               icon={<CloseIcon />}
               aria-label="Close Sidebar Menu"
               onClick={onClose}
-              bg="none"
               userSelect="none"
               variant="unstyled"
               height="100%"

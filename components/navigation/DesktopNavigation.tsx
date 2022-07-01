@@ -5,11 +5,13 @@ import { Flex, Spacer, Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { isSelected } from "@/utils/navigation";
 import CustomButton from "@/components/atoms/Button";
+import useUserName from "@/hooks/useUserName";
 
 // menu items naming need to fit with beginning of route names
 const DesktopNavigation: React.FC = () => {
   const router = useRouter();
   const LOGO_MARGIN = 7;
+  const userName = useUserName();
 
   return (
     <Flex
@@ -64,13 +66,15 @@ const DesktopNavigation: React.FC = () => {
         <Box px="2" bg={isSelected("/rewards", router.asPath) ? "yellow" : ""}>
           <Link href="/rewards">Rewards</Link>
         </Box>
-        <CustomButton
-          handleClickCallback={() => router.push("/disconnect")}
-          height="100%"
-          width="80px"
-          backgroundColor="background"
-          title={"Disconnect" || "Connect"}
-        />
+        {userName && (
+          <CustomButton
+            handleClickCallback={() => router.push("/disconnect")}
+            height="100%"
+            width="80px"
+            backgroundColor="background"
+            title="Disconnect"
+          />
+        )}
         <Box width={`${process.env.NEXT_PUBLIC_LOGO_HEIGHT}px`} />
       </Flex>
     </Flex>

@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import useUserName from "@/hooks/useUserName";
 import MobileItem from "./MobileItem";
 
 const MobileNavigation: React.FC = () => {
@@ -20,6 +21,7 @@ const MobileNavigation: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const MOBILE_LOGO_HEIGHT = 23;
   const MOBILE_LOGO_WIDTH = 139;
+  const userName = useUserName();
   const handleRedirect = (url: string) => {
     onClose();
     router.push(url);
@@ -44,13 +46,17 @@ const MobileNavigation: React.FC = () => {
         <Flex>
           {!isOpen && (
             <>
-              <CustomButton
-                handleClickCallback={() => handleRedirect("/disconnect")}
-                height="100%"
-                width="80px"
-                backgroundColor="yellow"
-                title={"Disconnect" || "Connect"}
-              />
+              {userName && (
+                <Box>
+                  <CustomButton
+                    handleClickCallback={() => handleRedirect("/disconnect")}
+                    height="100%"
+                    width="80px"
+                    backgroundColor="yellow"
+                    title="Disconnect"
+                  />
+                </Box>
+              )}
               <IconButton
                 icon={<HamburgerIcon />}
                 aria-label="Open Sidebar Menu"

@@ -40,7 +40,7 @@ const SwapTokenField: React.FC<{
           </Box>
         </HStack>
       </MenuButton>
-      <MenuList>
+      <MenuList backgroundColor="background" borderColor="black">
         {tokenList.map((token) => (
           <MenuItem
             key={`swap-token-field-menu-item-${token.symbol}`}

@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { Flex } from "@chakra-ui/react";
 import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";

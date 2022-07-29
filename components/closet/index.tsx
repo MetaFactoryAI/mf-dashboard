@@ -8,7 +8,7 @@ import { getMainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { ethers } from "ethers";
 import { Loading } from "@/components/atoms";
 import useNftMetadata, { NftItem } from "@/hooks/useNftMetadata";
-import useMetafactoryData from "@/hooks/useMetafactoryData";
+import useMetafactoryData, { NftClaim } from "@/hooks/useMetafactoryData";
 import ClaimWearables from "./ClaimWearables";
 import ListItems from "./ListItems";
 
@@ -16,7 +16,7 @@ import ListItems from "./ListItems";
 const Wearables: NextPage = () => {
   const { getNftIds, nfts, fetchNfts, loading } = useNftMetadata();
   const [items, setItems] = useState<NftItem[]>([]);
-  const [isClaimed, setIsClaimed] = useState<boolean>(false);
+  const [isClaimed, setIsClaimed] = useState<boolean>(true);
   const { data: account } = useAccount();
   const authBearer = Cookies.get(process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || "");
   const provider = useProvider();
@@ -28,15 +28,16 @@ const Wearables: NextPage = () => {
   } = useMetafactoryData();
 
   useEffect(() => {
-    const checkClaimable = async (currentProvider: ethers.providers.Provider, address: string, rootHash: string) => {
+    const checkClaimable = async (currentProvider: ethers.providers.Provider, address: string, rootHashes: string[]) => {
       const { ethereum } = getMainnetSdk(provider);
-      const claimedStatuses = await ethereum.nft_giveaway.getClaimedStatus(address, [rootHash]);
-
-      setIsClaimed(claimedStatuses[0]);
+      const claimedStatuses = await ethereum.nft_giveaway.getClaimedStatus(address, rootHashes);
+      const areAnyUnclaimed = claimedStatuses.some((claimed) => claimed === false)
+      setIsClaimed(!areAnyUnclaimed);
     };
 
-    if(provider && account?.address && nftClaims) {
-      checkClaimable(provider, account?.address, nftClaims.merkle_root_hash);
+    if(provider && account?.address && nftClaims && nftClaims?.length > 0) {
+      const merkleRootHashes = nftClaims.map((nftClaim: NftClaim) => nftClaim.merkle_root_hash)
+      checkClaimable(provider, account?.address, merkleRootHashes);
     }
   }, [account?.address, nftClaims, provider]);
 

@@ -10,30 +10,32 @@ import { getMainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { useSigner } from 'wagmi';
 
 
-const ClaimWearables: React.FC<{nftClaims: NftClaim}> = ({ nftClaims }) => {
+const ClaimWearables: React.FC<{nftClaims: NftClaim[]}> = ({ nftClaims }) => {
   const router = useRouter();
   const toast = useToast();
   const [isAlertOpen, setIsAlertOpen] = React.useState<boolean>(false);
   const userName = useUserName();
   const { data: signer } = useSigner();
   const handleClick = () => {
-    // setIsAlertOpen(true);
     executeClaim();
   };
   const executeClaim = async () => {
     if(signer) {
       const { ethereum } = getMainnetSdk(signer);
-      const claim = {
-        to: nftClaims.claim_json.to,
-        erc1155: nftClaims.claim_json.erc1155,
-        erc721: nftClaims.claim_json.erc721,
-        erc20: nftClaims.claim_json.erc20,
-        salt: nftClaims.claim_json.salt
-      }
-      ethereum.nft_giveaway.claimMultipleTokens(
-        nftClaims.merkle_root_hash,
-        claim,
-        nftClaims.claim_json.proof
+      const claims = nftClaims.map((nftClaim: NftClaim) => ({
+          to: nftClaim.claim_json.to,
+          erc1155: nftClaim.claim_json.erc1155,
+          erc721: nftClaim.claim_json.erc721,
+          erc20: nftClaim.claim_json.erc20,
+          salt: nftClaim.claim_json.salt
+        }))
+      const merkleRootHashes = nftClaims.map((nftClaim: NftClaim) => nftClaim.merkle_root_hash)
+      const merkleProofs = nftClaims.map((nftClaim: NftClaim) => nftClaim.claim_json.proof)
+
+      ethereum.nft_giveaway.claimMultipleTokensFromMultipleMerkleTree(
+        merkleRootHashes,
+        claims,
+        merkleProofs
       ).then(() => {
         router.push('/closet_claim_success');
       })
@@ -61,7 +63,7 @@ const ClaimWearables: React.FC<{nftClaims: NftClaim}> = ({ nftClaims }) => {
           Welcome {userName}
         </Text>
         <Text fontFamily="caption" fontSize="12px" fontWeight="400" pb="10px">
-          You have {nftClaims.claim_json.claim_count} items available to claim
+          You have { nftClaims.reduce((sum: number, nftClaim: NftClaim) => sum + nftClaim.claim_json.claim_count, 0) } items available to claim
         </Text>
         <Button
           handleClickCallback={handleClick}

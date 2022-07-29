@@ -2,6 +2,6 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    domains: ["admin.metafactory.ai"],
+    domains: ["admin.metafactory.ai", "os.mf.app"],
   },
 };

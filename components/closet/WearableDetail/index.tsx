@@ -30,7 +30,6 @@ const Index: NextPage = () => {
       if(provider && account?.address && id) {
         const { ethereum } = getMainnetSdk(provider);
         const nftBalances = await ethereum.nft_wearables.balanceOfBatch([account.address], [Number(id)]);
-
         setBalance(ethers.utils.formatUnits(nftBalances[0], 0))
       };
     }

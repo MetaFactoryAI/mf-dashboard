@@ -34,7 +34,7 @@ const SUBGRAPH_ENDPOINTS: { [network: string]: string } = {
 };
 
 const useMetafactoryData = () => {
-  const [nftClaims, setNftClaims] = useState<NftClaim>();
+  const [nftClaims, setNftClaims] = useState<NftClaim[]>();
   const [designerRewards, setDesignerRewards] = useState<DesignerRewards>();
   const [buyerRewards, setBuyerRewards] = useState<BuyerRewards>();
   const [loadingNftClaims, setLoadingNftClaims] = useState(true);
@@ -116,10 +116,15 @@ const useMetafactoryData = () => {
       fetchGraph(SUBGRAPH_ENDPOINTS.metafactory, NFT_CLAIMS_QUERY, null, accountAuthToken)
         // @ts-ignore
         .then(({ data: { [root]: nftClaimArray } }) => {
-          const nftClaim = { ...nftClaimArray[0] };
-          const claim_count = nftClaim.claim_json.erc1155[0].ids.length;
-          nftClaim.claim_json = { ...nftClaim.claim_json, claim_count };
-          setNftClaims(nftClaim);
+          const currentNftClaims = nftClaimArray.map((nftClaim: NftClaim) => {
+            const currentClaim = { ...nftClaim };
+            const claim_count = nftClaim.claim_json.erc1155[0].ids.length;
+            currentClaim.claim_json = { ...nftClaim.claim_json, claim_count };
+
+            return currentClaim;
+          });
+
+          setNftClaims(currentNftClaims);
         })
         .catch((error) => {
           setErrors({ error });

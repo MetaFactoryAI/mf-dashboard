@@ -16,7 +16,8 @@ import ListItems from "./ListItems";
 const Wearables: NextPage = () => {
   const { getNftIds, nfts, fetchNfts, loading } = useNftMetadata();
   const [items, setItems] = useState<NftItem[]>([]);
-  const [isClaimed, setIsClaimed] = useState<boolean>(true);
+  const [isAllClaimed, setIsAllClaimed] = useState<boolean>(true);
+  const [unclaimedNftClaims, setUnclaimedNftClaims] = useState<NftClaim[]>([]);
   const { data: account } = useAccount();
   const authBearer = Cookies.get(process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || "");
   const provider = useProvider();
@@ -28,16 +29,31 @@ const Wearables: NextPage = () => {
   } = useMetafactoryData();
 
   useEffect(() => {
-    const checkClaimable = async (currentProvider: ethers.providers.Provider, address: string, rootHashes: string[]) => {
+    const findClaimableClaims = async (currentProvider: ethers.providers.Provider, address: string, rootHashes: string[], allNftClaims: NftClaim[]) => {
       const { ethereum } = getMainnetSdk(provider);
       const claimedStatuses = await ethereum.nft_giveaway.getClaimedStatus(address, rootHashes);
-      const areAnyUnclaimed = claimedStatuses.some((claimed) => claimed === false)
-      setIsClaimed(!areAnyUnclaimed);
+      const currentUnclaimedNftClaims = claimedStatuses.reduce(
+        (sum: NftClaim[], currentValue: boolean, currentIndex: number) => {
+          if(currentValue === true) return sum;
+
+          const unclaimedRootHash = rootHashes[currentIndex];
+          const unclaimedNftClaim = allNftClaims.find((claim: NftClaim) => claim.merkle_root_hash === unclaimedRootHash)
+
+          if(unclaimedNftClaim) sum.push(unclaimedNftClaim);
+
+          return sum;
+        },
+        []
+      );
+      const areAnyUnclaimed = currentUnclaimedNftClaims.length > 0
+
+      setUnclaimedNftClaims(currentUnclaimedNftClaims);
+      setIsAllClaimed(!areAnyUnclaimed);
     };
 
     if(provider && account?.address && nftClaims && nftClaims?.length > 0) {
       const merkleRootHashes = nftClaims.map((nftClaim: NftClaim) => nftClaim.merkle_root_hash)
-      checkClaimable(provider, account?.address, merkleRootHashes);
+      findClaimableClaims(provider, account?.address, merkleRootHashes, nftClaims);
     }
   }, [account?.address, nftClaims, provider]);
 
@@ -57,8 +73,8 @@ const Wearables: NextPage = () => {
         const nftBalances = await ethereum.nft_wearables.balanceOfBatch(addressess, nftIds);
         const parsedBalances = nftBalances.map((balance: ethers.BigNumberish) => ethers.utils.formatUnits(balance, 0))
 
-        // reduce to nft items only with non-zero balance
-        const nonZeroItems = parsedBalances.reduce(
+        // reduce to nft items only with existing balance
+        const existingItems = parsedBalances.reduce(
           (sum: NftItem[], currentValue: string, currentIndex: number) => {
             if(currentValue === '0') return sum;
 
@@ -71,7 +87,7 @@ const Wearables: NextPage = () => {
           []
         );
 
-        setItems(nonZeroItems)
+        setItems(existingItems)
       };
     }
 
@@ -86,7 +102,7 @@ const Wearables: NextPage = () => {
 
   return (
     <VStack spacing="0px">
-      {nftClaims && !isClaimed && <ClaimWearables nftClaims={nftClaims} />}
+      {nftClaims && !isAllClaimed && <ClaimWearables nftClaims={unclaimedNftClaims} />}
         <HStack spacing="0px" alignSelf="start"  mb="15px" alignItems="baseline" >
           <Text fontFamily="heading" letterSpacing="-0.02em" lineHeight="35px" fontWeight="700" fontSize="29px" mx="15px" paddingBottom="0px">
             Closet

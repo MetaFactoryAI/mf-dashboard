@@ -106,7 +106,7 @@ const useMetafactoryData = () => {
     const root = "robot_merkle_claims";
     const NFT_CLAIMS_QUERY = `
       query GetClaimForAddress {
-        ${root} {
+        ${root}(where: {merkle_root: {network: {_eq: "mainnet"}}}) {
           claim_json
           merkle_root_hash
         }

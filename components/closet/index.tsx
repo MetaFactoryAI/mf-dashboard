@@ -1,10 +1,12 @@
+/* eslint-disable camelcase */
 /* eslint-disable prettier/prettier */
 import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
 import { VStack, HStack, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useAccount, useProvider } from 'wagmi';
-import { getMainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { getGoerliSdk } from '@dethcrypto/eth-sdk-client';
+// import { getMainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { ethers } from "ethers";
 import { Loading } from "@/components/atoms";
 import useNftMetadata, { NftItem } from "@/hooks/useNftMetadata";
@@ -30,8 +32,8 @@ const Wearables: NextPage = () => {
 
   useEffect(() => {
     const findClaimableClaims = async (currentProvider: ethers.providers.Provider, address: string, rootHashes: string[], allNftClaims: NftClaim[]) => {
-      const { ethereum } = getMainnetSdk(provider);
-      const claimedStatuses = await ethereum.nft_giveaway.getClaimedStatus(address, rootHashes);
+      const { nft_giveaway } = getGoerliSdk(provider);
+      const claimedStatuses = await nft_giveaway.getClaimedStatus(address, rootHashes);
       const currentUnclaimedNftClaims = claimedStatuses.reduce(
         (sum: NftClaim[], currentValue: boolean, currentIndex: number) => {
           if(currentValue === true) return sum;
@@ -68,9 +70,9 @@ const Wearables: NextPage = () => {
       const nftIds = getNftIds();
 
       if(provider && account?.address && nftIds.length > 0 && nfts) {
-        const { ethereum } = getMainnetSdk(provider);
+        const { nft_wearables } = getGoerliSdk(provider);
         const addressess = Array(nftIds.length).fill(account?.address)
-        const nftBalances = await ethereum.nft_wearables.balanceOfBatch(addressess, nftIds);
+        const nftBalances = await nft_wearables.balanceOfBatch(addressess, nftIds);
         const parsedBalances = nftBalances.map((balance: ethers.BigNumberish) => ethers.utils.formatUnits(balance, 0))
 
         // reduce to nft items only with existing balance

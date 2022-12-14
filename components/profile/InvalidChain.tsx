@@ -12,7 +12,7 @@ const Profile: NextPage = () => {
       toast({
         id: selectEthToastId,
         title: `Please select ${
-          process.env.NEXT_PUBLIC_CHAIN_ID === "4" ? "Rinkeby" : "Ethereum mainnet"
+          process.env.NEXT_PUBLIC_CHAIN_ID === "5" ? "GOERLI" : "Ethereum mainnet"
         } network`,
         status: "error",
         isClosable: true,

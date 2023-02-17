@@ -9,9 +9,9 @@ export default defineConfig({
         nft_giveaway: "0xdcDB68d061255C8eB92153218441e0E4e820c1C7",
       },
     },
-    rinkeby: {
-      nft_wearables: "0x2D62Ec5B09c3De2106433d877EcB10C9424fCcD7",
-      nft_giveaway: "0x8B07fa6767F33f6bC224a1F0d51BA4DE360480Aa",
+    goerli: {
+      nft_wearables: "0x204aB638B9F9430237d096500d7f3Baa0f416892",
+      nft_giveaway: "0xd8401646686430711D5d48407D8C0bb79616baef",
     },
   },
 });

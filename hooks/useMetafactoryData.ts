@@ -101,19 +101,22 @@ const useMetafactoryData = () => {
     );
   };
 
-  const fetchNftClaims = (accountAuthToken: string) => {
+  const fetchNftClaims = (authBearer: string, address: string) => {
     setLoadingNftClaims(true);
     const root = "robot_merkle_claims";
     const NFT_CLAIMS_QUERY = `
       query GetClaimForAddress {
-        ${root}(where: {merkle_root: {network: {_eq: "mainnet"}}}) {
+        ${root}(where: {merkle_root: {
+          network: {_eq: "goerli"}},
+          recipient_eth_address: {_ilike: "${address}"}})
+        {
           claim_json
           merkle_root_hash
         }
       }
     `;
     return (
-      fetchGraph(SUBGRAPH_ENDPOINTS.metafactory, NFT_CLAIMS_QUERY, null, accountAuthToken)
+      fetchGraph(SUBGRAPH_ENDPOINTS.metafactory, NFT_CLAIMS_QUERY, null, authBearer)
         // @ts-ignore
         .then(({ data: { [root]: nftClaimArray } }) => {
           const currentNftClaims = nftClaimArray.map((nftClaim: NftClaim) => {

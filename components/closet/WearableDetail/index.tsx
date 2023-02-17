@@ -6,7 +6,8 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stage } from '@react-three/drei';
 import useUserName from "@/hooks/useUserName";
 import useNftMetadata from "@/hooks/useNftMetadata";
-import { getMainnetSdk } from '@dethcrypto/eth-sdk-client';
+// import { getMainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { getGoerliSdk } from '@dethcrypto/eth-sdk-client';
 import { useProvider, useAccount } from 'wagmi';
 import { Loading } from "@/components/atoms";
 import { useRouter } from "next/router";
@@ -28,8 +29,10 @@ const Index: NextPage = () => {
   useEffect(() => {
     const fetch = async () => {
       if(provider && account?.address && id) {
-        const { ethereum } = getMainnetSdk(provider);
-        const nftBalances = await ethereum.nft_wearables.balanceOfBatch([account.address], [Number(id)]);
+        // const { ethereum } = getMainnetSdk(provider);
+        // eslint-disable-next-line camelcase
+        const { nft_wearables } = getGoerliSdk(provider);
+        const nftBalances = await nft_wearables.balanceOfBatch([account.address], [Number(id)]);
         setBalance(ethers.utils.formatUnits(nftBalances[0], 0))
       };
     }

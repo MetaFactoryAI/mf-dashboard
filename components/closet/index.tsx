@@ -61,7 +61,7 @@ const Wearables: NextPage = () => {
 
   useEffect(() => {
     if (authBearer && account?.address) {
-      fetchNftClaims(authBearer);
+      fetchNftClaims(authBearer, account?.address);
     }
   }, [account?.address, authBearer, fetchNftClaims]);
 

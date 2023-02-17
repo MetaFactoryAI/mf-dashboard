@@ -6,7 +6,9 @@ import Button from "@/components/atoms/Button"
 import useUserName from "@/hooks/useUserName";
 import { NftClaim } from "@/hooks/useMetafactoryData";
 import { Alert } from "@/components/atoms";
-import { getMainnetSdk } from '@dethcrypto/eth-sdk-client';
+// import { getMainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { getGoerliSdk } from '@dethcrypto/eth-sdk-client';
+
 import { useSigner } from 'wagmi';
 
 
@@ -21,7 +23,8 @@ const ClaimWearables: React.FC<{nftClaims: NftClaim[]}> = ({ nftClaims }) => {
   };
   const executeClaim = async () => {
     if(signer) {
-      const { ethereum } = getMainnetSdk(signer);
+      // eslint-disable-next-line camelcase
+      const { nft_giveaway } = getGoerliSdk(signer);
       const claims = nftClaims.map((nftClaim: NftClaim) => ({
           to: nftClaim.claim_json.to,
           erc1155: nftClaim.claim_json.erc1155,
@@ -32,7 +35,7 @@ const ClaimWearables: React.FC<{nftClaims: NftClaim[]}> = ({ nftClaims }) => {
       const merkleRootHashes = nftClaims.map((nftClaim: NftClaim) => nftClaim.merkle_root_hash)
       const merkleProofs = nftClaims.map((nftClaim: NftClaim) => nftClaim.claim_json.proof)
 
-      ethereum.nft_giveaway.claimMultipleTokensFromMultipleMerkleTree(
+      nft_giveaway.claimMultipleTokensFromMultipleMerkleTree(
         merkleRootHashes,
         claims,
         merkleProofs
